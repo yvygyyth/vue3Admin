@@ -1,3 +1,5 @@
+import type { JSX } from 'vue/jsx-runtime'
+
 export type AnyObject = {
   [key: string]: unknown
 }

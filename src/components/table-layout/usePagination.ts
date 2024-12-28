@@ -10,7 +10,13 @@ interface UsePaginationReturn {
   handleCurrentChange: (page: number) => void
   handleQuerySearch: () => void
 }
-export const usePagination = ({ paging }: { paging: [number, number] }): UsePaginationReturn => {
+export const usePagination = ({
+  paging,
+  events
+}: {
+  paging: [number, number]
+  events: EventBus
+}): UsePaginationReturn => {
   const initPagination: Pagination = {
     current: paging[0],
     pageSize: paging[1]
@@ -27,7 +33,6 @@ export const usePagination = ({ paging }: { paging: [number, number] }): UsePagi
     }
   }
 
-  const events = new EventBus()
   const handleCurrentChange = (page: number) => {
     paginationConfig.value.current = page
     events.emit(EBE.fetchData)
@@ -37,6 +42,9 @@ export const usePagination = ({ paging }: { paging: [number, number] }): UsePagi
     resetPagination()
     events.emit(EBE.fetchData)
   }
+
+  events.on(EBE.handleQuerySearch, handleQuerySearch)
+
   return {
     paginationConfig,
     resetPagination,

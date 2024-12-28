@@ -7,8 +7,8 @@ import {
   IconPlus,
   IconSettings
 } from '@arco-design/web-vue/es/icon'
-
-import { computed, defineComponent, ref, nextTick, type PropType } from 'vue'
+import type { PermissionRender } from '@/hooks/permission'
+import { defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import styles from './style.module.scss'
 import usePermission from '@/hooks/permission'
@@ -27,7 +27,7 @@ export default defineComponent({
     const { checkButtonPermission } = usePermission()
     const { colList, tableSize } = storeToRefs(useTableStore())
 
-    const TableActionButtons = [
+    const TableActionButtons: PermissionRender[] = [
       {
         permission: '*',
         render: () => (
@@ -53,7 +53,7 @@ export default defineComponent({
       }
     ]
 
-    const TableSettings = [
+    const TableSettings: PermissionRender[] = [
       {
         permission: '*',
         render: () => (
@@ -83,16 +83,15 @@ export default defineComponent({
       }
     ]
 
-    const renderItems = (items: any[]) => {
+    const filterAndRenderItems = (items: PermissionRender[]) => {
       return items
         .filter((item) => checkButtonPermission(item.permission))
         .map((item) => item.render())
     }
-
     return () => (
       <div class="flex justify-between mb-4">
-        <Space>{renderItems(TableActionButtons)}</Space>
-        <Space size="medium">{renderItems(TableSettings)}</Space>
+        <Space>{filterAndRenderItems(TableActionButtons)}</Space>
+        <Space size="medium">{filterAndRenderItems(TableSettings)}</Space>
       </div>
     )
   }

@@ -17,11 +17,12 @@ export default defineComponent({
     const { t } = useI18n()
     const { tableSize, colList, searchQuery } = storeToRefs(useTableStore())
     const events = new TableEventBus()
+
     // 分页
     const { paginationConfig, handleCurrentChange, handleQuerySearch } = usePagination({
-      paging: [1, 5]
+      paging: [1, 5],
+      events
     })
-
     // =============== DIVIDER ==================
     // fetch data logic
 

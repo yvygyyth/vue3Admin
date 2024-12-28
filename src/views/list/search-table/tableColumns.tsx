@@ -1,19 +1,10 @@
 import { useI18n } from 'vue-i18n'
-import { computed, defineComponent, nextTick, ref, type Ref } from 'vue'
-import {
-  Avatar,
-  Badge,
-  Link,
-  Space,
-  type TableColumnData,
-  type TableData
-} from '@arco-design/web-vue'
-import { queryPolicyList, type PolicyQuery } from '@/api/list'
-import { useTableStore } from './tableStore'
-import { storeToRefs } from 'pinia'
+import { Avatar, Badge, Link, Space, type TableData } from '@arco-design/web-vue'
 import type { ColListType } from '@/components/table-layout/type'
+import { TableOperations } from './TableOperations'
 export const TableColumns = (): ColListType[] => {
   const { t } = useI18n()
+  const { filterTableOperations, operations } = TableOperations()
   const colList: ColListType[] = [
     {
       getTitle: () => t('searchTable.columns.number'),
@@ -83,7 +74,7 @@ export const TableColumns = (): ColListType[] => {
     {
       getTitle: () => t('searchTable.columns.operations'),
       dataIndex: 'operations',
-      render: () => <Link>{t('searchTable.columns.operations.view')}</Link>,
+      render: ({ record }: { record: TableData }) => filterTableOperations(operations, record),
       checked: true
     }
   ]
