@@ -1,3 +1,3 @@
 export enum EBE {
-  fetchData
+  fetchData // 获取数据
 }

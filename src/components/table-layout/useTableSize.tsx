@@ -1,11 +1,10 @@
-import { computed, ref } from 'vue'
+import { computed, ref, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Dropdown, Tooltip } from '@arco-design/web-vue'
 import { IconLineHeight } from '@arco-design/web-vue/es/icon'
-export const useTableSize = () => {
+export type TableSize = 'medium' | 'mini' | 'small' | 'large'
+export const useTableSize = (tableSize: Ref<TableSize>) => {
   const { t } = useI18n()
-  type TableSize = 'medium' | 'mini' | 'small' | 'large'
-  const tableSize = ref<TableSize>('medium')
   const densityList = computed(() => [
     {
       name: t('searchTable.size.mini'),
