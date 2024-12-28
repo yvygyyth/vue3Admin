@@ -16,8 +16,7 @@ import {
   Table,
   Tooltip,
   Upload,
-  type PaginationProps,
-  type TableColumnData
+  type PaginationProps
 } from '@arco-design/web-vue'
 import {
   IconDownload,
@@ -32,64 +31,25 @@ import { useI18n } from 'vue-i18n'
 import TableSearchForm from './TableSearchForm'
 import { ViewNames } from '@/types/constants'
 import usePermission from '@/hooks/permission'
-
+import { useTableSize } from '@/components/table-layout/useTableSize'
+import { usePagination } from '@/components/table-layout/usePagination'
+import EventBus from '@/components/table-layout/useEventBus'
+import { EBE } from '@/components/table-layout/EventBusEnum'
+import { TableColumns } from './TableColumns'
 export default defineComponent({
   name: ViewNames.searchTable,
   setup() {
     const { t } = useI18n()
     const { checkButtonPermission } = usePermission()
-    const initPagination: Pagination = {
-      current: 1,
-      pageSize: 20
-    }
-    const paginationConfig = ref<PaginationProps & Pagination>({
-      ...initPagination,
-      showTotal: true
+    const events = new EventBus()
+    // 分页
+    const { paginationConfig, handleCurrentChange, handleQuerySearch } = usePagination({
+      paging: [1, 5]
     })
-    const resetPagination = () => {
-      paginationConfig.value = {
-        ...paginationConfig.value,
-        ...initPagination
-      }
-    }
-    const handleCurrentChange = (page: number) => {
-      paginationConfig.value.current = page
-      fetchData()
-    }
-    const handlePageSizeChange = (pageSize: number) => {
-      paginationConfig.value.pageSize = pageSize
-      fetchData()
-    }
-    const handleQuerySearch = () => {
-      resetPagination()
-      fetchData()
-    }
+
     // =============== DIVIDER ==================
     // table size change
-    type TableSize = 'medium' | 'mini' | 'small' | 'large'
-    const tableSize = ref<TableSize>('medium')
-    const densityList = computed(() => [
-      {
-        name: t('searchTable.size.mini'),
-        value: 'mini'
-      },
-      {
-        name: t('searchTable.size.small'),
-        value: 'small'
-      },
-      {
-        name: t('searchTable.size.medium'),
-        value: 'medium'
-      },
-      {
-        name: t('searchTable.size.large'),
-        value: 'large'
-      }
-    ])
-    const handleSelectDensity = (val: unknown) => {
-      tableSize.value = val as TableSize
-    }
-
+    const { tableSize, render: TableSizeRender } = useTableSize()
     // =============== DIVIDER ==================
     // fetch data logic
 
@@ -123,86 +83,11 @@ export default defineComponent({
         setLoading(false)
       }
     }
-    fetchData()
+    events.on(EBE.fetchData, fetchData)
+    events.emit(EBE.fetchData, fetchData)
     // =============== DIVIDER ==================
     // table columns render logic
-
-    const colList = ref([
-      {
-        getTitle: () => t('searchTable.columns.number'),
-        dataIndex: 'number',
-        checked: true
-      },
-      {
-        getTitle: () => t('searchTable.columns.name'),
-        dataIndex: 'name',
-        checked: true
-      },
-      {
-        getTitle: () => t('searchTable.columns.contentType'),
-        dataIndex: 'contentType',
-        render: ({ record }: { record: PolicyRecord }) => {
-          const map: Record<PolicyRecord['contentType'], string> = {
-            img: '//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/581b17753093199839f2e327e726b157.svg~tplv-49unhts6dw-image.image',
-            horizontalVideo:
-              '//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/77721e365eb2ab786c889682cbc721c1.svg~tplv-49unhts6dw-image.image',
-            verticalVideo:
-              '//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/ea8b09190046da0ea7e070d83c5d1731.svg~tplv-49unhts6dw-image.image'
-          }
-          return (
-            <>
-              <Space>
-                <Avatar size={16} shape="square">
-                  <img alt="avatar" src={map[record.contentType]} />
-                </Avatar>
-                {t(`searchTable.form.contentType.${record.contentType}`)}
-              </Space>
-            </>
-          )
-        },
-        checked: true
-      },
-      {
-        getTitle: () => t('searchTable.columns.filterType'),
-        dataIndex: 'filterType',
-        render: ({ record }: { record: PolicyRecord }) => (
-          <>{t(`searchTable.form.filterType.${record.filterType}`)}</>
-        ),
-        checked: true
-      },
-      {
-        getTitle: () => t('searchTable.columns.count'),
-        dataIndex: 'count',
-        checked: true
-      },
-      {
-        getTitle: () => t('searchTable.columns.createdTime'),
-        dataIndex: 'createdTime',
-        checked: true
-      },
-      {
-        getTitle: () => t('searchTable.columns.status'),
-        dataIndex: 'status',
-        render: ({ record }: { record: PolicyRecord }) => {
-          return (
-            <Space>
-              <Badge status={record.status === 'offline' ? 'danger' : 'success'}></Badge>
-              {t(`searchTable.form.status.${record.status}`)}
-            </Space>
-          )
-        },
-        checked: true
-      },
-      {
-        getTitle: () => t('searchTable.columns.operations'),
-        dataIndex: 'operations',
-        render: () =>
-          checkButtonPermission(['admin']) && (
-            <Link>{t('searchTable.columns.operations.view')}</Link>
-          ),
-        checked: true
-      }
-    ])
+    const { colList, tableColumns } = TableColumns()
 
     const popupVisibleChange = (val: boolean) => {
       if (val) {
@@ -217,18 +102,6 @@ export default defineComponent({
         })
       }
     }
-    const tableColumns = computed(() => {
-      return colList.value
-        .filter((col) => col.checked)
-        .map((item) => {
-          const ret: TableColumnData = {
-            title: item.getTitle(),
-            dataIndex: item.dataIndex
-          }
-          if (item.render) ret.render = item.render as unknown as TableColumnData['render']
-          return ret
-        })
-    })
 
     return () => (
       <div>
@@ -263,21 +136,7 @@ export default defineComponent({
               >
                 {t('searchTable.operation.download')}
               </Button>
-              <Dropdown onSelect={handleSelectDensity}>
-                {{
-                  default: () => (
-                    <Tooltip content={t('searchTable.actions.density')}>
-                      <IconLineHeight class="cursor-pointer" size="18" />
-                    </Tooltip>
-                  ),
-                  content: () =>
-                    densityList.value.map((item) => (
-                      <Dropdown.Option value={item.value}>
-                        <span>{item.name}</span>
-                      </Dropdown.Option>
-                    ))
-                }}
-              </Dropdown>
+              {TableSizeRender()}
               <Tooltip content={t('searchTable.actions.columnSetting')}>
                 <Popover trigger="click" position="left" onPopupVisibleChange={popupVisibleChange}>
                   {{
@@ -313,7 +172,6 @@ export default defineComponent({
             pagination={paginationConfig.value as PaginationProps}
             columns={tableColumns.value}
             onPageChange={handleCurrentChange}
-            onPageSizeChange={handlePageSizeChange}
           ></Table>
         </Card>
       </div>
