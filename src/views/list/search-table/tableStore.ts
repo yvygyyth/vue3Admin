@@ -1,12 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
-import { type TableColumnData } from '@arco-design/web-vue'
-import { type TableSize } from '@/components/table-layout/useTableSize'
-interface ColListType extends TableColumnData {
-  getTitle: () => string
-  checked: boolean
-}
-
+import type { ColListType, TableSize } from '@/components/table-layout/type'
 interface TableStoreState {
   tableSize: Ref<TableSize>
   colList: Ref<ColListType[]>

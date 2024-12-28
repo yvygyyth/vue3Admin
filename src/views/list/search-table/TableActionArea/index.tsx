@@ -1,6 +1,6 @@
 import type { PolicyQuery } from '@/api/list'
 import useLocale from '@/hooks/locale'
-import { LocaleOptions } from '@/types/constants'
+import { exchangeArray } from '@/utils/sort'
 import {
   Button,
   Card,
@@ -23,13 +23,14 @@ import {
   IconPlus,
   IconSettings
 } from '@arco-design/web-vue/es/icon'
-import Sortable from 'sortablejs'
-import { exchangeArray } from '@/utils/sort'
+
 import { computed, defineComponent, ref, nextTick, type PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
 import styles from './style.module.scss'
 import usePermission from '@/hooks/permission'
-import { useTableSize } from '@/components/table-layout/useTableSize'
+import TableSizeSetting from '@/components/table-layout/ui/TableSizeSetting'
+import ColumnSettingPopover from '@/components/table-layout/ui/ColumnSettingPopover'
+import type { TableSize } from '@/components/table-layout/type'
 import { useTableStore } from '../tableStore'
 import { storeToRefs } from 'pinia'
 
@@ -42,23 +43,10 @@ export default defineComponent({
     const { currentLocale } = useLocale()
     const { checkButtonPermission } = usePermission()
     const { colList, tableSize } = storeToRefs(useTableStore())
-    const { render: TableSizeRender } = useTableSize(tableSize)
     const TableActionButtons = () => []
 
     const TableSettings = () => []
-    const popupVisibleChange = (val: boolean) => {
-      if (val) {
-        nextTick(() => {
-          const el = document.getElementById('tableSetting') as HTMLElement
-          new Sortable(el, {
-            onEnd(e: any) {
-              const { oldIndex, newIndex } = e
-              exchangeArray(colList.value, oldIndex, newIndex)
-            }
-          })
-        })
-      }
-    }
+
     return () => (
       <div class="flex justify-between mb-4">
         <Space>
@@ -84,32 +72,11 @@ export default defineComponent({
           >
             {t('searchTable.operation.download')}
           </Button>
-          {TableSizeRender()}
-          <Tooltip content={t('searchTable.actions.columnSetting')}>
-            <Popover trigger="click" position="left" onPopupVisibleChange={popupVisibleChange}>
-              {{
-                content: () => (
-                  <div id="tableSetting">
-                    {colList.value.map((item) => (
-                      <div class="w-32">
-                        <Space>
-                          <IconDragArrow class="cursor-move" />
-                          <Checkbox v-model={item.checked} />
-                          <div
-                            class="text-ellipsis whitespace-nowrap  overflow-hidden w-20"
-                            title={item.getTitle()}
-                          >
-                            {item.getTitle()}
-                          </div>
-                        </Space>
-                      </div>
-                    ))}
-                  </div>
-                ),
-                default: () => <IconSettings size="18" class="cursor-pointer" />
-              }}
-            </Popover>
-          </Tooltip>
+          <TableSizeSetting onSetTableSize={(size: TableSize) => (tableSize.value = size)} />
+          <ColumnSettingPopover
+            colList={colList.value}
+            onExchangeArray={(e) => exchangeArray(colList.value, e.oldIndex, e.newIndex)}
+          />
         </Space>
       </div>
     )
