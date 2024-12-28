@@ -22,7 +22,10 @@ export default function usePermission() {
       )
     },
 
-    checkButtonPermission(needPermission: string[]): boolean {
+    checkButtonPermission(needPermission: string[] | string): boolean {
+      if (!Array.isArray(needPermission)) {
+        needPermission = [needPermission]
+      }
       const userStore = useUserStore()
       return needPermission.includes(userStore.role)
     }
