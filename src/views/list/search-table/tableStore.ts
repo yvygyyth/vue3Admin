@@ -5,6 +5,7 @@ import { queryPolicyList, type PolicyQuery, type PolicyRecord } from '@/api/list
 import EventBus from '@/hooks/useEventBus'
 import { singleton } from '@/hooks/singleton'
 import { EBE } from '@/components/table-layout/EventBusEnum'
+import { TableColumns } from './tableColumns'
 // 默认的查询对象
 const defaultSearchQuery: PolicyQuery = {
   number: '',
@@ -25,11 +26,12 @@ export const TableEventBus = singleton(EventBus)
 
 export const useTableStore = defineStore('table', (): TableStoreState => {
   const events = new TableEventBus()
+
   // 尺寸
   const tableSize = ref<TableSize>('medium')
 
   // 列表项
-  const colList = ref<ColListType[]>([])
+  const colList = ref<ColListType[]>(TableColumns())
 
   // 查询项，使用默认值
   const searchQuery = ref<PolicyQuery>({ ...defaultSearchQuery }) // 使用默认值初始化

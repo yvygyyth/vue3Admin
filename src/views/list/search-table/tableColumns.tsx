@@ -1,5 +1,5 @@
 import { useI18n } from 'vue-i18n'
-import { computed, defineComponent, nextTick, ref, type ComputedRef } from 'vue'
+import { computed, defineComponent, nextTick, ref, type Ref } from 'vue'
 import {
   Avatar,
   Badge,
@@ -11,11 +11,10 @@ import {
 import { queryPolicyList, type PolicyQuery } from '@/api/list'
 import { useTableStore } from './tableStore'
 import { storeToRefs } from 'pinia'
-
-export const TableColumns = () => {
+import type { ColListType } from '@/components/table-layout/type'
+export const TableColumns = (): ColListType[] => {
   const { t } = useI18n()
-  const { colList } = storeToRefs(useTableStore())
-  colList.value = [
+  const colList: ColListType[] = [
     {
       getTitle: () => t('searchTable.columns.number'),
       dataIndex: 'number',
@@ -88,20 +87,5 @@ export const TableColumns = () => {
       checked: true
     }
   ]
-
-  const tableColumns = computed(() => {
-    return colList.value
-      .filter((col) => col.checked)
-      .map((item) => {
-        const ret: TableColumnData = {
-          title: item.getTitle(),
-          dataIndex: item.dataIndex
-        }
-        if (item.render) ret.render = item.render as TableColumnData['render']
-        return ret
-      })
-  })
-  return {
-    tableColumns
-  }
+  return colList
 }

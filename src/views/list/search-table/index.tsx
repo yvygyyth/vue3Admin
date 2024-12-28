@@ -10,12 +10,12 @@ import { storeToRefs } from 'pinia'
 import { ViewNames } from '@/types/constants'
 import { usePagination } from '@/components/table-layout/usePagination'
 import { EBE } from '@/components/table-layout/EventBusEnum'
-import { TableColumns } from './useTableColumns'
+import { useTableColumns } from '@/components/table-layout/useTableColumns'
 export default defineComponent({
   name: ViewNames.searchTable,
   setup() {
     const { t } = useI18n()
-    const { tableSize, searchQuery } = storeToRefs(useTableStore())
+    const { tableSize, colList, searchQuery } = storeToRefs(useTableStore())
     const events = new TableEventBus()
     // 分页
     const { paginationConfig, handleCurrentChange, handleQuerySearch } = usePagination({
@@ -51,8 +51,7 @@ export default defineComponent({
     events.emit(EBE.fetchData, fetchData)
     // =============== DIVIDER ==================
     // table columns render logic
-    const { tableColumns } = TableColumns()
-
+    const { tableColumns } = useTableColumns(colList)
     return () => (
       <div>
         <Card class="general-card " title={t('menu.list.searchTable')}>
