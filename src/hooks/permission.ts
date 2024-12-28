@@ -26,6 +26,9 @@ export default function usePermission() {
       if (!Array.isArray(needPermission)) {
         needPermission = [needPermission]
       }
+      if (needPermission.includes('*')) {
+        return true
+      }
       const userStore = useUserStore()
       return needPermission.includes(userStore.role)
     }
