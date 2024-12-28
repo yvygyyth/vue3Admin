@@ -15,15 +15,13 @@ import { IconRefresh, IconSearch } from '@arco-design/web-vue/es/icon'
 import { computed, defineComponent, ref, type PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
 import styles from './style.module.scss'
-
+import { useTableStore, TableEventBus } from './tableStore'
+import { storeToRefs } from 'pinia'
+import { EBE } from '@/components/table-layout/EventBusEnum'
 export default defineComponent({
   name: 'TableSearchForm',
   emits: ['onSearch'],
   props: {
-    searchQuery: {
-      type: Object as PropType<PolicyQuery>,
-      required: true
-    },
     searchLoading: {
       type: Boolean,
       required: true
@@ -32,8 +30,13 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n()
     const { currentLocale } = useLocale()
+    const events = new TableEventBus()
+    const { searchQuery } = storeToRefs(useTableStore())
 
     const formRef = ref<FormInstance>()
+    events.on(EBE.resetSearchQuery, () => {
+      formRef.value?.resetFields()
+    })
 
     const contentTypeOptions = computed<SelectOptionData[]>(() => [
       {
@@ -79,7 +82,7 @@ export default defineComponent({
         <Form
           ref={formRef}
           class={styles.form}
-          model={props.searchQuery}
+          model={searchQuery.value}
           labelAlign="left"
           labelColProps={{
             span: 5
@@ -92,7 +95,7 @@ export default defineComponent({
             <Grid.Col span={colSpan.value}>
               <Form.Item field="number" label={t('searchTable.form.number')}>
                 <Input
-                  v-model={props.searchQuery.number}
+                  v-model={searchQuery.value.number}
                   placeholder={t('searchTable.form.number.placeholder')}
                 />
               </Form.Item>
@@ -100,7 +103,7 @@ export default defineComponent({
             <Grid.Col span={colSpan.value}>
               <Form.Item field="name" label={t('searchTable.form.name')}>
                 <Input
-                  v-model={props.searchQuery.name}
+                  v-model={searchQuery.value.name}
                   placeholder={t('searchTable.form.name.placeholder')}
                 />
               </Form.Item>
@@ -108,7 +111,7 @@ export default defineComponent({
             <Grid.Col span={colSpan.value}>
               <Form.Item field="contentType" label={t('searchTable.form.contentType')}>
                 <Select
-                  v-model={props.searchQuery.contentType}
+                  v-model={searchQuery.value.contentType}
                   options={contentTypeOptions.value}
                   placeholder={t('searchTable.form.contentType')}
                 />
@@ -118,7 +121,7 @@ export default defineComponent({
             <Grid.Col span={colSpan.value}>
               <Form.Item field="filterType" label={t('searchTable.form.filterType')}>
                 <Select
-                  v-model={props.searchQuery.filterType}
+                  v-model={searchQuery.value.filterType}
                   options={filterTypeOptions.value}
                   placeholder={t('searchTable.form.selectDefault')}
                 />
@@ -126,13 +129,13 @@ export default defineComponent({
             </Grid.Col>
             <Grid.Col span={colSpan.value}>
               <Form.Item field="createdTime" label={t('searchTable.form.createdTime')}>
-                <RangePicker class="w-full" v-model={props.searchQuery.createdTime} />
+                <RangePicker class="w-full" v-model={searchQuery.value.createdTime} />
               </Form.Item>
             </Grid.Col>
             <Grid.Col span={colSpan.value}>
               <Form.Item field="status" label={t('searchTable.form.status')}>
                 <Select
-                  v-model={props.searchQuery.status}
+                  v-model={searchQuery.value.status}
                   options={statusOptions.value}
                   placeholder={t('searchTable.form.selectDefault')}
                 />
@@ -155,7 +158,7 @@ export default defineComponent({
           <Button
             loading={props.searchLoading}
             onClick={() => {
-              formRef.value?.resetFields()
+              events.emit(EBE.resetSearchQuery)
               emit('onSearch')
             }}
             v-slots={{

@@ -2,7 +2,7 @@ import { type Pagination } from '@/types/global'
 import { ref, type Ref } from 'vue'
 import { type PaginationProps } from '@arco-design/web-vue'
 import { EBE } from './EventBusEnum'
-import EventBus from './useEventBus'
+import EventBus from '@/hooks/useEventBus'
 
 interface UsePaginationReturn {
   paginationConfig: Ref<PaginationProps & Pagination>

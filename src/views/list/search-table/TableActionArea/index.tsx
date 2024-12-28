@@ -1,21 +1,5 @@
-import type { PolicyQuery } from '@/api/list'
-import useLocale from '@/hooks/locale'
 import { exchangeArray } from '@/utils/sort'
-import {
-  Button,
-  Card,
-  Checkbox,
-  Divider,
-  Dropdown,
-  Link,
-  Popover,
-  Space,
-  Table,
-  Tooltip,
-  Upload,
-  type FormInstance,
-  type SelectOptionData
-} from '@arco-design/web-vue'
+import { Button, Space, Upload } from '@arco-design/web-vue'
 import {
   IconDownload,
   IconDragArrow,
@@ -40,16 +24,13 @@ export default defineComponent({
   props: {},
   setup(props, { emit }) {
     const { t } = useI18n()
-    const { currentLocale } = useLocale()
     const { checkButtonPermission } = usePermission()
     const { colList, tableSize } = storeToRefs(useTableStore())
-    const TableActionButtons = () => []
 
-    const TableSettings = () => []
-
-    return () => (
-      <div class="flex justify-between mb-4">
-        <Space>
+    const TableActionButtons = [
+      {
+        permission: '*',
+        render: () => (
           <Button
             v-slots={{
               icon: () => <IconPlus />
@@ -58,13 +39,24 @@ export default defineComponent({
           >
             {t('searchTable.operation.create')}
           </Button>
+        )
+      },
+      {
+        permission: '*',
+        render: () => (
           <Upload action="/" showFileList={false}>
             {{
               'upload-button': () => <Button>{t('searchTable.operation.import')}</Button>
             }}
           </Upload>
-        </Space>
-        <Space size="medium">
+        )
+      }
+    ]
+
+    const TableSettings = [
+      {
+        permission: '*',
+        render: () => (
           <Button
             v-slots={{
               icon: () => <IconDownload />
@@ -72,12 +64,35 @@ export default defineComponent({
           >
             {t('searchTable.operation.download')}
           </Button>
+        )
+      },
+      {
+        permission: '*',
+        render: () => (
           <TableSizeSetting onSetTableSize={(size: TableSize) => (tableSize.value = size)} />
+        )
+      },
+      {
+        permission: '*',
+        render: () => (
           <ColumnSettingPopover
             colList={colList.value}
             onExchangeArray={(e) => exchangeArray(colList.value, e.oldIndex, e.newIndex)}
           />
-        </Space>
+        )
+      }
+    ]
+
+    const renderItems = (items: any[]) => {
+      return items
+        .filter((item) => checkButtonPermission(item.permission))
+        .map((item) => item.render())
+    }
+
+    return () => (
+      <div class="flex justify-between mb-4">
+        <Space>{renderItems(TableActionButtons)}</Space>
+        <Space size="medium">{renderItems(TableSettings)}</Space>
       </div>
     )
   }
