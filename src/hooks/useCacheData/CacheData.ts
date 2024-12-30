@@ -62,7 +62,9 @@ export default class CacheData<T, R> {
       }
     })
   }
-
+  get value() {
+    return this.cacheData.value
+  }
   get isExpired() {
     return Date.now() > this.expireTime
   }

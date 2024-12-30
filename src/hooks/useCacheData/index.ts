@@ -3,7 +3,7 @@ import CacheData from './CacheData'
 
 const cacheManage = new Map()
 
-export const fetchDataWithCache = (key: keyof typeof cacheJson) => {
+export const cacheData = (key: keyof typeof cacheJson) => {
   if (!cacheManage.has(key)) {
     const cacheData = new CacheData(cacheJson[key])
     cacheManage.set(key, cacheData)

@@ -33,13 +33,13 @@ export default defineComponent({
     const fetchData = async () => {
       setLoading(true)
       try {
-        const { data } = await requestList({
+        const { data, count } = await requestList({
           ...searchQuery.value,
           ...paginationConfig.value
         })
 
-        renderData.value = data.data
-        paginationConfig.value.total = data.count
+        renderData.value = data
+        paginationConfig.value.total = count
       } catch (err) {
         // you can report use errorHandler or other
       } finally {
