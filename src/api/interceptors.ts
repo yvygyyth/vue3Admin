@@ -9,7 +9,7 @@ export interface HttpResponse<T = unknown> extends AxiosResponse {
   msg: string
   code: number
   data: T
-  count: number
+  count?: number
 }
 if (import.meta.env.VITE_API_BASE_URL) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
@@ -57,7 +57,7 @@ axios.interceptors.response.use(
       return Promise.reject(new Error(responseData.msg || 'Error'))
     }
 
-    return response
+    return responseData
   },
   (error) => {
     Message.error({
