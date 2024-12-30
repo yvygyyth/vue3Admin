@@ -16,8 +16,8 @@ export const usePagination = ({
   events: EventBus
 }): UsePaginationReturn => {
   const initPagination: Pagination = {
-    current: paging[0],
-    pageSize: paging[1]
+    page: paging[0],
+    limit: paging[1]
   }
 
   const paginationConfig = ref<PaginationProps & Pagination>({

@@ -12,8 +12,8 @@ export type GetParams = {
 export type OKResponse = 'ok'
 
 export type Pagination = {
-  current: number
-  pageSize: number
+  page: number
+  limit: number
   total?: number
 }
 
