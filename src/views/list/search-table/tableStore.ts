@@ -1,29 +1,30 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import type { ColListType, TableSize } from '@/components/table-layout/type'
-import { queryPolicyList, type PolicyQuery, type PolicyRecord } from '@/api/list'
+import { requestList, requestSave, requestDelete, requestGet } from '@/api/otherCost'
+import type { QueryParams, QueryResult, ListRes, FormData } from '@/api/otherCost'
 import useLoading from '@/hooks/loading'
 import EventBus from '@/hooks/useEventBus'
 import { singleton } from '@/hooks/singleton'
 import { EBE } from '@/components/table-layout/EventBusEnum'
 import { TableColumns } from './useTableColumns'
 // 默认的查询对象
-const defaultSearchQuery: PolicyQuery = {
-  number: '',
-  name: '',
-  contentType: '',
-  filterType: '',
-  createdTime: [],
-  status: ''
+const defaultSearchQuery: QueryParams = {
+  hirer_keyword: '',
+  start_time: undefined,
+  end_time: undefined
 }
 
 interface TableStoreState {
   tableSize: Ref<TableSize>
   colList: Ref<ColListType[]>
-  searchQuery: Ref<PolicyQuery>
+  searchQuery: Ref<QueryParams>
   loading: Ref<boolean>
   setLoading: (state: boolean) => void
 }
+
+export { requestList, requestSave, requestDelete, requestGet }
+export type { QueryParams, QueryResult, ListRes, FormData }
 
 export const TableEventBus = singleton(EventBus)
 
@@ -41,7 +42,7 @@ export const useTableStore = defineStore('table', (): TableStoreState => {
   const colList = ref<ColListType[]>(TableColumns())
 
   // 查询项，使用默认值
-  const searchQuery = ref<PolicyQuery>({ ...defaultSearchQuery }) // 使用默认值初始化
+  const searchQuery = ref<QueryParams>({ ...defaultSearchQuery }) // 使用默认值初始化
 
   // 重置查询项
   function $resetSearchQuery() {

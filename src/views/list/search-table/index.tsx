@@ -1,12 +1,12 @@
-import { queryPolicyList, type PolicyQuery, type PolicyRecord } from '@/api/list'
-
+import { requestList } from './tableStore'
+import type { QueryResult } from './tableStore'
+import { useTableStore, TableEventBus } from './tableStore'
 import { Card, Table, type PaginationProps } from '@arco-design/web-vue'
 import { defineComponent, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TableActionArea from './TableActionArea'
 import { useTableSearchForm } from './useTableSearchForm'
 import TableSearchForm from '@/components/table-layout/TableSearchForm'
-import { useTableStore, TableEventBus } from './tableStore'
 import { storeToRefs } from 'pinia'
 import { ViewNames } from '@/types/constants'
 import { usePagination } from '@/components/table-layout/usePagination'
@@ -28,7 +28,7 @@ export default defineComponent({
     // =============== DIVIDER ==================
     // fetch data logic
 
-    const renderData = ref<PolicyRecord[]>([])
+    const renderData = ref<QueryResult[]>([])
 
     const fetchData = async () => {
       setLoading(true)
@@ -39,10 +39,10 @@ export default defineComponent({
           current: paginationConfig.value.current,
           pageSize: paginationConfig.value.pageSize
         }
-        const { data } = await queryPolicyList(params)
+        const { data } = await requestList(params)
 
-        renderData.value = data.list
-        paginationConfig.value.total = data.total
+        renderData.value = data.data
+        paginationConfig.value.total = data.count
       } catch (err) {
         // you can report use errorHandler or other
       } finally {
