@@ -6,7 +6,7 @@ import useLoading from '@/hooks/loading'
 import EventBus from '@/hooks/useEventBus'
 import { singleton } from '@/hooks/singleton'
 import { EBE } from '@/components/table-layout/EventBusEnum'
-import { TableColumns } from './tableColumns'
+import { TableColumns } from './useTableColumns'
 // 默认的查询对象
 const defaultSearchQuery: PolicyQuery = {
   number: '',

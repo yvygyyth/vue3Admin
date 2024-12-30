@@ -1,10 +1,10 @@
 import usePermission from '@/hooks/permission'
 import { type TableData } from '@arco-design/web-vue'
 import type { PermissionRender } from '@/hooks/permission'
-import { handlers } from './useHandlers'
+import { deleteOk } from './handlers'
 export const TableOperations = () => {
   const { checkButtonPermission } = usePermission()
-  const { deleteOk } = handlers()
+
   const operations: PermissionRender[] = [
     {
       permission: '*',
