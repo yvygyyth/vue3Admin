@@ -22,7 +22,7 @@ export default defineComponent({
   name: 'TableActionArea',
   emits: [],
   props: {},
-  setup(props, { emit }) {
+  setup() {
     const { t } = useI18n()
     const { checkButtonPermission } = usePermission()
     const { colList, tableSize } = storeToRefs(useTableStore())

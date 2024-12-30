@@ -20,17 +20,15 @@ import { storeToRefs } from 'pinia'
 import { EBE } from '@/components/table-layout/EventBusEnum'
 export default defineComponent({
   name: 'TableSearchForm',
-  emits: ['onSearch'],
-  setup(props, { emit }) {
+  setup() {
     const { t } = useI18n()
     const { currentLocale } = useLocale()
     const events = new TableEventBus()
     const { loading, searchQuery } = storeToRefs(useTableStore())
 
     const formRef = ref<FormInstance>()
-    events.on(EBE.resetSearchQuery, () => {
-      formRef.value?.resetFields()
-    })
+    // 为resetSearchQuery添加重置表单状态事件
+    events.on(EBE.resetSearchQuery, () => formRef.value?.resetFields())
 
     const contentTypeOptions = computed<SelectOptionData[]>(() => [
       {
@@ -145,16 +143,13 @@ export default defineComponent({
             v-slots={{
               icon: () => <IconSearch />
             }}
-            onClick={() => emit('onSearch')}
+            onClick={() => events.emit([EBE.resetSearchQuery, EBE.fetchData])}
           >
             {t('searchTable.form.search')}
           </Button>
           <Button
             loading={loading.value}
-            onClick={() => {
-              events.emit(EBE.resetSearchQuery)
-              emit('onSearch')
-            }}
+            onClick={() => events.emit([EBE.resetPagination, EBE.resetSearchQuery, EBE.fetchData])}
             v-slots={{
               icon: () => <IconRefresh />
             }}

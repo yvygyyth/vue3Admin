@@ -20,7 +20,7 @@ export default defineComponent({
     const events = new TableEventBus()
 
     // 分页
-    const { paginationConfig, handleCurrentChange, handleQuerySearch } = usePagination({
+    const { paginationConfig, handleCurrentChange } = usePagination({
       paging: [1, 5],
       events
     })
@@ -56,7 +56,7 @@ export default defineComponent({
     return () => (
       <div>
         <Card class="general-card " title={t('menu.list.searchTable')}>
-          <TableSearchForm onOnSearch={handleQuerySearch} />
+          <TableSearchForm />
           <TableActionArea />
           <Table
             loading={loading.value}

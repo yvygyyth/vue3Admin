@@ -6,9 +6,7 @@ import EventBus from '@/hooks/useEventBus'
 
 interface UsePaginationReturn {
   paginationConfig: Ref<PaginationProps & Pagination>
-  resetPagination: () => void
   handleCurrentChange: (page: number) => void
-  handleQuerySearch: () => void
 }
 export const usePagination = ({
   paging,
@@ -38,17 +36,10 @@ export const usePagination = ({
     events.emit(EBE.fetchData)
   }
 
-  const handleQuerySearch = () => {
-    resetPagination()
-    events.emit(EBE.fetchData)
-  }
-
-  events.on(EBE.handleQuerySearch, handleQuerySearch)
+  events.on(EBE.resetPagination, resetPagination)
 
   return {
     paginationConfig,
-    resetPagination,
-    handleCurrentChange,
-    handleQuerySearch
+    handleCurrentChange
   }
 }

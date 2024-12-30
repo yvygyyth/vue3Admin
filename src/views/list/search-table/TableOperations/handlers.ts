@@ -7,7 +7,7 @@ export const deleteOk = async (record: TableData) => {
   try {
     await Promise.resolve()
     Message.success('删除成功')
-    events.emit(EBE.handleQuerySearch)
+    events.emit([EBE.resetPagination, EBE.resetSearchQuery])
     return true
   } catch (e) {
     return false

@@ -1,16 +1,19 @@
-type key = string | number
+type Key = string | number
 class EventBus {
-  events: Record<key, Set<(...arg: any[]) => void>> = {}
-  on(eventName: key, callback: () => void) {
+  events: Record<Key, Set<(...arg: any[]) => void>> = {}
+  on(eventName: Key, callback: () => void) {
     ;(this.events[eventName] ??= new Set()).add(callback)
   }
-  emit(eventName: key, ...args: any[]) {
-    this.events[eventName]?.forEach((callback) => callback(...args))
+  emit(eventNames: Key | Key[], ...args: any[]) {
+    const eventsToEmit = Array.isArray(eventNames) ? eventNames : [eventNames]
+    eventsToEmit.forEach((eventName) => {
+      this.events[eventName]?.forEach((callback) => callback(...args))
+    })
   }
-  off(eventName: key, callback: () => void) {
+  off(eventName: Key, callback: () => void) {
     this.events[eventName]?.delete(callback)
   }
-  once(eventName: key, callback: (...args: any[]) => void) {
+  once(eventName: Key, callback: (...args: any[]) => void) {
     const wrappedCallback = (...args: any[]) => {
       callback(...args)
       this.off(eventName, wrappedCallback)
