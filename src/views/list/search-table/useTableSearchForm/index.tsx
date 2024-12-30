@@ -24,26 +24,6 @@ export const useTableSearchForm = () => {
       value: 'verticalVideo'
     }
   ])
-  const filterTypeOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('searchTable.form.filterType.artificial'),
-      value: 'artificial'
-    },
-    {
-      label: t('searchTable.form.filterType.rules'),
-      value: 'rules'
-    }
-  ])
-  const statusOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('searchTable.form.status.online'),
-      value: 'online'
-    },
-    {
-      label: t('searchTable.form.status.offline'),
-      value: 'offline'
-    }
-  ])
 
   const colSpan = computed(() => {
     if (currentLocale.value === LocaleOptions.en) return 12

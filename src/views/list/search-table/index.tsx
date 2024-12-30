@@ -46,7 +46,7 @@ export default defineComponent({
         setLoading(false)
       }
     }
-    console.log('renderData', renderData.value)
+
     events.on(EBE.fetchData, fetchData)
     events.emit(EBE.fetchData, fetchData)
     // =============== DIVIDER ==================
