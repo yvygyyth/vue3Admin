@@ -1,7 +1,7 @@
 import { queryPolicyList, type PolicyQuery, type PolicyRecord } from '@/api/list'
 
 import { Card, Table, type PaginationProps } from '@arco-design/web-vue'
-import { computed, defineComponent, nextTick, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TableActionArea from './TableActionArea'
 import { useTableSearchForm } from './useTableSearchForm'

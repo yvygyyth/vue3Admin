@@ -3,7 +3,7 @@ import { LocaleOptions } from '@/types/constants'
 import { Form, Grid, Input, RangePicker, Select, type SelectOptionData } from '@arco-design/web-vue'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useTableStore } from './tableStore'
+import { useTableStore } from '../tableStore'
 import { storeToRefs } from 'pinia'
 export const useTableSearchForm = () => {
   const { t } = useI18n()
