@@ -24,7 +24,7 @@ export const singleton = (className: new (...args: any[]) => any) => {
         return instance
       }
 
-      instance = new className(target, ...args)
+      instance = Reflect.construct(target, args)
       lastParams = [...args]
       return instance
     }
