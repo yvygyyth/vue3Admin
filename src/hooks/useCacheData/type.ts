@@ -6,3 +6,7 @@ export interface CacheDataOptions<T, R> {
   transform?: (data: T) => any
   expiresIn?: number
 }
+
+export enum CDK {
+  costTypeList
+}

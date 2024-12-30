@@ -4,6 +4,7 @@ import type { ColListType } from '@/components/table-layout/type'
 import { TableOperations } from '../TableOperations'
 import { formatDate } from '@/utils/timer'
 import { cacheData } from '@/hooks/useCacheData'
+import { CDK } from '@/hooks/useCacheData/type'
 import { getLabelByValue } from '@/utils'
 export const TableColumns = (): ColListType[] => {
   const { t } = useI18n()
@@ -18,7 +19,7 @@ export const TableColumns = (): ColListType[] => {
       getTitle: () => '收支类型',
       dataIndex: 'bill_type_id',
       render: ({ record }: { record: TableData }) => (
-        <>{getLabelByValue(cacheData('costTypeList').value, record.bill_type_id)}</>
+        <>{getLabelByValue(cacheData(CDK.costTypeList).value, record.bill_type_id)}</>
       ),
       checked: true
     },

@@ -1,8 +1,9 @@
 import { agentList, matterList, payChattList, costTypeList } from '@/api/free/index'
 import type { CacheDataOptions } from './type'
+import { CDK } from './type'
 import type { ListRes as OtherCostLR } from '@/api/costType/type'
-export const cacheJson: Record<string, CacheDataOptions<any, any>> = {
-  costTypeList: {
+export const cacheJson: Record<string | number, CacheDataOptions<any, any>> = {
+  [CDK.costTypeList]: {
     fetchFunction: costTypeList,
     transform: (res: OtherCostLR) => {
       const { data } = res
