@@ -1,5 +1,5 @@
 import { queryPolicyList, type PolicyQuery, type PolicyRecord } from '@/api/list'
-import useLoading from '@/hooks/loading'
+
 import { Card, Table, type PaginationProps } from '@arco-design/web-vue'
 import { computed, defineComponent, nextTick, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -15,7 +15,8 @@ export default defineComponent({
   name: ViewNames.searchTable,
   setup() {
     const { t } = useI18n()
-    const { tableSize, colList, searchQuery } = storeToRefs(useTableStore())
+    const { loading, tableSize, colList, searchQuery } = storeToRefs(useTableStore())
+    const { setLoading } = useTableStore()
     const events = new TableEventBus()
 
     // 分页
@@ -28,7 +29,6 @@ export default defineComponent({
 
     const renderData = ref<PolicyRecord[]>([])
 
-    const { loading, setLoading } = useLoading()
     const fetchData = async () => {
       setLoading(true)
       try {
@@ -56,7 +56,7 @@ export default defineComponent({
     return () => (
       <div>
         <Card class="general-card " title={t('menu.list.searchTable')}>
-          <TableSearchForm searchLoading={loading.value} onOnSearch={handleQuerySearch} />
+          <TableSearchForm onOnSearch={handleQuerySearch} />
           <TableActionArea />
           <Table
             loading={loading.value}

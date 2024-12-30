@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import type { ColListType, TableSize } from '@/components/table-layout/type'
 import { queryPolicyList, type PolicyQuery, type PolicyRecord } from '@/api/list'
+import useLoading from '@/hooks/loading'
 import EventBus from '@/hooks/useEventBus'
 import { singleton } from '@/hooks/singleton'
 import { EBE } from '@/components/table-layout/EventBusEnum'
@@ -20,12 +21,18 @@ interface TableStoreState {
   tableSize: Ref<TableSize>
   colList: Ref<ColListType[]>
   searchQuery: Ref<PolicyQuery>
+  loading: Ref<boolean>
+  setLoading: (state: boolean) => void
 }
 
 export const TableEventBus = singleton(EventBus)
 
 export const useTableStore = defineStore('table', (): TableStoreState => {
+  // 独属于表格的总线
   const events = new TableEventBus()
+
+  // 加载项
+  const { loading, setLoading } = useLoading()
 
   // 尺寸
   const tableSize = ref<TableSize>('medium')
@@ -43,6 +50,8 @@ export const useTableStore = defineStore('table', (): TableStoreState => {
   events.on(EBE.fetchData, $resetSearchQuery)
 
   return {
+    loading,
+    setLoading,
     tableSize,
     colList,
     searchQuery

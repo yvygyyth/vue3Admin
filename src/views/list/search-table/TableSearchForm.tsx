@@ -21,17 +21,11 @@ import { EBE } from '@/components/table-layout/EventBusEnum'
 export default defineComponent({
   name: 'TableSearchForm',
   emits: ['onSearch'],
-  props: {
-    searchLoading: {
-      type: Boolean,
-      required: true
-    }
-  },
   setup(props, { emit }) {
     const { t } = useI18n()
     const { currentLocale } = useLocale()
     const events = new TableEventBus()
-    const { searchQuery } = storeToRefs(useTableStore())
+    const { loading, searchQuery } = storeToRefs(useTableStore())
 
     const formRef = ref<FormInstance>()
     events.on(EBE.resetSearchQuery, () => {
@@ -145,7 +139,7 @@ export default defineComponent({
         </Form>
         <div class={[styles['button-area']]}>
           <Button
-            loading={props.searchLoading}
+            loading={loading.value}
             class="mb-5"
             type="primary"
             v-slots={{
@@ -156,7 +150,7 @@ export default defineComponent({
             {t('searchTable.form.search')}
           </Button>
           <Button
-            loading={props.searchLoading}
+            loading={loading.value}
             onClick={() => {
               events.emit(EBE.resetSearchQuery)
               emit('onSearch')
