@@ -1,19 +1,8 @@
-import type { PolicyQuery } from '@/api/list'
-import {
-  Button,
-  Form,
-  Grid,
-  Input,
-  RangePicker,
-  Select,
-  type FormInstance,
-  type SelectOptionData
-} from '@arco-design/web-vue'
+import { Button, Form, type FormInstance } from '@arco-design/web-vue'
 import { IconRefresh, IconSearch } from '@arco-design/web-vue/es/icon'
-import { computed, defineComponent, ref, type PropType } from 'vue'
+import { defineComponent, ref, type PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
 import styles from './style.module.scss'
-import { storeToRefs } from 'pinia'
 import { EBE } from '@/components/table-layout/EventBusEnum'
 import EventBus from '@/hooks/useEventBus'
 export default defineComponent({
@@ -28,7 +17,7 @@ export default defineComponent({
       required: true
     },
     searchQuery: {
-      type: Object as PropType<PolicyQuery>,
+      type: Object as PropType<Record<string, any>>,
       required: true
     }
   },

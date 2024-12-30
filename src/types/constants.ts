@@ -76,10 +76,10 @@ export const layoutStyleConfig = {
 } as const
 
 export enum ResCode {
-  success = 20000,
-  error = 50000,
-  illegalToken = 50008,
-  expiredToken = 50014,
+  success = 200,
+  error = 500,
+  illegalToken = 508,
+  expiredToken = 514,
   // Other clients logged
-  otherLogin = 50012
+  otherLogin = 512
 }
