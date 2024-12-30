@@ -1,21 +1,10 @@
 import usePermission from '@/hooks/permission'
-import { Message, type TableData } from '@arco-design/web-vue'
+import { type TableData } from '@arco-design/web-vue'
 import type { PermissionRender } from '@/hooks/permission'
-import { EBE } from '@/components/table-layout/EventBusEnum'
-import { TableEventBus } from '../tableStore'
+import { deleteOk } from './handlers'
 export const TableOperations = () => {
   const { checkButtonPermission } = usePermission()
-  const events = new TableEventBus()
-  const deleteOk = async (record: TableData) => {
-    try {
-      await Promise.resolve()
-      Message.success('删除成功')
-      events.emit(EBE.handleQuerySearch)
-      return true
-    } catch (e) {
-      return false
-    }
-  }
+
   const operations: PermissionRender[] = [
     {
       permission: '*',
@@ -27,14 +16,14 @@ export const TableOperations = () => {
     }
   ]
 
-  const filterTableOperations = (items: PermissionRender[], record: TableData) => {
+  const tableActionFilters = (items: PermissionRender[], record: TableData) => {
     return items
       .filter((item) => checkButtonPermission(item.permission))
       .map((item) => item.render(record))
   }
 
   return {
-    filterTableOperations,
+    tableActionFilters,
     operations
   }
 }

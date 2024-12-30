@@ -4,7 +4,7 @@ import type { ColListType } from '@/components/table-layout/type'
 import { TableOperations } from './TableOperations'
 export const TableColumns = (): ColListType[] => {
   const { t } = useI18n()
-  const { filterTableOperations, operations } = TableOperations()
+  const { tableActionFilters, operations } = TableOperations()
   const colList: ColListType[] = [
     {
       getTitle: () => t('searchTable.columns.number'),
@@ -74,7 +74,7 @@ export const TableColumns = (): ColListType[] => {
     {
       getTitle: () => t('searchTable.columns.operations'),
       dataIndex: 'operations',
-      render: ({ record }: { record: TableData }) => filterTableOperations(operations, record),
+      render: ({ record }: { record: TableData }) => tableActionFilters(operations, record),
       checked: true
     }
   ]
