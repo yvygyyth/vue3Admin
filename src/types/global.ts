@@ -16,3 +16,16 @@ export type Pagination = {
   pageSize: number
   total?: number
 }
+
+export type Timestamp = string | number | Date[] | undefined
+
+export interface TimestampedEntity {
+  created_at: Timestamp
+  updated_at: Timestamp
+  deleted_at: Timestamp
+}
+
+export interface TimeRange {
+  start_time: Timestamp
+  end_time: Timestamp
+}
