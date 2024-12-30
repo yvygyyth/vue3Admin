@@ -32,7 +32,7 @@ export const usePagination = ({
   }
 
   const handleCurrentChange = (page: number) => {
-    paginationConfig.value.current = page
+    paginationConfig.value.page = page
     events.emit(EBE.fetchData)
   }
 

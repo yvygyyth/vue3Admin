@@ -45,11 +45,11 @@ export const useTableStore = defineStore('table', (): TableStoreState => {
   const searchQuery = ref<QueryParams>({ ...defaultSearchQuery }) // 使用默认值初始化
 
   // 重置查询项
-  function $resetSearchQuery() {
+  function resetSearchQuery() {
     searchQuery.value = { ...defaultSearchQuery } // 直接赋值默认值
   }
   // 为resetSearchQuery添加重置表单属性事件
-  events.on(EBE.fetchData, $resetSearchQuery)
+  events.on(EBE.resetSearchQuery, resetSearchQuery)
 
   return {
     loading,

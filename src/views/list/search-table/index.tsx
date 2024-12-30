@@ -22,7 +22,7 @@ export default defineComponent({
 
     // 分页
     const { paginationConfig, handleCurrentChange } = usePagination({
-      paging: [1, 5],
+      paging: [1, 10],
       events
     })
     // =============== DIVIDER ==================
@@ -33,13 +33,10 @@ export default defineComponent({
     const fetchData = async () => {
       setLoading(true)
       try {
-        const query = searchQuery.value
-        const params = {
-          ...query,
-          current: paginationConfig.value.current,
-          pageSize: paginationConfig.value.pageSize
-        }
-        const { data } = await requestList(params)
+        const { data } = await requestList({
+          ...searchQuery.value,
+          ...paginationConfig.value
+        })
 
         renderData.value = data.data
         paginationConfig.value.total = data.count
@@ -49,6 +46,7 @@ export default defineComponent({
         setLoading(false)
       }
     }
+    console.log('renderData', renderData.value)
     events.on(EBE.fetchData, fetchData)
     events.emit(EBE.fetchData, fetchData)
     // =============== DIVIDER ==================
