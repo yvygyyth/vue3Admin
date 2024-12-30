@@ -5,6 +5,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useTableStore } from '../tableStore'
 import { storeToRefs } from 'pinia'
+import { createRangeComputed } from '@/utils/ref'
 export const useTableSearchForm = () => {
   const { t } = useI18n()
   const { currentLocale } = useLocale()
@@ -41,6 +42,18 @@ export const useTableSearchForm = () => {
       <Grid.Col span={colSpan.value}>
         <Form.Item field="hirer_keyword" label={'关键词'}>
           <Input v-model={searchQuery.value.hirer_keyword} placeholder={'请填写关键词'} />
+        </Form.Item>
+      </Grid.Col>
+      <Grid.Col span={12} offset={0}>
+        <Form.Item field="start_time" label={'时间范围'}>
+          <a-range-picker
+            showTime
+            time-picker-props={{
+              defaultValue: ['00:00:00', '00:00:00']
+            }}
+            value-format="timestamp"
+            v-model={createRangeComputed(searchQuery.value, 'start_time', 'end_time').value}
+          />
         </Form.Item>
       </Grid.Col>
     </Grid.Row>

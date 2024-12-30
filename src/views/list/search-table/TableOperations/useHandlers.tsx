@@ -2,12 +2,12 @@ import { Message, type TableData } from '@arco-design/web-vue'
 import { TableEventBus, requestDelete } from '../tableStore'
 import { EBE } from '@/components/table-layout/EventBusEnum'
 import { Modal } from '@arco-design/web-vue'
-import { AddProduct } from '../TableModal/AddProduct'
+import { EditProduct } from '../TableModal/EditProduct'
 export const handlers = () => {
   const events = new TableEventBus()
 
-  const addOk = async (record: TableData) => {
-    Modal.open(AddProduct(record))
+  const editOk = async (record: TableData) => {
+    Modal.open(EditProduct(record))
   }
   const deleteOk = async (record: TableData) => {
     try {
@@ -21,7 +21,7 @@ export const handlers = () => {
   }
 
   return {
-    addOk,
+    editOk,
     deleteOk
   }
 }

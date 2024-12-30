@@ -4,11 +4,11 @@ import type { PermissionRender } from '@/hooks/permission'
 import { handlers } from './useHandlers'
 export const TableOperations = () => {
   const { checkButtonPermission } = usePermission()
-  const { addOk, deleteOk } = handlers()
+  const { editOk, deleteOk } = handlers()
   const operations: PermissionRender[] = [
     {
       permission: '*',
-      render: (record: TableData) => <a-link onClick={addOk}>{'添加'}</a-link>
+      render: (record: TableData) => <a-link onClick={editOk}>{'编辑'}</a-link>
     },
     {
       permission: '*',
