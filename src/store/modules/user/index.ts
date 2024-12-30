@@ -40,8 +40,8 @@ export default defineStore('userStore', {
       }
     },
     async refreshUserInfo() {
-      const res = await getUserInfo()
-      this.setUserInfo(res.data)
+      // const res = await getUserInfo()
+      // this.setUserInfo(res.data)
     }
   }
 })

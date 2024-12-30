@@ -6,15 +6,15 @@ import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from 'axio
 
 // InternalAxiosRequestConfig
 export interface HttpResponse<T = unknown> extends AxiosResponse {
-  status: number
   msg: string
   code: number
   data: T
+  count: number
 }
 if (import.meta.env.VITE_API_BASE_URL) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
 }
-
+// 请求拦截器
 axios.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = getToken()
@@ -27,20 +27,21 @@ axios.interceptors.request.use(
     return Promise.reject(error)
   }
 )
+// 响应拦截器
 axios.interceptors.response.use(
   (response: AxiosResponse<HttpResponse>) => {
     const { data: responseData } = response
-
+    // 如果是文件下载
+    if (response.config.headers.apiType === 'download') {
+      return responseData
+    }
     if (responseData.code !== ResCode.success) {
       Message.error({
         content: responseData.msg || 'Error',
         duration: 5 * 1000
       })
       if (
-        [ResCode.illegalToken, ResCode.expiredToken, ResCode.otherLogin].includes(
-          responseData.code
-        ) &&
-        response.config.url !== '/api/user/info'
+        [ResCode.illegalToken, ResCode.expiredToken, ResCode.otherLogin].includes(responseData.code)
       ) {
         Modal.error({
           title: 'Confirm logout',

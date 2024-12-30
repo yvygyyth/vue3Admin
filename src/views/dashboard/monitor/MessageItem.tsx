@@ -17,7 +17,7 @@ export default defineComponent({
     return () => (
       <Space class={[styles['chat-item']]} size={4} direction="vertical" fill>
         <Typography.Text class="text-[rgb(var(--warning-6))] text-xs">
-          {props.data.username}
+          {props.data.mobile}
         </Typography.Text>
         <Typography.Text class="text-xs">{props.data.content}</Typography.Text>
         <Grid.Row justify="space-between" align="center">

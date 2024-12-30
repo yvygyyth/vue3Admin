@@ -10,7 +10,7 @@ export type ContentDataRecord = {
 }
 export type ChatRecord = {
   id: number
-  username: string
+  mobile: string
   content: string
   time: string
   isCollect: boolean

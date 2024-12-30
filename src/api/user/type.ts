@@ -90,7 +90,7 @@ export type TeamItem = {
 }
 
 export type LoginData = {
-  username: string
+  mobile: string
   password: string
 }
 
