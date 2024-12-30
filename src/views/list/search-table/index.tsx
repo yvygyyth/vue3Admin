@@ -3,8 +3,9 @@ import { queryPolicyList, type PolicyQuery, type PolicyRecord } from '@/api/list
 import { Card, Table, type PaginationProps } from '@arco-design/web-vue'
 import { computed, defineComponent, nextTick, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import TableSearchForm from './TableSearchForm'
 import TableActionArea from './TableActionArea'
+import { useTableSearchForm } from './useTableSearchForm'
+import TableSearchForm from '@/components/table-layout/TableSearchForm'
 import { useTableStore, TableEventBus } from './tableStore'
 import { storeToRefs } from 'pinia'
 import { ViewNames } from '@/types/constants'
@@ -53,10 +54,19 @@ export default defineComponent({
     // =============== DIVIDER ==================
     // table columns render logic
     const { tableColumns } = useTableColumns(colList)
+    const { searchForm, formAttrs } = useTableSearchForm()
     return () => (
       <div>
         <Card class="general-card " title={t('menu.list.searchTable')}>
-          <TableSearchForm />
+          <TableSearchForm
+            events={events}
+            loading={loading.value}
+            searchQuery={searchQuery.value}
+            {...formAttrs}
+            v-slots={{
+              default: () => searchForm
+            }}
+          />
           <TableActionArea />
           <Table
             loading={loading.value}
