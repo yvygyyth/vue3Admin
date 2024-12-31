@@ -8,7 +8,7 @@ export const TableOperations = () => {
   const operations: PermissionRender[] = [
     {
       permission: '*',
-      render: (record: TableData) => <a-link onClick={editOk}>{'编辑'}</a-link>
+      render: (record: TableData) => <a-link onClick={() => editOk(record)}>{'编辑'}</a-link>
     },
     {
       permission: '*',

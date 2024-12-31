@@ -1,8 +1,16 @@
-import { defineComponent, type PropType } from 'vue'
-import { Form, InputNumber, Textarea, Select, type SelectOptionData } from '@arco-design/web-vue'
+import { defineComponent, ref, type PropType } from 'vue'
+import {
+  Form,
+  InputNumber,
+  Textarea,
+  Select,
+  type SelectOptionData,
+  type FormInstance
+} from '@arco-design/web-vue'
 import { type FormData } from '../../tableStore'
 import { cacheData } from '@/hooks/useCacheData'
 import { CDK } from '@/hooks/useCacheData/type'
+import rules from './rules'
 export default defineComponent({
   name: 'ModalForm',
   props: {
@@ -11,10 +19,13 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['submit'],
-  setup(props) {
+  setup(props, { expose }) {
+    const formRef = ref<FormInstance>()
+    expose({
+      submit: () => formRef.value?.validate()
+    })
     return () => (
-      <Form model={props.fromProps}>
+      <Form ref={formRef} model={props.fromProps} rules={rules()} auto-label-width={true}>
         <Form.Item field="amt" label="金额">
           <InputNumber placeholder={'请输入收支金额'} v-model={props.fromProps.amt} />
         </Form.Item>
