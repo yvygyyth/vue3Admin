@@ -1,5 +1,5 @@
 import { useI18n } from 'vue-i18n'
-import { Avatar, Badge, Link, Space, type TableData } from '@arco-design/web-vue'
+import { type TableData } from '@arco-design/web-vue'
 import type { ColListType } from '@/components/table-layout/type'
 import { TableOperations } from '../useTableOperations'
 import { formatDate } from '@/utils/timer'
