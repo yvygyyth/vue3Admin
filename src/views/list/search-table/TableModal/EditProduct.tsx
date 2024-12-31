@@ -12,7 +12,7 @@ export const EditProduct = (record: TableData) => {
   })
 
   return {
-    title: '添加',
+    title: '编辑',
     content: () => <ModalForm fromProps={formData.value} />,
     onBeforeOk: () => {
       return false

@@ -17,7 +17,7 @@ import ColumnSettingPopover from '@/components/table-layout/ui/ColumnSettingPopo
 import type { TableSize } from '@/components/table-layout/type'
 import { useTableStore } from '../tableStore'
 import { storeToRefs } from 'pinia'
-
+import { useHandlers } from './useHandlers'
 export default defineComponent({
   name: 'TableActionArea',
   emits: [],
@@ -26,7 +26,7 @@ export default defineComponent({
     const { t } = useI18n()
     const { checkButtonPermission } = usePermission()
     const { colList, tableSize } = storeToRefs(useTableStore())
-
+    const { addOk } = useHandlers()
     const TableActionButtons: PermissionRender[] = [
       {
         permission: '*',
@@ -35,6 +35,7 @@ export default defineComponent({
             v-slots={{
               icon: () => <IconPlus />
             }}
+            onClick={addOk}
             type="primary"
           >
             {t('searchTable.operation.create')}
