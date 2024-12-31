@@ -34,6 +34,7 @@ export default defineComponent({
             placeholder={'请选择收支类型'}
             v-model={props.fromProps.bill_type_id}
             allow-search
+            allow-create
             allow-clear
           >
             {cacheData(CDK.costTypeList).value.map((option: SelectOptionData) => (

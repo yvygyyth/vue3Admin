@@ -17,10 +17,18 @@ const rules = () => {
   }
 }
 
-export const validateForm = async (submit: () => Promise<boolean>, callback: () => void) => {
+export const validateForm = async (
+  submit: () => Promise<boolean>,
+  callback: () => Promise<any>
+) => {
   const valid = await submit()
   if (!valid) {
-    callback()
+    try {
+      await callback()
+    } catch (e) {
+      console.error(e)
+      return false
+    }
     return true
   }
   return false
