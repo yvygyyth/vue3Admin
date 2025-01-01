@@ -7,7 +7,7 @@ import { useTableStore } from '../tableStore'
 import { storeToRefs } from 'pinia'
 import { createRangeComputed } from '@/utils/ref'
 import { cacheData } from '@/hooks/useCacheData'
-import { CDK } from '@/hooks/useCacheData/type'
+import { CDK } from '@/hooks/useCacheData/http'
 export const useTableSearchForm = () => {
   const { t } = useI18n()
   const { currentLocale } = useLocale()

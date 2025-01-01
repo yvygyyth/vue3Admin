@@ -1,7 +1,7 @@
 import { agentList, matterList, payChattList, costTypeList } from '@/api/free/index'
 import { type SelectOptionData } from '@arco-design/web-vue'
-import type { CacheDataOptions } from './type'
-import { CDK } from './type'
+import type { CacheDataOptions } from './http'
+import { CDK } from './http'
 import type { ListRes as OtherCostLR } from '@/api/costType/type'
 export const cacheJson: Record<string | number, CacheDataOptions<any, any>> = {
   [CDK.costTypeList]: {

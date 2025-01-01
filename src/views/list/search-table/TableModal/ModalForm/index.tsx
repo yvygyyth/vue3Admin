@@ -9,7 +9,7 @@ import {
 } from '@arco-design/web-vue'
 import { type FormData } from '../../tableStore'
 import { cacheData } from '@/hooks/useCacheData'
-import { CDK } from '@/hooks/useCacheData/type'
+import { CDK } from '@/hooks/useCacheData/http'
 import rules from './rules'
 export default defineComponent({
   name: 'ModalForm',

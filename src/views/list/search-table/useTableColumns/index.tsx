@@ -4,7 +4,7 @@ import type { ColListType } from '@/components/table-layout/type'
 import { TableOperations } from '../TableOperations'
 import { formatDate } from '@/utils/timer'
 import { cacheData } from '@/hooks/useCacheData'
-import { CDK } from '@/hooks/useCacheData/type'
+import { CDK } from '@/hooks/useCacheData/http'
 import { getLabelByValue } from '@/utils'
 export const TableColumns = (): ColListType[] => {
   const { t } = useI18n()

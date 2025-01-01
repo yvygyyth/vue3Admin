@@ -1,5 +1,5 @@
 import { customRef, type Ref } from 'vue'
-import type { FetchFunction, CacheDataOptions } from './type'
+import type { FetchFunction, CacheDataOptions } from './http'
 
 export default class CacheData<T, R> {
   private expireTime: number = Number.MAX_SAFE_INTEGER
