@@ -1,3 +1,5 @@
 export enum LS {
-  token
+  token,
+  locale,
+  loginFormKey
 }

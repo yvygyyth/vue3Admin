@@ -1,7 +1,7 @@
 import { type LoginData } from '@/api/user'
 import useAuth from '@/hooks/auth'
 import useLoading from '@/hooks/loading'
-import { ApplicationInfo, LocalStorageKey, ViewNames } from '@/types/constants'
+import { ApplicationInfo } from '@/types/constants'
 import {
   Button,
   Checkbox,
@@ -15,7 +15,8 @@ import {
   type ValidatedError
 } from '@arco-design/web-vue'
 import { IconLock, IconUser } from '@arco-design/web-vue/es/icon'
-import { useStorage } from '@vueuse/core'
+import LocalStorageService from '@/utils/localStorage'
+import { LS } from '@/utils/localStorage/http'
 import { defineComponent, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -28,11 +29,16 @@ export default defineComponent({
     const { loading, setLoading } = useLoading()
     const router = useRouter()
     const { loginApp } = useAuth()
-    const storageLoginInfo = useStorage(LocalStorageKey.loginFormKey, {
-      rememberPassword: true,
-      mobile: '13000000000',
-      password: '123456'
-    })
+    const localStore = new LocalStorageService()
+
+    const storageLoginInfo = ref(
+      localStore.set(LS.loginFormKey, {
+        rememberPassword: true,
+        mobile: '13000000000',
+        password: '123456'
+      })
+    )
+
     const loginFormData = ref<LoginData>({
       mobile: storageLoginInfo.value.mobile,
       password: storageLoginInfo.value.password

@@ -3,7 +3,7 @@ import { singleton } from '@/utils/singleton'
 interface CacheStore {
   has(key: string): boolean
   get<T>(key: string): T | undefined
-  set(key: string, value: any): void
+  set<T>(key: string, value: any): T
   remove(key: string): void
   clear(): void
 }
@@ -28,13 +28,14 @@ class LocalStorageService implements CacheStore {
   }
 
   // 设置缓存
-  set(key: string, value: any): void {
+  set<T>(key: string, value: T): T {
     try {
       const serializedValue = JSON.stringify(value)
       localStorage.setItem(key, serializedValue)
     } catch (e) {
       console.error('Error saving data to localStorage', e)
     }
+    return value
   }
 
   // 删除缓存
