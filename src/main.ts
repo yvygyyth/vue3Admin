@@ -11,7 +11,7 @@ import i18n from './locale'
 import ArcoVueIcon from '@arco-design/web-vue/es/icon'
 import store from '@/store/index'
 
-import '@/api/interceptors'
+import '@/utils/request/request-imp/request-axios-imp'
 
 const app = createApp(App)
 

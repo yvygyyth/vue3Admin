@@ -1,18 +1,20 @@
 import { login, logout, type LoginData } from '@/api/user'
 import { useUserStore } from '@/store'
-import { clearToken, setToken } from '@/utils/token'
+import LocalStorageService from '@/utils/localStorage'
+import { LS } from '@/utils/localStorage/http'
 import { removeRouteListener } from '@/utils/routerListener'
 /**
  *
  * @desc system authentication
  */
 export default function useAuth() {
+  const localStore = new LocalStorageService()
   const loginApp = async (data: LoginData) => {
     try {
       const res = await login(data)
-      setToken(res.data.token)
+      localStore.set(LS.token, res.data.token)
     } catch (err) {
-      clearToken()
+      localStore.remove(LS.token)
       throw err
     }
   }
@@ -21,7 +23,7 @@ export default function useAuth() {
     const userStore = useUserStore()
     const afterLogout = () => {
       userStore.resetUserInfo()
-      clearToken()
+      localStore.remove(LS.token)
       removeRouteListener()
     }
     try {

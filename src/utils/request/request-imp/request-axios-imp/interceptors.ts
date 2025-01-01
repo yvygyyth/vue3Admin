@@ -1,6 +1,7 @@
 import useAuth from '@/hooks/auth'
 import { ResCode } from '@/types/constants'
-import { getToken } from '@/utils/token'
+import LocalStorageService from '@/utils/localStorage'
+import { LS } from '@/utils/localStorage/http'
 import { Message, Modal } from '@arco-design/web-vue'
 import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
 
@@ -11,13 +12,11 @@ export interface HttpResponse<T = unknown> extends AxiosResponse {
   data: T
   count?: number
 }
-if (import.meta.env.VITE_API_BASE_URL) {
-  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
-}
+const localStore = new LocalStorageService()
 // 请求拦截器
 axios.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = getToken()
+    const token = localStore.get(LS.token)
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }

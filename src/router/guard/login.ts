@@ -1,7 +1,8 @@
 import type { Router } from 'vue-router'
 import NProgress from 'nprogress'
 import { useUserStore } from '@/store'
-import { isLogin } from '@/utils/token'
+import LocalStorageService from '@/utils/localStorage'
+import { LS } from '@/utils/localStorage/http'
 import { ViewNames } from '@/types/constants'
 import useAuth from '@/hooks/auth'
 
@@ -15,10 +16,11 @@ import useAuth from '@/hooks/auth'
  */
 export default function setupUserLoginInfoGuard(router: Router) {
   const { logoutApp } = useAuth()
+  const localStore = new LocalStorageService()
   router.beforeEach(async (to, _from, next) => {
     NProgress.start()
     const userStore = useUserStore()
-    if (isLogin()) {
+    if (localStore.has(LS.token)) {
       if (userStore.role) {
         next()
       } else {
