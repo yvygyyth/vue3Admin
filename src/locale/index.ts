@@ -1,10 +1,10 @@
 import { createI18n } from 'vue-i18n'
-import LocalStorageService from '@/utils/localStorage'
+import persistenceStore from '@/utils/localStorage'
 import { LS } from '@/utils/localStorage/http'
 import { LocaleOptions } from '@/types/constants'
 import { get } from 'lodash'
 
-const localStore = new LocalStorageService()
+const localStore = new persistenceStore()
 const defaultLocale = localStore.get(LS.locale) || LocaleOptions.cn
 
 const getMessageFromModules = (_moduleMap: Record<string, unknown>) => {

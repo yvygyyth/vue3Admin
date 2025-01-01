@@ -1,6 +1,6 @@
 import useAuth from '@/hooks/auth'
 import { ResCode } from '@/types/constants'
-import LocalStorageService from '@/utils/localStorage'
+import persistenceStore from '@/utils/localStorage'
 import { LS } from '@/utils/localStorage/http'
 import { Message, Modal } from '@arco-design/web-vue'
 import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
@@ -12,7 +12,7 @@ export interface HttpResponse<T = unknown> extends AxiosResponse {
   data: T
   count?: number
 }
-const localStore = new LocalStorageService()
+const localStore = new persistenceStore()
 // 请求拦截器
 axios.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {

@@ -8,7 +8,7 @@ interface CacheStore {
   clear(): void
 }
 
-class LocalStorageService implements CacheStore {
+class persistenceStore implements CacheStore {
   // 是否存在
   has(key: string): boolean {
     return !!localStorage.getItem(key)
@@ -49,4 +49,4 @@ class LocalStorageService implements CacheStore {
   }
 }
 
-export default singleton(LocalStorageService)
+export default singleton(persistenceStore)

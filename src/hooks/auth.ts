@@ -1,6 +1,6 @@
 import { login, logout, type LoginData } from '@/api/user'
 import { useUserStore } from '@/store'
-import LocalStorageService from '@/utils/localStorage'
+import persistenceStore from '@/utils/localStorage'
 import { LS } from '@/utils/localStorage/http'
 import { removeRouteListener } from '@/utils/routerListener'
 /**
@@ -8,7 +8,7 @@ import { removeRouteListener } from '@/utils/routerListener'
  * @desc system authentication
  */
 export default function useAuth() {
-  const localStore = new LocalStorageService()
+  const localStore = new persistenceStore()
   const loginApp = async (data: LoginData) => {
     try {
       const res = await login(data)

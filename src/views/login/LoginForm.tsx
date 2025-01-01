@@ -15,7 +15,7 @@ import {
   type ValidatedError
 } from '@arco-design/web-vue'
 import { IconLock, IconUser } from '@arco-design/web-vue/es/icon'
-import LocalStorageService from '@/utils/localStorage'
+import persistenceStore from '@/utils/localStorage'
 import { LS } from '@/utils/localStorage/http'
 import { defineComponent, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -29,7 +29,7 @@ export default defineComponent({
     const { loading, setLoading } = useLoading()
     const router = useRouter()
     const { loginApp } = useAuth()
-    const localStore = new LocalStorageService()
+    const localStore = new persistenceStore()
 
     const storageLoginInfo = ref(
       localStore.set(LS.loginFormKey, {
