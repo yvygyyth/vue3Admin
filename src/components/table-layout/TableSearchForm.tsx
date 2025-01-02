@@ -29,14 +29,14 @@ export default defineComponent({
     props.events.on(EBE.resetSearchQuery, () => formRef.value?.resetFields())
 
     return () => (
-      <div class="flex">
+      <div class="flex mb-3 pb-3">
         <Form ref={formRef} class={styles.form} model={props.searchQuery} {...attrs}>
           {slots}
         </Form>
         <div class={[styles['button-area']]}>
           <Button
             loading={props.loading}
-            class="mb-5"
+            class="mb-5 w-22"
             type="primary"
             v-slots={{
               icon: () => <IconSearch />
@@ -47,6 +47,7 @@ export default defineComponent({
           </Button>
           <Button
             loading={props.loading}
+            class="w-22"
             onClick={() =>
               props.events.emit([EBE.resetPagination, EBE.resetSearchQuery, EBE.fetchData])
             }

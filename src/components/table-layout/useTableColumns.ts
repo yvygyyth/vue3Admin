@@ -6,12 +6,10 @@ export const useTableColumns = (colList: Ref<ColListType[]>) => {
     colList.value
       .filter((col) => col.checked)
       .map((item) => {
+        const { checked, ...rest } = item
         const ret: TableColumnData = {
           title: item.getTitle(),
-          dataIndex: item.dataIndex
-        }
-        if (item.render) {
-          ret.render = item.render as TableColumnData['render']
+          ...rest
         }
         return ret
       })

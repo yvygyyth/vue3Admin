@@ -26,12 +26,12 @@ export const useTableSearchForm = () => {
 
   const searchForm = (
     <Grid.Row gutter={8}>
-      <Grid.Col span={colSpan.value}>
+      <Grid.Col span={12}>
         <Form.Item field="hirer_keyword" label={'关键词'}>
           <Input v-model={searchQuery.value.hirer_keyword} placeholder={'请填写关键词'} />
         </Form.Item>
       </Grid.Col>
-      <Grid.Col span={8}>
+      <Grid.Col span={12}>
         <Form.Item field="bill_type_id" label={'收支类型'}>
           <Select
             placeholder={'请选择收支类型'}
@@ -47,9 +47,10 @@ export const useTableSearchForm = () => {
           </Select>
         </Form.Item>
       </Grid.Col>
-      <Grid.Col span={8} offset={0}>
+      <Grid.Col span={12} offset={0}>
         <Form.Item field="start_time" label={'时间范围'}>
           <a-range-picker
+            class="w-full"
             showTime
             time-picker-props={{
               defaultValue: ['00:00:00', '00:00:00']

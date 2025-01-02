@@ -4,7 +4,8 @@ import { useTableStore, TableEventBus } from './tableStore'
 import { Card, Table, type PaginationProps } from '@arco-design/web-vue'
 import { defineComponent, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import TableActionArea from './TableActionArea'
+import TableActionArea from '@/components/table-layout/TableActionArea'
+import { useTableActionArea } from './useTableActionArea'
 import { useTableSearchForm } from './useTableSearchForm'
 import TableSearchForm from '@/components/table-layout/TableSearchForm'
 import { storeToRefs } from 'pinia'
@@ -53,6 +54,7 @@ export default defineComponent({
     // table columns render logic
     const { tableColumns } = useTableColumns(colList)
     const { searchForm, formAttrs } = useTableSearchForm()
+    const { TableActionButtons, TableSettings } = useTableActionArea()
     return () => (
       <div>
         <Card class="general-card " title={t('menu.list.searchTable')}>
@@ -65,7 +67,7 @@ export default defineComponent({
               default: () => searchForm
             }}
           />
-          <TableActionArea />
+          <TableActionArea TableActionButtons={TableActionButtons} TableSettings={TableSettings} />
           <Table
             loading={loading.value}
             data={renderData.value}
