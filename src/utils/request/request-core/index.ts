@@ -5,7 +5,7 @@ interface RequestorOptions {
 }
 
 interface Response {
-  data: any
+  data: unknown
 }
 
 export interface XRequestor {

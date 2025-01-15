@@ -1,7 +1,15 @@
 import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
 import type { XRequestor } from '../../request-core'
 
-import './interceptors'
+import { addInterceptors } from './interceptors'
+
+const instance = axios.create({
+  baseURL: '/',
+  timeout: 60000,
+  headers: { 'X-Custom-Header': 'foobar' }
+})
+
+addInterceptors(instance)
 
 if (import.meta.env.VITE_API_BASE_URL) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
