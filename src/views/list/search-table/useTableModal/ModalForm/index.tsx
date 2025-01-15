@@ -1,4 +1,4 @@
-import { defineComponent, ref, type PropType } from 'vue'
+import { defineComponent, ref, type PropType, type ObjectEmitsOptions } from 'vue'
 import {
   Form,
   InputNumber,
@@ -11,6 +11,7 @@ import { type FormData } from '../../tableStore'
 import { cacheData } from '@/hooks/useCacheData'
 import { CDK } from '@/hooks/useCacheData/http'
 import rules from './rules'
+import { useVModel } from '@/hooks/useVModel'
 export default defineComponent({
   name: 'ModalForm',
   props: {
@@ -19,20 +20,26 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props, { expose }) {
+  emits: {
+    'update:fromProps': (value: FormData) => value
+  } as ObjectEmitsOptions,
+  setup(props, { emit, expose }) {
     const formRef = ref<FormInstance>()
+    const fromData = useVModel(props, emit, 'fromProps')
     expose({
       submit: () => formRef.value?.validate()
     })
     return () => (
-      <Form ref={formRef} model={props.fromProps} rules={rules()} auto-label-width={true}>
+      <Form ref={formRef} model={fromData} rules={rules()} auto-label-width={true}>
         <Form.Item field="amt" label="金额">
-          <InputNumber placeholder={'请输入收支金额'} v-model={props.fromProps.amt} />
+          {/* @ts-ignore */}
+          <InputNumber placeholder={'请输入收支金额'} v-model={fromData.amt} />
         </Form.Item>
         <Form.Item field="bill_type_id" label={'收支类型'} tooltip="可选填没有的字段">
+          {/* @ts-ignore */}
           <Select
             placeholder={'请选择收支类型'}
-            v-model={props.fromProps.bill_type_id}
+            v-model={fromData.bill_type_id}
             allow-search
             allow-create
             allow-clear
@@ -45,7 +52,8 @@ export default defineComponent({
           </Select>
         </Form.Item>
         <Form.Item field="memo" label={'备注'}>
-          <Textarea placeholder="备注" v-model={props.fromProps.memo} allow-clear show-word-limit />
+          {/* @ts-ignore */}
+          <Textarea placeholder="备注" v-model={fromData.memo} allow-clear show-word-limit />
         </Form.Item>
       </Form>
     )
