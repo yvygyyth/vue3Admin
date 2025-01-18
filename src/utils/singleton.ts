@@ -1,4 +1,7 @@
-function arraysAreEqual(arr1: any[], arr2: any[]): boolean {
+// 泛型构造函数类型
+type ClassConstructor = new (...args: any) => any
+
+function arraysAreEqual<U>(arr1: U[], arr2: U[]): boolean {
   if (arr1.length !== arr2.length) {
     return false
   }
@@ -11,12 +14,12 @@ function arraysAreEqual(arr1: any[], arr2: any[]): boolean {
   return true
 }
 
-export const singleton = (className: new (...args: any[]) => any) => {
-  let instance: any
-  let lastParams: any[] = []
+export const singleton = <T extends ClassConstructor>(classConstructor: T) => {
+  let instance: InstanceType<T>
+  let lastParams: ConstructorParameters<T>
 
-  return new Proxy(className, {
-    construct(target, args) {
+  return new Proxy(classConstructor, {
+    construct(target, args: ConstructorParameters<T>) {
       if (instance) {
         if (!arraysAreEqual(lastParams, args)) {
           throw new Error('Singleton instance already created with different parameters!')
@@ -25,7 +28,7 @@ export const singleton = (className: new (...args: any[]) => any) => {
       }
 
       instance = Reflect.construct(target, args)
-      lastParams = [...args]
+      lastParams = args
       return instance
     }
   })
