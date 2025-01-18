@@ -1,3 +1,5 @@
+import { simpleHash } from '@/utils'
+
 type Key = string | number | symbol
 
 // 事件类型，事件类型为对象结构
@@ -7,7 +9,7 @@ export type EventType = Record<Key, unknown>
 export type Handler<T = unknown> = (event: T) => void
 
 // 事件处理器列表
-export type EventHandlerList<T = unknown> = Array<Handler<T>>
+export type EventHandlerList<T = unknown> = Map<string, Handler<T>>
 
 // 事件处理器映射的Map结构
 // Map[事件名, 事件处理器列表]
@@ -16,51 +18,47 @@ export type EventHandlerMap<Events extends EventType> = Map<
   EventHandlerList<Events[keyof Events]>
 >
 
-// Events为拥有的类型，继承自EventType
-// {
-//    事件名字:参数
-// }
-
-class EventBus<Events extends EventType> {
+// 继承自原始的 EventBus
+class HashEventBus<Events extends EventType> {
   all: EventHandlerMap<Events>
 
   constructor(all?: EventHandlerMap<Events>) {
     this.all = all || new Map()
   }
 
-  // 注册事件处理器
+  // 重写注册事件的 on 方法
   on<K extends keyof Events>(eventName: K, handler: Handler<Events[K]>) {
-    const handlers = this.all.get(eventName)
-    if (handlers) {
-      handlers.push(handler as Handler<Events[keyof Events]>)
-    } else {
-      this.all.set(eventName, [handler as Handler<Events[keyof Events]>])
+    const hash = this.getFunctionHash(handler)
+    const handlersMap = this.all.get(eventName) || new Map()
+
+    if (!handlersMap.has(hash)) {
+      handlersMap.set(hash, handler)
+      this.all.set(eventName, handlersMap) // 将新的 map 更新到 all 中
     }
   }
 
-  // 触发事件
+  // 重写触发事件的 emit 方法
   emit<K extends keyof Events>(eventName: K, args: Events[keyof Events]) {
-    const handlers = this.all.get(eventName)
-    if (handlers) {
-      handlers
-        .slice() // 复制数组，防止修改原数组
-        .map((handler) => handler(args))
+    const handlersMap = this.all.get(eventName)
+    if (handlersMap) {
+      handlersMap.forEach((handler) => handler(args))
     }
   }
 
-  // 注销事件处理器
+  // 重写注销事件的 off 方法
   off<K extends keyof Events>(eventName: K, handler?: Handler<Events[K]>) {
-    const handlers = this.all.get(eventName)
-    if (handlers) {
+    const handlersMap = this.all.get(eventName)
+    if (handlersMap) {
       if (handler) {
-        handlers.splice(handlers.indexOf(handler as Handler<Events[keyof Events]>) >>> 0, 1) // 移除指定处理器
+        const hash = this.getFunctionHash(handler)
+        handlersMap.delete(hash) // 删除指定的 handler
       } else {
-        this.all.set(eventName, []) // 移除所有处理器
+        this.all.delete(eventName) // 移除所有处理器
       }
     }
   }
 
-  // 注册只能触发一次的事件处理器
+  // 重写只执行一次的事件处理器 once 方法
   once<K extends keyof Events>(eventName: K, handler: Handler<Events[K]>) {
     const wrappedCallback = (args: Events[K]) => {
       handler(args)
@@ -68,6 +66,11 @@ class EventBus<Events extends EventType> {
     }
     this.on(eventName, wrappedCallback) // 注册一次性事件处理器
   }
+
+  // 获取函数的哈希值
+  private getFunctionHash(fn: Function): string {
+    return simpleHash(fn)
+  }
 }
 
-export default EventBus
+export default HashEventBus
