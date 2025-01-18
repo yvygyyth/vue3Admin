@@ -1,4 +1,5 @@
 import axios from 'axios'
+import request from '@/utils/request'
 import type {
   LatestActivity,
   LoginData,
@@ -27,7 +28,7 @@ export function getUserInfo() {
 }
 
 export function login(data: LoginData) {
-  return axios.post<LoginRes>('/user/login', data)
+  return request.post<LoginRes>('/user/login', data)
 }
 
 export function logout() {

@@ -23,12 +23,6 @@ export enum EventTypes {
   AUTH_FORBIDDEN = 'auth:forbidden',
 
   /**
-   * 请求进度
-   * 通常用于上传或下载操作，实时更新进度条或状态。
-   */
-  REQUEST_PROGRESS = 'request:progress',
-
-  /**
    * 响应状态码 404
    * 当请求的资源未找到时触发，用于跳转到 404 页面或显示资源未找到提示。
    */
@@ -47,10 +41,22 @@ export enum EventTypes {
   NOTIFICATION_INFO = 'notification:info',
 
   /**
+   * 通用通知 - 警告提示
+   * 用于显示警告类的提示信息。
+   */
+  NOTIFICATION_WARNING = 'notification:warning',
+
+  /**
    * 通用通知 - 错误提示
    * 用于显示错误类的提示信息。
    */
-  NOTIFICATION_ERROR = 'notification:error'
+  NOTIFICATION_ERROR = 'notification:error',
+
+  /**
+   * 请求进度
+   * 通常用于上传或下载操作，实时更新进度条或状态。
+   */
+  REQUEST_PROGRESS = 'request:progress'
 }
 
 /**
@@ -62,11 +68,12 @@ type DefaultEventPayloads = {
   [EventTypes.REQUEST_ERROR]: { error: Error; statusCode?: number }
   [EventTypes.AUTH_UNAUTHORIZED]: void
   [EventTypes.AUTH_FORBIDDEN]: void
-  [EventTypes.REQUEST_PROGRESS]: { loaded: number; total: number }
   [EventTypes.RESPONSE_404]: { url: string }
   [EventTypes.RESPONSE_500]: { message: string }
   [EventTypes.NOTIFICATION_INFO]: { message: string }
+  [EventTypes.NOTIFICATION_WARNING]: { message: string }
   [EventTypes.NOTIFICATION_ERROR]: { message: string }
+  [EventTypes.REQUEST_PROGRESS]: { loaded: number; total: number }
 }
 
 /**
@@ -74,6 +81,6 @@ type DefaultEventPayloads = {
  * 通过遍历 `DefaultEventPayloads` 自动生成完整的事件参数类型定义。
  * 如果需要新增事件类型及其参数，只需修改 `DefaultEventPayloads`。
  */
-type EventPayloads = {
+export type EventPayloads = {
   [K in keyof DefaultEventPayloads]: DefaultEventPayloads[K]
 }

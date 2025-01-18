@@ -22,7 +22,7 @@ export default defineComponent({
   },
   emits: {
     'update:fromProps': (value: FormData) => value
-  } as ObjectEmitsOptions,
+  },
   setup(props, { emit, expose }) {
     const formRef = ref<FormInstance>()
     const fromData = useVModel(props, emit, 'fromProps')
@@ -32,14 +32,12 @@ export default defineComponent({
     return () => (
       <Form ref={formRef} model={fromData} rules={rules()} auto-label-width={true}>
         <Form.Item field="amt" label="金额">
-          {/* @ts-ignore */}
-          <InputNumber placeholder={'请输入收支金额'} v-model={fromData.amt} />
+          <InputNumber placeholder={'请输入收支金额'} v-model={fromData.value.amt} />
         </Form.Item>
         <Form.Item field="bill_type_id" label={'收支类型'} tooltip="可选填没有的字段">
-          {/* @ts-ignore */}
           <Select
             placeholder={'请选择收支类型'}
-            v-model={fromData.bill_type_id}
+            v-model={fromData.value.bill_type_id}
             allow-search
             allow-create
             allow-clear
@@ -52,8 +50,7 @@ export default defineComponent({
           </Select>
         </Form.Item>
         <Form.Item field="memo" label={'备注'}>
-          {/* @ts-ignore */}
-          <Textarea placeholder="备注" v-model={fromData.memo} allow-clear show-word-limit />
+          <Textarea placeholder="备注" v-model={fromData.value.memo} allow-clear show-word-limit />
         </Form.Item>
       </Form>
     )

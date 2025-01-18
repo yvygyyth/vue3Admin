@@ -41,16 +41,21 @@ export default defineComponent({
             v-slots={{
               icon: () => <IconSearch />
             }}
-            onClick={() => props.events.emit([EBE.resetPagination, EBE.fetchData])}
+            onClick={() => {
+              props.events.emit(EBE.resetPagination)
+              props.events.emit(EBE.fetchData)
+            }}
           >
             {t('searchTable.form.search')}
           </Button>
           <Button
             loading={props.loading}
             class="w-22"
-            onClick={() =>
-              props.events.emit([EBE.resetPagination, EBE.resetSearchQuery, EBE.fetchData])
-            }
+            onClick={() => {
+              props.events.emit(EBE.resetPagination)
+              props.events.emit(EBE.resetSearchQuery)
+              props.events.emit(EBE.fetchData)
+            }}
             v-slots={{
               icon: () => <IconRefresh />
             }}

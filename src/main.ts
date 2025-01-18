@@ -13,8 +13,6 @@ import store from '@/store/index'
 
 import '@/utils/request/request-imp/request-axios-imp'
 
-import '@/api/interceptors'
-
 const app = createApp(App)
 
 app.use(ArcoVueIcon)

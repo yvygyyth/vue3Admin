@@ -1,10 +1,7 @@
-import useAuth from '@/hooks/auth'
-import { ResCode } from '@/types/constants'
 import persistenceStore from '@/utils/localStorage'
 import { LS } from '@/utils/localStorage/http'
-import { Message, Modal } from '@arco-design/web-vue'
 import type { AxiosResponse, InternalAxiosRequestConfig, AxiosInstance } from 'axios'
-
+import { errorHandling } from './error'
 // InternalAxiosRequestConfig
 export interface HttpResponse<T = unknown> extends AxiosResponse {
   msg: string
@@ -13,11 +10,11 @@ export interface HttpResponse<T = unknown> extends AxiosResponse {
   count?: number
 }
 const localStore = new persistenceStore()
-
 export const addInterceptors = (axiosInstance: AxiosInstance) => {
   // 请求拦截器
   axiosInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
+      console.log('requestList', config)
       const token = localStore.get(LS.token)
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
@@ -36,38 +33,15 @@ export const addInterceptors = (axiosInstance: AxiosInstance) => {
       if (response.config.headers.apiType === 'download') {
         return responseData
       }
-      if (responseData.code !== ResCode.success) {
-        Message.error({
-          content: responseData.msg || 'Error',
-          duration: 5 * 1000
-        })
-        if (
-          [ResCode.illegalToken, ResCode.expiredToken, ResCode.otherLogin].includes(
-            responseData.code
-          )
-        ) {
-          Modal.error({
-            title: 'Confirm logout',
-            content:
-              'You have been logged out, you can cancel to stay on this page, or log in again',
-            okText: 'Re-Login',
-            async onOk() {
-              const { logoutApp } = useAuth()
-              await logoutApp()
-              window.location.reload()
-            }
-          })
-        }
+      if (responseData.code >= 400) {
+        errorHandling(responseData.code, responseData.msg)
         return Promise.reject(new Error(responseData.msg || 'Error'))
       }
-
+      console.log('===>response', response)
       return responseData
     },
     (error) => {
-      Message.error({
-        content: error.msg || 'Request Error',
-        duration: 5 * 1000
-      })
+      errorHandling(error.code, error.msg)
       return Promise.reject(error)
     }
   )

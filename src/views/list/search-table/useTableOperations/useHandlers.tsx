@@ -13,7 +13,8 @@ export const useHandlers = () => {
     try {
       await requestDelete({ id: record.id })
       Message.success('删除成功')
-      events.emit([EBE.resetPagination, EBE.fetchData])
+      events.emit(EBE.resetPagination)
+      events.emit(EBE.fetchData)
       return true
     } catch (e) {
       return false
