@@ -11,13 +11,15 @@ export type EventHandlerList<T = unknown> = Array<Handler<T>>
 
 // 事件处理器映射的Map结构
 // Map[事件名, 事件处理器列表]
-export type EventHandlerMap<Events extends Record<Key, unknown>> = Map<
+export type EventHandlerMap<Events extends EventType> = Map<
   keyof Events,
   EventHandlerList<Events[keyof Events]>
 >
 
-// 事件处理器，但是限制了参数类型
-type EventHandler<Events> = Handler<Events[keyof Events]>
+// Events为拥有的类型，继承自EventType
+// {
+//    事件名字:参数
+// }
 
 class EventBus<Events extends EventType> {
   all: EventHandlerMap<Events>
@@ -27,12 +29,12 @@ class EventBus<Events extends EventType> {
   }
 
   // 注册事件处理器
-  on<K extends keyof Events>(eventName: K, handler: EventHandler<Events>) {
+  on<K extends keyof Events>(eventName: K, handler: Handler<Events[K]>) {
     const handlers = this.all.get(eventName)
     if (handlers) {
-      handlers.push(handler)
+      handlers.push(handler as Handler<Events[keyof Events]>)
     } else {
-      this.all.set(eventName, [handler])
+      this.all.set(eventName, [handler as Handler<Events[keyof Events]>])
     }
   }
 
@@ -47,11 +49,11 @@ class EventBus<Events extends EventType> {
   }
 
   // 注销事件处理器
-  off<K extends keyof Events>(eventName: K, handler?: EventHandler<Events>) {
+  off<K extends keyof Events>(eventName: K, handler?: Handler<Events[K]>) {
     const handlers = this.all.get(eventName)
     if (handlers) {
       if (handler) {
-        handlers.splice(handlers.indexOf(handler) >>> 0, 1) // 移除指定处理器
+        handlers.splice(handlers.indexOf(handler as Handler<Events[keyof Events]>) >>> 0, 1) // 移除指定处理器
       } else {
         this.all.set(eventName, []) // 移除所有处理器
       }
@@ -59,8 +61,8 @@ class EventBus<Events extends EventType> {
   }
 
   // 注册只能触发一次的事件处理器
-  once<K extends keyof Events>(eventName: K, handler: EventHandler<Events>) {
-    const wrappedCallback = (args: Events[keyof Events]) => {
+  once<K extends keyof Events>(eventName: K, handler: Handler<Events[K]>) {
+    const wrappedCallback = (args: Events[K]) => {
       handler(args)
       this.off(eventName, wrappedCallback) // 执行后移除事件处理器
     }

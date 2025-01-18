@@ -4,22 +4,18 @@ import { EventTypes } from './EventTypes'
 import { Message, Modal } from '@arco-design/web-vue'
 import type { EventPayloads } from './EventTypes'
 
-export const eventBus = singleton(EventBus)
+export const eventBus = singleton(EventBus<EventPayloads>)
 
 export const sideEffectInit = () => {
-  const eventEmitter = new eventBus()
+  const eventEmitter = new eventBus() as EventBus<EventPayloads>
   eventEmitter.on(EventTypes.REQUEST_ERROR, () => Message.error('请求错误'))
   eventEmitter.on(EventTypes.AUTH_UNAUTHORIZED, () => Message.error('未登录'))
   eventEmitter.on(EventTypes.AUTH_FORBIDDEN, () => Message.error('权限不足'))
   eventEmitter.on(EventTypes.RESPONSE_500, () => Message.error('服务器未响应'))
 
-  eventEmitter.on(EventTypes.NOTIFICATION_INFO, (message: string) =>
-    Message.error(message || '提示')
-  )
-  eventEmitter.on(EventTypes.NOTIFICATION_ERROR, (message: string) =>
-    Message.error(message || '错误')
-  )
-  eventEmitter.on(EventTypes.NOTIFICATION_WARNING, (message: string) =>
+  eventEmitter.on(EventTypes.NOTIFICATION_INFO, ({ message }) => Message.error(message || '提示'))
+  eventEmitter.on(EventTypes.NOTIFICATION_ERROR, ({ message }) => Message.error(message || '错误'))
+  eventEmitter.on(EventTypes.NOTIFICATION_WARNING, ({ message }) =>
     Message.error(message || '警告')
   )
 }
