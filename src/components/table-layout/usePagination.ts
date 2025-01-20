@@ -1,8 +1,8 @@
 import { type Pagination } from '@/types/global'
 import { ref, type Ref } from 'vue'
 import { type PaginationProps } from '@arco-design/web-vue'
-import { EBE } from './EventBusEnum'
-import EventBus from '@/hooks/useEventBus'
+import { EBE, type EventPayloads } from './EventBusEnum'
+import EventBus from '@/hooks/useHashEventBus'
 
 interface UsePaginationReturn {
   paginationConfig: Ref<PaginationProps & Pagination>
@@ -13,7 +13,7 @@ export const usePagination = ({
   events
 }: {
   paging: [number, number]
-  events: EventBus
+  events: EventBus<any>
 }): UsePaginationReturn => {
   const initPagination: Pagination = {
     page: paging[0],

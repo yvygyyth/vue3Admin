@@ -3,13 +3,13 @@ import { IconRefresh, IconSearch } from '@arco-design/web-vue/es/icon'
 import { defineComponent, ref, type PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
 import styles from './style.module.scss'
-import { EBE } from '@/components/table-layout/EventBusEnum'
-import EventBus from '@/hooks/useEventBus'
+import { EBE, type EventPayloads } from '@/components/table-layout/EventBusEnum'
+import EventBus from '@/hooks/useHashEventBus'
 export default defineComponent({
   name: 'TableSearchForm',
   props: {
     events: {
-      type: Object as PropType<EventBus>,
+      type: Object as PropType<EventBus<any>>,
       required: true
     },
     loading: {
