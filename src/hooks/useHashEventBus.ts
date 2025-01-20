@@ -6,10 +6,10 @@ type Key = string | number | symbol
 export type EventType = Record<Key, unknown>
 
 // 事件处理器
-export type Handler<T = unknown> = (event: T) => void
+export type Handler<T = unknown> = (event?: T) => void
 
 // 事件处理器列表
-export type EventHandlerList<T = unknown> = Map<string, Handler<T>>
+export type EventHandlerList<T = unknown> = Map<Key, Handler<T>>
 
 // 事件处理器映射的Map结构
 // Map[事件名, 事件处理器列表]
@@ -27,18 +27,18 @@ class HashEventBus<Events extends EventType> {
   }
 
   // 重写注册事件的 on 方法
-  on<K extends keyof Events>(eventName: K, handler: Handler<Events[K]>) {
-    const hash = this.getFunctionHash(handler)
+  on<K extends keyof Events>(eventName: K, handler: Handler<Events[K]>, key?: Key) {
+    const hash = key || this.getFunctionHash(handler)
     const handlersMap = this.all.get(eventName) || new Map()
 
     if (!handlersMap.has(hash)) {
       handlersMap.set(hash, handler)
-      this.all.set(eventName, handlersMap) // 将新的 map 更新到 all 中
+      this.all.set(eventName, handlersMap)
     }
   }
 
   // 重写触发事件的 emit 方法
-  emit<K extends keyof Events>(eventName: K, args: Events[keyof Events]) {
+  emit<K extends keyof Events>(eventName: K, args?: Events[keyof Events]) {
     const handlersMap = this.all.get(eventName)
     if (handlersMap) {
       handlersMap.forEach((handler) => handler(args))
@@ -46,25 +46,35 @@ class HashEventBus<Events extends EventType> {
   }
 
   // 重写注销事件的 off 方法
-  off<K extends keyof Events>(eventName: K, handler?: Handler<Events[K]>) {
+  off<K extends keyof Events>(eventName: K, key: Key): void
+  off<K extends keyof Events>(eventName: K, handler: Handler<Events[K]>): void
+  off<K extends keyof Events>(eventName: K, param: Key | Handler<Events[K]>): void {
     const handlersMap = this.all.get(eventName)
-    if (handlersMap) {
-      if (handler) {
-        const hash = this.getFunctionHash(handler)
-        handlersMap.delete(hash) // 删除指定的 handler
-      } else {
-        this.all.delete(eventName) // 移除所有处理器
-      }
+    if (!handlersMap) {
+      return
+    }
+    if (typeof param === 'function') {
+      const hash = this.getFunctionHash(param)
+      handlersMap.delete(hash)
+    } else {
+      handlersMap.delete(param)
+    }
+    if (handlersMap.size === 0) {
+      this.all.delete(eventName)
     }
   }
 
   // 重写只执行一次的事件处理器 once 方法
-  once<K extends keyof Events>(eventName: K, handler: Handler<Events[K]>) {
-    const wrappedCallback = (args: Events[K]) => {
+  once<K extends keyof Events>(eventName: K, handler: Handler<Events[K]>, key?: Key) {
+    const wrappedCallback = (args?: Events[K]) => {
       handler(args)
-      this.off(eventName, wrappedCallback) // 执行后移除事件处理器
+      if (key !== undefined) {
+        this.off(eventName, key)
+      } else {
+        this.off(eventName, wrappedCallback)
+      }
     }
-    this.on(eventName, wrappedCallback) // 注册一次性事件处理器
+    this.on(eventName, wrappedCallback, key)
   }
 
   // 获取函数的哈希值
