@@ -1,3 +1,5 @@
+import type { RequiredRequestConfig } from '../request-core/type'
+
 /**
  * 事件类型枚举
  * 用于统一定义所有的事件类型，确保事件名称规范统一且具有一致性。
@@ -56,7 +58,18 @@ export enum EventTypes {
    * 请求进度
    * 通常用于上传或下载操作，实时更新进度条或状态。
    */
-  REQUEST_PROGRESS = 'request:progress'
+  REQUEST_PROGRESS = 'request:progress',
+
+  /**
+   * 注册请求前的事件
+   * 通常用于判断请求是否需要发送，比如缓存
+   */
+  REQUEST_BEFORE = 'request:before',
+
+  /**
+   * 注册请求后的事件
+   * 通常用于判断请求是否需要发送，比如缓存
+   */
 }
 
 /**
@@ -74,6 +87,7 @@ type DefaultEventPayloads = {
   [EventTypes.NOTIFICATION_WARNING]: { message: string }
   [EventTypes.NOTIFICATION_ERROR]: { message: string }
   [EventTypes.REQUEST_PROGRESS]: { loaded: number; total: number }
+  [EventTypes.REQUEST_BEFORE]: RequiredRequestConfig
 }
 
 /**

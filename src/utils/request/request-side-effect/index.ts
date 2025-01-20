@@ -15,9 +15,7 @@ export const sideEffectInit = () => {
 
   eventEmitter.on(EventTypes.NOTIFICATION_INFO, ({ message }) => Message.error(message || '提示'))
   eventEmitter.on(EventTypes.NOTIFICATION_ERROR, ({ message }) => Message.error(message || '错误'))
-  eventEmitter.on(EventTypes.NOTIFICATION_WARNING, ({ message }) =>
-    Message.error(message || '警告')
-  )
+  eventEmitter.on(EventTypes.NOTIFICATION_WARNING, ({ message }) => Message.error(message || '警告'))
 }
 
 export { EventTypes }

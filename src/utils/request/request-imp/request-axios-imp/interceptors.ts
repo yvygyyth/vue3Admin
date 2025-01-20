@@ -14,7 +14,6 @@ export const addInterceptors = (axiosInstance: AxiosInstance) => {
   // 请求拦截器
   axiosInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      console.log('requestList', config)
       const token = localStore.get(LS.token)
       if (token) {
         config.headers.Authorization = `Bearer ${token}`

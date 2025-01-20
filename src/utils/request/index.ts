@@ -1,3 +1,11 @@
-import request from './request-bus'
 
-export default request
+import {
+    useRequestor,
+    createCacheRequestor
+}from './request-core'
+
+export default useRequestor()
+export{
+    useRequestor,
+    createCacheRequestor
+}

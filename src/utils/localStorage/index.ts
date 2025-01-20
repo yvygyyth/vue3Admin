@@ -4,7 +4,7 @@ interface CacheStore {
   has(key: string): boolean
   get<T>(key: string): T | undefined
   set<T>(key: string, value: any): T
-  remove(key: string): void
+  delete(key: string): void
   clear(): void
 }
 
@@ -39,7 +39,7 @@ class persistenceStore implements CacheStore {
   }
 
   // 删除缓存
-  remove(key: string): void {
+  delete(key: string): void {
     localStorage.removeItem(key)
   }
 

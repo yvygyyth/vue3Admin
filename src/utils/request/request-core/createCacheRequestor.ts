@@ -1,3 +1,4 @@
+import { useRequestor } from './index'
 // 定义 CacheRequestor 类型
 type CacheRequestor = {
   key: string
@@ -14,7 +15,8 @@ export const createCacheRequestor = ({
 }): CacheRequestor => {
   // 内存缓存（可以替换为 LocalStorage 或其他方式）
   const cache: Record<string, any> = {}
-
+  const requestor = useRequestor()
+  
   return {
     key,
     persist

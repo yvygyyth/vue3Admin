@@ -1,10 +1,15 @@
-import type { XRequestor } from './type'
-
-let req: XRequestor
-export const inject = (requestor: XRequestor) => {
+import type { Requestor } from './type'
+import { createCacheRequestor } from './createCacheRequestor'
+let req: Requestor
+export const inject = (requestor: Requestor) => {
   req = requestor
 }
 
-export function useRequestor(): XRequestor {
+function useRequestor(): Requestor {
   return req
+}
+
+export {
+  useRequestor,
+  createCacheRequestor
 }

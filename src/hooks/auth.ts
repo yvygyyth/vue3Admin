@@ -14,7 +14,7 @@ export default function useAuth() {
       const res = await login(data)
       localStore.set(LS.token, res.data.token)
     } catch (err) {
-      localStore.remove(LS.token)
+      localStore.delete(LS.token)
       throw err
     }
   }
@@ -23,7 +23,7 @@ export default function useAuth() {
     const userStore = useUserStore()
     const afterLogout = () => {
       userStore.resetUserInfo()
-      localStore.remove(LS.token)
+      localStore.delete(LS.token)
       removeRouteListener()
     }
     try {

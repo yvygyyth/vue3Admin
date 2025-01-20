@@ -51,7 +51,7 @@ export interface Response<T = any> {
   count?: number
 }
 
-export interface XRequestor {
+export interface Requestor {
   get<T = any, R = Response<T>, D = any>(url: string, config?: RequestConfig<D>): Promise<R>
   post<T = any, R = Response<T>, D = any>(
     url: string,
@@ -64,4 +64,8 @@ export interface XRequestor {
     data?: D,
     config?: RequestConfig<D>
   ): Promise<R>
+}
+
+export interface RequiredRequestConfig<D = any> extends Omit<RequestConfig<D>, 'url'> {
+  url: string;
 }
