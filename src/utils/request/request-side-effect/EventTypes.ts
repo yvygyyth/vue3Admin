@@ -61,15 +61,10 @@ export enum EventTypes {
   REQUEST_PROGRESS = 'request:progress',
 
   /**
-   * 注册请求前的事件
-   * 通常用于判断请求是否需要发送，比如缓存
-   */
-  REQUEST_BEFORE = 'request:before',
-
-  /**
    * 注册请求后的事件
    * 通常用于判断请求是否需要发送，比如缓存
    */
+  REQUEST_AFTER = 'request:after'
 }
 
 /**
@@ -87,7 +82,7 @@ type DefaultEventPayloads = {
   [EventTypes.NOTIFICATION_WARNING]: { message: string }
   [EventTypes.NOTIFICATION_ERROR]: { message: string }
   [EventTypes.REQUEST_PROGRESS]: { loaded: number; total: number }
-  [EventTypes.REQUEST_BEFORE]: RequiredRequestConfig
+  // [EventTypes.REQUEST_AFTER]: [RequiredRequestConfig]
 }
 
 /**

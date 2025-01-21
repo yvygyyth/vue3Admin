@@ -2,6 +2,9 @@ import persistenceStore from '@/utils/localStorage'
 import { LS } from '@/utils/localStorage/http'
 import type { AxiosResponse, InternalAxiosRequestConfig, AxiosInstance } from 'axios'
 import { errorHandling } from './error'
+import { eventBus, EventTypes } from '../../request-side-effect'
+
+const eventEmitter = new eventBus()
 // InternalAxiosRequestConfig
 export interface HttpResponse<T = unknown> extends AxiosResponse {
   msg: string
@@ -37,6 +40,7 @@ export const addInterceptors = (axiosInstance: AxiosInstance) => {
         return Promise.reject(new Error(responseData.msg || 'Error'))
       }
       console.log('===>response', response)
+
       return responseData
     },
     (error) => {
