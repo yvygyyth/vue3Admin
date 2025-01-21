@@ -1,9 +1,12 @@
-import request from '@/utils/request'
+import request, { createCacheRequestor } from '@/utils/request'
 
 import type { FormData, QueryResult, QueryParams, ListRes } from './type'
 export type { FormData, QueryResult, QueryParams, ListRes }
+
+const CacheRequest = createCacheRequestor()
+
 export function requestList(data: QueryParams) {
-  return request.post('/user/bill/list', data)
+  return CacheRequest.post('/user/bill/list', data)
 }
 
 // 保存
