@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import '@/utils/request/request-bus'
 import ArcoVue from '@arco-design/web-vue'
 // attention import css sort
 // arco component css has normalize css so doesn't need in this project
@@ -10,8 +11,6 @@ import router from './router'
 import i18n from './locale'
 import ArcoVueIcon from '@arco-design/web-vue/es/icon'
 import store from '@/store/index'
-
-import '@/utils/request/request-imp/request-axios-imp'
 
 const app = createApp(App)
 
