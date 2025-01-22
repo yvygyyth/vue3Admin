@@ -2,14 +2,18 @@ import { simpleHash } from '@/utils'
 
 type Key = string | number | symbol
 
+type Params = unknown[] | void
+
 // 事件类型，事件类型为对象结构
-export type EventType = Record<Key, unknown>
+export type EventType = Record<Key, Params>
 
 // 事件处理器
-export type Handler<T = unknown> = (event?: T) => void
+export type Handler<T extends Params> = T extends [...infer Args]
+  ? (...args: Args) => any
+  : () => any
 
 // 事件处理器列表
-export type EventHandlerList<T = unknown> = Map<Key, Handler<T>>
+export type EventHandlerList<T extends Params> = Map<Key, Handler<T>>
 
 // 事件处理器映射的Map结构
 // Map[事件名, 事件处理器列表]
@@ -38,10 +42,16 @@ class HashEventBus<Events extends EventType> {
   }
 
   // 重写触发事件的 emit 方法
-  emit<K extends keyof Events>(eventName: K, args?: Events[keyof Events]) {
+  emit<K extends keyof Events>(eventName: K): void
+  emit<K extends keyof Events>(
+    eventName: K,
+    ...args: Events[K] extends void ? [] : [Events[K]]
+  ): void
+  emit<K extends keyof Events>(eventName: K, ...rawArgs: any[]) {
     const handlersMap = this.all.get(eventName)
     if (handlersMap) {
-      handlersMap.forEach((handler) => handler(args))
+      const args = rawArgs.length > 0 ? rawArgs : []
+      handlersMap.forEach((handler) => handler(...args))
     }
   }
 
@@ -66,15 +76,15 @@ class HashEventBus<Events extends EventType> {
 
   // 重写只执行一次的事件处理器 once 方法
   once<K extends keyof Events>(eventName: K, handler: Handler<Events[K]>, key?: Key) {
-    const wrappedCallback = (args?: Events[K]) => {
+    const wrappedCallback = (args?: Events[K] extends void ? [] : Events[K]) => {
       handler(args)
       if (key !== undefined) {
         this.off(eventName, key)
       } else {
-        this.off(eventName, wrappedCallback)
+        this.off(eventName, wrappedCallback as Handler<Events[K]>)
       }
     }
-    this.on(eventName, wrappedCallback, key)
+    this.on(eventName, wrappedCallback as Handler<Events[K]>, key)
   }
 
   // 获取函数的哈希值
