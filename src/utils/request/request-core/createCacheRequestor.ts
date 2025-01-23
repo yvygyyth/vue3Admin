@@ -17,6 +17,22 @@ const defaultCacheConfig: Required<CacheRequestor> = {
   duration: -1
 }
 
+// 包装数据
+export const wrapWithExpiry = <T>(data: T, duration: number) => {
+  return {
+    value: data,
+    expiresAt: duration > 0 ? Date.now() + duration : -1 // -1 代表永不过期
+  }
+}
+
+// 是否过期
+export const isExpired = (cachedData: { expiresAt: number }) => {
+  if (cachedData.expiresAt === -1) {
+    return false // 永不过期
+  }
+  return Date.now() > cachedData.expiresAt
+}
+
 // 定义 createCacheRequestor 函数，提供默认参数
 export const createCacheRequestor = (config: Partial<CacheRequestor> = {}): Requestor => {
   const mergedConfig = { ...defaultCacheConfig, ...config }
@@ -29,14 +45,18 @@ export const createCacheRequestor = (config: Partial<CacheRequestor> = {}): Requ
         const normalization = normalizationMethod(prop, ...args)
         // 生成缓存 key
         const cacheKey = mergedConfig.key(normalization)
-        if (store.has(cacheKey)) {
-          return store.get(cacheKey)
+
+        const cachedData = store.get(cacheKey)
+        if (cachedData && !isExpired(cachedData)) {
+          return cachedData.value
         } else {
-          return Reflect.apply(target[prop], target, args).then((response: Requestor[T]) => {
-            store.set(cacheKey, response)
-            console.log('===>cache', '成功', cacheKey, response)
-            return response
-          })
+          return Reflect.apply(target[prop], target, args).then(
+            (response: ReturnType<Requestor[T]>) => {
+              store.set(cacheKey, wrapWithExpiry(response, mergedConfig.duration))
+              console.log('===>cache', '成功', cacheKey, response)
+              return response
+            }
+          )
         }
       }
       return originalMethod
