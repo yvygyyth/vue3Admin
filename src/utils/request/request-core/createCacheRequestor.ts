@@ -1,19 +1,18 @@
 import { useRequestor } from './index'
-import type { Requestor } from './type'
+import type { Requestor, RequiredRequestConfig } from './type'
 import { useCacheStore } from '@/hooks/useCacheStore'
 import { normalizationMethod, denormalizationMethod } from './interceptors'
-type RequestArgs = Parameters<Requestor[keyof Requestor]>
 
 // 定义 CacheRequestor 类型
 type CacheRequestor = {
-  key: (config: RequestArgs) => string
+  key: (config: RequiredRequestConfig) => string
   persist: boolean
   duration: number
 }
 
 // 默认配置
 const defaultCacheConfig: Required<CacheRequestor> = {
-  key: (args) => args[0],
+  key: (config) => config.url,
   persist: false,
   duration: -1
 }
@@ -27,12 +26,12 @@ export const createCacheRequestor = (config: Partial<CacheRequestor> = {}): Requ
     get<T extends keyof Requestor>(target: Requestor, prop: T) {
       type MethodParams = Parameters<Requestor[T]>
       const originalMethod = (...args: MethodParams) => {
+        const normalization = normalizationMethod(prop, ...args)
         // 生成缓存 key
-        const cacheKey = mergedConfig.key(args)
+        const cacheKey = mergedConfig.key(normalization)
         if (store.has(cacheKey)) {
           return store.get(cacheKey)
         } else {
-          const normalization = normalizationMethod(prop, ...args)
           normalization.onSuccess = (response) => {
             store.set(cacheKey, response)
             console.log('===>cache', '成功', cacheKey, response)
