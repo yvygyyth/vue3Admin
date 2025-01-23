@@ -25,7 +25,6 @@ export default class CacheData<T, R> {
     return { get, set }
   })
 
-  private promise: Promise<void> | null = null
   private fetchFunction: FetchFunction<T, R>
   private params: R
   private transform: (data: T) => any
@@ -48,19 +47,12 @@ export default class CacheData<T, R> {
   }
 
   private async update(): Promise<void> {
-    if (this.promise) return
-    this.promise = new Promise(async (resolve, reject) => {
-      try {
-        const res = await this.fetchFunction(this.params)
-        this.cacheData.value = this.transform(res)
-        resolve()
-      } catch (error) {
-        this.cacheData.value = []
-        reject(error)
-      } finally {
-        this.promise = null
-      }
-    })
+    try {
+      const res = await this.fetchFunction(this.params)
+      this.cacheData.value = this.transform(res)
+    } catch (error) {
+      this.cacheData.value = []
+    }
   }
   get value() {
     return this.cacheData.value
