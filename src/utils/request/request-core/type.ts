@@ -54,10 +54,6 @@ export interface RequestConfig<D = any> {
   // 如果 `validateStatus` 返回 `true` (或者设置为 `null` 或 `undefined`)，
   // 则promise 将会 resolved，否则是 rejected。
   validateStatus?: ((status: number) => boolean) | null
-  // 成功回调
-  onSuccess?: (response: Response) => void
-  // 失败回调
-  onError?: (error: any) => void
 }
 
 export interface RequiredRequestConfig<D = any> extends RequestConfig<D> {

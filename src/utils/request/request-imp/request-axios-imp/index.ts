@@ -12,31 +12,9 @@ const instance = axios.create({
 
 addInterceptors(instance)
 
-const requestHandler = async <T = any, R = Response<T>>(
-  method: keyof Requestor,
-  ...args: Parameters<Requestor[keyof Requestor]>
-): Promise<R> => {
-  const normalizationConfig = normalizationMethod(method, ...args)
-  const { onSuccess, onError, ...otherConfig } = normalizationConfig || {}
-  try {
-    const res = (await (method === 'get' || method === 'delete'
-      ? instance[method](otherConfig.url, otherConfig as AxiosRequestConfig)
-      : instance[method](
-          otherConfig.url,
-          otherConfig.data,
-          otherConfig as AxiosRequestConfig
-        ))) as R
-    onSuccess?.(res as Response<T>)
-    return res
-  } catch (err) {
-    onError?.(err)
-    throw err
-  }
-}
-
 export const requestor: Requestor = {
-  get: (url, config) => requestHandler('get', url, config),
-  post: (url, data, config) => requestHandler('post', url, data, config),
-  put: (url, data, config) => requestHandler('put', url, data, config),
-  delete: (url, config) => requestHandler('delete', url, config)
+  get: (url, config) => instance.get(url, config as AxiosRequestConfig),
+  post: (url, data, config) => instance.post(url, data, config as AxiosRequestConfig),
+  delete: (url, config) => instance.delete(url, config as AxiosRequestConfig),
+  put: (url, data, config) => instance.put(url, data, config as AxiosRequestConfig)
 }

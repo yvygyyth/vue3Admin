@@ -32,11 +32,11 @@ export const createCacheRequestor = (config: Partial<CacheRequestor> = {}): Requ
         if (store.has(cacheKey)) {
           return store.get(cacheKey)
         } else {
-          normalization.onSuccess = (response) => {
+          return Reflect.apply(target[prop], target, args).then((response: Requestor[T]) => {
             store.set(cacheKey, response)
             console.log('===>cache', '成功', cacheKey, response)
-          }
-          return Reflect.apply(target[prop], target, denormalizationMethod(normalization))
+            return response
+          })
         }
       }
       return originalMethod
