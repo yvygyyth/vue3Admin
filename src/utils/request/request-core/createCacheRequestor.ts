@@ -1,8 +1,7 @@
 import { useRequestor } from './index'
-import type { RequiredRequestConfig, Requestor } from './type'
+import type { Requestor } from './type'
 import { useCacheStore } from '@/hooks/useCacheStore'
-import { eventBus, EventTypes } from '../request-side-effect'
-
+import { normalizationMethod, denormalizationMethod } from './interceptors'
 type RequestArgs = Parameters<Requestor[keyof Requestor]>
 
 // 定义 CacheRequestor 类型
@@ -19,9 +18,7 @@ const defaultCacheConfig: Required<CacheRequestor> = {
   duration: -1
 }
 
-const eventEmitter = new eventBus()
 // 定义 createCacheRequestor 函数，提供默认参数
-
 export const createCacheRequestor = (config: Partial<CacheRequestor> = {}): Requestor => {
   const mergedConfig = { ...defaultCacheConfig, ...config }
   const store = useCacheStore(mergedConfig.persist)
@@ -32,17 +29,20 @@ export const createCacheRequestor = (config: Partial<CacheRequestor> = {}): Requ
       const originalMethod = (...args: MethodParams) => {
         // 生成缓存 key
         const cacheKey = mergedConfig.key(args)
-
         if (store.has(cacheKey)) {
           return store.get(cacheKey)
         } else {
-          return Reflect.apply(target[prop], target, args)
+          const normalization = normalizationMethod(prop, ...args)
+          normalization.onSuccess = (response) => {
+            store.set(cacheKey, response)
+            console.log('===>cache', '成功', cacheKey, response)
+          }
+          return Reflect.apply(target[prop], target, denormalizationMethod(normalization))
         }
       }
       return originalMethod
     }
   }
   const requestor = new Proxy(useRequestor(), requestorHandle)
-
   return requestor
 }

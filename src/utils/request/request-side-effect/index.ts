@@ -5,7 +5,7 @@ import { Message, Modal } from '@arco-design/web-vue'
 import type { EventPayloads } from './EventTypes'
 
 const eventBus = singleton<typeof EventBus<EventPayloads>>(EventBus)
-
+// const eventBus = singleton(EventBus)
 const sideEffectInit = () => {
   const eventEmitter = new eventBus()
   eventEmitter.on(EventTypes.REQUEST_ERROR, () => Message.error('请求错误'))

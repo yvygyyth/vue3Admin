@@ -1,7 +1,7 @@
 import axios from 'axios'
-import type { AxiosRequestConfig } from 'axios'
-import type { Requestor } from '../../request-core/type'
-import { requestorHandle } from '../../request-core/interceptors'
+import type { AxiosRequestConfig, AxiosResponse } from 'axios'
+import type { Requestor, Response } from '../../request-core/type'
+import { normalizationMethod } from '../../request-core/interceptors'
 import { addInterceptors } from './interceptors'
 
 const instance = axios.create({
@@ -12,15 +12,31 @@ const instance = axios.create({
 
 addInterceptors(instance)
 
-if (import.meta.env.VITE_API_BASE_URL) {
-  instance.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
+const requestHandler = async <T = any, R = Response<T>>(
+  method: keyof Requestor,
+  ...args: Parameters<Requestor[keyof Requestor]>
+): Promise<R> => {
+  const normalizationConfig = normalizationMethod(method, ...args)
+  const { onSuccess, onError, ...otherConfig } = normalizationConfig || {}
+  try {
+    const res = (await (method === 'get' || method === 'delete'
+      ? instance[method](otherConfig.url, otherConfig as AxiosRequestConfig)
+      : instance[method](
+          otherConfig.url,
+          otherConfig.data,
+          otherConfig as AxiosRequestConfig
+        ))) as R
+    onSuccess?.(res as Response<T>)
+    return res
+  } catch (err) {
+    onError?.(err)
+    throw err
+  }
 }
 
-export const requestorOriginal: Requestor = {
-  get: (url, config) => instance.get(url, config as AxiosRequestConfig),
-  post: (url, data, config) => instance.post(url, data, config as AxiosRequestConfig),
-  delete: (url, config) => instance.delete(url, config as AxiosRequestConfig),
-  put: (url, data, config) => instance.put(url, data, config as AxiosRequestConfig)
+export const requestor: Requestor = {
+  get: (url, config) => requestHandler('get', url, config),
+  post: (url, data, config) => requestHandler('post', url, data, config),
+  put: (url, data, config) => requestHandler('put', url, data, config),
+  delete: (url, config) => requestHandler('delete', url, config)
 }
-
-export const requestor = new Proxy(requestorOriginal, requestorHandle)

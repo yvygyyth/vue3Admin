@@ -73,16 +73,16 @@ export enum EventTypes {
  * 如果某个事件没有特定的参数需求，可以将其类型设置为 void。
  */
 type DefaultEventPayloads = {
-  [EventTypes.REQUEST_ERROR]: { error: Error; statusCode?: number }
+  [EventTypes.REQUEST_ERROR]: void
   [EventTypes.AUTH_UNAUTHORIZED]: void
   [EventTypes.AUTH_FORBIDDEN]: void
-  [EventTypes.RESPONSE_404]: { url: string }
-  [EventTypes.RESPONSE_500]: { message: string }
-  [EventTypes.NOTIFICATION_INFO]: { message: string }
-  [EventTypes.NOTIFICATION_WARNING]: { message: string }
-  [EventTypes.NOTIFICATION_ERROR]: { message: string }
-  [EventTypes.REQUEST_PROGRESS]: { loaded: number; total: number }
-  // [EventTypes.REQUEST_AFTER]: [RequiredRequestConfig]
+  [EventTypes.RESPONSE_404]: [{ url: string }]
+  [EventTypes.RESPONSE_500]: [{ message: string }]
+  [EventTypes.NOTIFICATION_INFO]: [{ message: string }]
+  [EventTypes.NOTIFICATION_WARNING]: [{ message: string }]
+  [EventTypes.NOTIFICATION_ERROR]: [{ message: string }]
+  [EventTypes.REQUEST_PROGRESS]: [{ loaded: number; total: number }]
+  [EventTypes.REQUEST_AFTER]: [cache: string, data: unknown]
 }
 
 /**

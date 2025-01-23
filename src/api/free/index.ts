@@ -1,6 +1,8 @@
 import axios from 'axios'
 import type { QueryParams } from './type'
-import request from '@/utils/request'
+import request, { createCacheRequestor } from '@/utils/request'
+
+const CacheRequest = createCacheRequestor()
 // 渠道商列表
 export function agentList(data: QueryParams) {
   return request.post('/free/agent/list', data)
@@ -18,5 +20,5 @@ export function payChattList(data: QueryParams) {
 
 // 收支类型列表
 export function costTypeList(data: QueryParams) {
-  return request.post('/free/bill/type/list', data)
+  return CacheRequest.post('/free/bill/type/list', data)
 }
