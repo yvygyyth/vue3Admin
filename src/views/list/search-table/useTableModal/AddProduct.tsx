@@ -1,10 +1,11 @@
-import { Message } from '@arco-design/web-vue'
 import { ref } from 'vue'
 import ModalForm from './ModalForm'
-import { type FormData } from '../tableStore'
+import { type FormData, TableEventBus } from '../tableStore'
 import { validateForm } from './ModalForm/rules'
-import { requestSave } from '../tableStore'
+import { requestCallBack } from './utils'
 export const AddProduct = () => {
+  const events = new TableEventBus()
+
   const modalFormRef = ref()
 
   const formData = ref<FormData>({
@@ -20,8 +21,7 @@ export const AddProduct = () => {
     content: () => <ModalForm ref={modalFormRef} fromProps={formData.value} />,
     onBeforeOk: () =>
       validateForm(modalFormRef.value.submit, async () => {
-        await requestSave(formData.value)
-        Message.success('添加成功')
+        await requestCallBack('添加', formData)
       }),
     onOk: () => {
       console.log('点击了确定')

@@ -49,7 +49,7 @@ export default defineComponent({
     }
 
     events.on(EBE.fetchData, fetchData)
-    events.emit(EBE.fetchData, fetchData)
+    events.emit(EBE.fetchData)
 
     // =============== DIVIDER ==================
     // table columns render logic
@@ -57,9 +57,6 @@ export default defineComponent({
     const { searchForm, formAttrs } = useTableSearchForm()
     const { TableActionButtons, TableSettings } = useTableActionArea()
 
-    onUnmounted(() => {
-      events.clear()
-    })
     return () => (
       <div>
         <Card class="general-card " title={t('menu.list.searchTable')}>
