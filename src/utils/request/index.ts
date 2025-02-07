@@ -1,11 +1,4 @@
-
-import {
-    useRequestor,
-    createCacheRequestor
-}from './request-core'
+import { useRequestor, createCacheRequestor, createIdempotencyRequestor } from './request-core'
 
 export default useRequestor()
-export{
-    useRequestor,
-    createCacheRequestor
-}
+export { useRequestor, createCacheRequestor, createIdempotencyRequestor }

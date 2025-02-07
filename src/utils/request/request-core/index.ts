@@ -1,5 +1,6 @@
 import type { Requestor } from './type'
 import { createCacheRequestor } from './createCacheRequestor'
+import { createIdempotencyRequestor } from './createIdempotencyRequestor'
 let req: Requestor
 export const inject = (requestor: Requestor) => {
   req = requestor
@@ -9,7 +10,4 @@ function useRequestor(): Requestor {
   return req
 }
 
-export {
-  useRequestor,
-  createCacheRequestor
-}
+export { useRequestor, createCacheRequestor, createIdempotencyRequestor }
