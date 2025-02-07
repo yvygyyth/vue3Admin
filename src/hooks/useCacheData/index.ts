@@ -11,7 +11,7 @@ export const cacheData = (key: keyof typeof cacheJson) => {
   return cacheManage.get(key)
 }
 
-export const clearCache = (key: string) => {
+export const clearCache = (key: keyof typeof cacheJson) => {
   if (cacheManage.has(key)) {
     const CacheData = cacheManage.get(key)
     CacheData.cacheData.value = null

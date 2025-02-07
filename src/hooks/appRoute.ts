@@ -14,7 +14,9 @@ import { computed } from 'vue'
 import type { RouteRecordName, RouteRecordRaw } from 'vue-router'
 import usePermission from './permission'
 
-const routeIconMap: Record<RouteRecordName, typeof IconDashboard | undefined> = {
+type RouteName = Exclude<RouteRecordName, undefined>
+
+const routeIconMap: Record<RouteName, typeof IconDashboard | undefined> = {
   [ViewNames.dashboard]: IconDashboard,
   [ViewNames.profile]: IconFile,
   [ViewNames.exception]: IconExclamationCircle,
@@ -122,7 +124,7 @@ export default function useAppRoute() {
         return null
       }
     }
-    const _map: Record<RouteRecordName, MenuData | undefined> = {}
+    const _map: Record<RouteName, MenuData | undefined> = {}
     const nodeList = []
     for (let i = 0; i < appRoutes.length; i++) {
       const context: Context = {
