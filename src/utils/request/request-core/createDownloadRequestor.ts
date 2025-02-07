@@ -11,7 +11,7 @@ export const downloadFile = async (downloadUrl: string, fileName: string = 'file
     // const blob = response
     const link = document.createElement('a')
 
-    link.href = `/api${downloadUrl}`
+    link.href = import.meta.env.VITE_API_BASE_URL + downloadUrl
     // link.href = URL.createObjectURL(blob as Blob)
     link.download = `${fileName}.xlsx`
     link.click()
