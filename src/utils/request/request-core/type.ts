@@ -45,7 +45,7 @@ export interface RequestConfig<D = any> {
   // `auth` HTTP Basic Auth
   auth?: BasicCredentials
   // 响应体类型
-  responseType?: ResponseType
+  responseType?: XMLHttpRequestResponseType
   // 允许为上传处理进度事件
   onUploadProgress?: (progressEvent: ProgressEvent) => void
   // 允许为下载处理进度事件

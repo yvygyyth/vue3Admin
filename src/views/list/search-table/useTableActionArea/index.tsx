@@ -9,6 +9,8 @@ import type { TableSize } from '@/components/table-layout/type'
 import { useTableStore } from '../tableStore'
 import { storeToRefs } from 'pinia'
 import { useHandlers } from './useHandlers'
+import { ref } from 'vue'
+import { downloadNewOrderTemplate, downloadOfflineTemplate } from '@/api/download'
 export const useTableActionArea = () => {
   const { t } = useI18n()
   const { colList, tableSize } = storeToRefs(useTableStore())
@@ -49,6 +51,7 @@ export const useTableActionArea = () => {
           v-slots={{
             icon: () => <IconDownload />
           }}
+          onClick={downloadNewOrderTemplate}
         >
           {t('searchTable.operation.download')}
         </Button>

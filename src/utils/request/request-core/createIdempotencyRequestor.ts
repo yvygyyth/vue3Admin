@@ -7,7 +7,7 @@ const hashRequest = (config: RequiredRequestConfig) => {
   return hash
 }
 
-export const createIdempotencyRequestor = (genKey: (config: RequiredRequestConfig) => string) => {
+export const createIdempotencyRequestor = (genKey?: (config: RequiredRequestConfig) => string) => {
   return createCacheRequestor({
     key: (config) => (genKey ? genKey(config) : hashRequest(config)),
     persist: false

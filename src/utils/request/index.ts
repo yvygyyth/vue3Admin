@@ -1,4 +1,9 @@
-import { useRequestor, createCacheRequestor, createIdempotencyRequestor } from './request-core'
+import {
+  useRequestor,
+  createCacheRequestor,
+  createIdempotencyRequestor,
+  downloadFile
+} from './request-core'
 
 export default useRequestor()
-export { useRequestor, createCacheRequestor, createIdempotencyRequestor }
+export { useRequestor, createCacheRequestor, createIdempotencyRequestor, downloadFile }
