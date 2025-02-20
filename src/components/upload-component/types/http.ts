@@ -1,39 +1,39 @@
 export enum STATUS {
-  FAIL = 'fail',
-  PAUSE = 'pause',
-  PENDING = 'pending',
-  SUCCESS = 'success',
-  UPLOADING = 'uploading'
+  PENDING = 'pending', //上传前，没点击开始上传
+  PAUSE = 'pause', //上传暂停
+  UPLOADING = 'uploading', //上传中
+  SUCCESS = 'success', //上传成功
+  FAIL = 'fail' //上传失败
 }
 
 export const uploadStatus = {
-  [STATUS.FAIL]: {
-    text: '上传失败',
-    color: 'red'
+  [STATUS.PENDING]: {
+    text: '等待中',
+    color: 'blue'
   },
   [STATUS.PAUSE]: {
     text: '已暂停',
     color: 'orange'
   },
-  [STATUS.PENDING]: {
-    text: '等待中',
+  [STATUS.UPLOADING]: {
+    text: '上传中',
     color: 'blue'
   },
   [STATUS.SUCCESS]: {
     text: '上传成功',
     color: 'green'
   },
-  [STATUS.UPLOADING]: {
-    text: '上传中',
-    color: 'blue'
+  [STATUS.FAIL]: {
+    text: '上传失败',
+    color: 'red'
   }
 }
 
 export enum TASK_STATUS {
-  FAIL = 'fail',
-  PENDING = 'pending',
-  WAITING = 'waiting',
-  COMPLETED = 'completed'
+  PENDING = 'pending', //等待中
+  UPLOADING = 'uploading',
+  SUCCESS = 'success',
+  FAIL = 'fail' //失败
 }
 
 export const progressDefault = {

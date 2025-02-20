@@ -62,7 +62,7 @@ export default defineComponent({
         <DragArea
           exts={props.exts}
           fileSize={props.maxSize}
-          onDrop={(event) => addFiles(...event)}
+          onDrop={(event: any) => addFiles(...event)}
         ></DragArea>
         <div class={[styles['operation']]}>
           <Button type="primary">

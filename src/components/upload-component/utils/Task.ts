@@ -75,17 +75,23 @@ export default class Task implements UploadTask {
     return Task._taskConcurrency.add(this.id, this.request)
   }
   cancel() {
-    if (this.status === TASK_STATUS.WAITING) {
+    if (this.status === TASK_STATUS.UPLOADING) {
       Task._taskConcurrency.remove(this.id)
       this.controller.abort()
+    } else if (this.status === TASK_STATUS.PENDING) {
+      Task._taskConcurrency.remove(this.id)
     }
   }
   pause() {
     this.cancel()
+    this.status = TASK_STATUS.PENDING
+    this.controller = new AbortController()
+    this.updateProgress.cancel()
     Object.assign(this.progress, progressDefault)
   }
 
   updateProgress = throttle((progressEvent: ProgressEvent) => {
+    this.status = TASK_STATUS.UPLOADING
     Object.assign(this.progress, progressEvent)
   }, this.responseInterval)
 }

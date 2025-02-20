@@ -44,8 +44,8 @@ export class ConcurrentPool {
     return task()
       .then(resolve)
       .catch((err) => {
-        console.log('err', err.code)
-        if (maxRetries > 0 && err.code !== 3) {
+        console.error(err)
+        if (maxRetries > 0 && err.code !== 'ERR_CANCELED') {
           this.retryTask(currentTask, maxRetries - 1)
         } else {
           return reject(err)
