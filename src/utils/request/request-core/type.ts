@@ -15,11 +15,11 @@ type BrowserProgressEvent = any
 
 export interface ProgressEvent {
   loaded: number
-  total?: number
-  progress?: number
+  total: number
+  progress: number
   bytes: number
-  rate?: number
-  estimated?: number
+  rate: number
+  estimated: number
   upload?: boolean
   download?: boolean
   event?: BrowserProgressEvent
@@ -54,6 +54,8 @@ export interface RequestConfig<D = any> {
   // 如果 `validateStatus` 返回 `true` (或者设置为 `null` 或 `undefined`)，
   // 则promise 将会 resolved，否则是 rejected。
   validateStatus?: ((status: number) => boolean) | null
+  // 取消请求控制器
+  signal?: AbortSignal
 }
 
 export interface RequiredRequestConfig<D = any> extends RequestConfig<D> {

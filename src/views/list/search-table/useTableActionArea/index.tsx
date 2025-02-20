@@ -14,7 +14,7 @@ import { downloadNewOrderTemplate, downloadOfflineTemplate } from '@/api/downloa
 export const useTableActionArea = () => {
   const { t } = useI18n()
   const { colList, tableSize } = storeToRefs(useTableStore())
-  const { addOk } = useHandlers()
+  const { addOk, uploadOk } = useHandlers()
 
   const TableActionButtons: PermissionRender[] = [
     {
@@ -39,6 +39,20 @@ export const useTableActionArea = () => {
             'upload-button': () => <Button>{t('searchTable.operation.import')}</Button>
           }}
         </Upload>
+      )
+    },
+    {
+      permission: '*',
+      render: () => (
+        <Button
+          v-slots={{
+            icon: () => <IconPlus />
+          }}
+          onClick={uploadOk}
+          type="primary"
+        >
+          {'上传'}
+        </Button>
       )
     }
   ]

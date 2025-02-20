@@ -34,7 +34,7 @@ export default defineComponent({
     const storageLoginInfo = ref(
       localStore.set(LS.loginFormKey, {
         rememberPassword: true,
-        mobile: '13000000000',
+        mobile: '13000000002',
         password: '123456'
       })
     )
