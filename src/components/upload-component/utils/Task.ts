@@ -9,47 +9,12 @@ import { createFormData } from './file'
 import { throttle, debounce } from 'lodash'
 
 export default class Task implements UploadTask {
-  id: string
-  private _progress: ProgressInfo = { ...progressDefault }
-  progress: ProgressInfo
-  retries: number
-  controller: AbortController
-  status: TASK_STATUS = TASK_STATUS.PENDING
-  responseInterval: number = 1000
-
-  private debouncedOnProgressChange: () => void
-
-  // 静态标志位
+  // 静态配置与线程池
   private static _initialized = false
-  // 静态配置存储
   private static _globalConfig: ReturnType<typeof useConfig>
-  // 静态线程池
   private static _taskConcurrency: ConcurrentPool
-  constructor(
-    public metadata: UploadChunk,
-    onProgressChange: OnProgressChange
-  ) {
-    Task.ensureConfig()
-    this.id = `t_${Date.now()}`
-    this.retries = Task._globalConfig.concurrency
-    this.controller = new AbortController()
-    this.metadata = metadata
 
-    this.debouncedOnProgressChange = debounce(() => {
-      onProgressChange(this.id, this._progress)
-    }, 100)
-
-    this.progress = new Proxy(this._progress, {
-      get: (target, prop) => {
-        return Reflect.get(target, prop)
-      },
-      set: (target, prop, val) => {
-        this.debouncedOnProgressChange()
-        return Reflect.set(target, prop, val)
-      }
-    })
-  }
-
+  // 静态方法：确保全局配置只初始化一次
   private static ensureConfig() {
     if (!this._initialized) {
       this._globalConfig = useConfig()
@@ -58,6 +23,40 @@ export default class Task implements UploadTask {
     }
     return this._globalConfig!
   }
+
+  // 实例属性
+  id: string = `t_${Date.now()}`
+  retries: number
+  controller: AbortController = new AbortController()
+  status: TASK_STATUS = TASK_STATUS.PENDING
+  private responseInterval: number = 1000
+  // 内部进度数据与代理，更新时自动调用防抖回调
+  private _progress: ProgressInfo = { ...progressDefault }
+  progress: ProgressInfo = new Proxy(this._progress, {
+    get: (target, prop) => Reflect.get(target, prop),
+    set: (target, prop, val) => {
+      this.debouncedOnProgressChange()
+      return Reflect.set(target, prop, val)
+    }
+  })
+
+  // 防抖回调，防止 onProgressChange 过于频繁
+  private debouncedOnProgressChange: () => void
+
+  // 构造函数
+  constructor(
+    public metadata: UploadChunk,
+    onProgressChange: OnProgressChange
+  ) {
+    Task.ensureConfig()
+    this.retries = Task._globalConfig.concurrency
+    this.metadata = metadata
+    this.debouncedOnProgressChange = debounce(() => {
+      onProgressChange(this.id, this._progress)
+    }, 100)
+  }
+
+  // 发送请求的方法
   private request = () => {
     return request.post(
       Task._globalConfig.uploadApi,
@@ -71,9 +70,13 @@ export default class Task implements UploadTask {
       }
     )
   }
+
+  // 执行任务，添加到并发控制池中
   execute() {
     return Task._taskConcurrency.add(this.id, this.request)
   }
+
+  // 取消任务，根据不同状态进行相应处理
   cancel() {
     if (this.status === TASK_STATUS.UPLOADING) {
       Task._taskConcurrency.remove(this.id)
@@ -82,6 +85,8 @@ export default class Task implements UploadTask {
       Task._taskConcurrency.remove(this.id)
     }
   }
+
+  // 暂停任务：取消当前任务、重置状态和控制器，并取消 pending 的 throttle 调用
   pause() {
     this.cancel()
     this.status = TASK_STATUS.PENDING
@@ -90,6 +95,7 @@ export default class Task implements UploadTask {
     Object.assign(this.progress, progressDefault)
   }
 
+  // 节流更新进度，防止过于频繁更新
   updateProgress = throttle((progressEvent: ProgressEvent) => {
     this.status = TASK_STATUS.UPLOADING
     Object.assign(this.progress, progressEvent)

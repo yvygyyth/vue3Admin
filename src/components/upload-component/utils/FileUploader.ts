@@ -18,11 +18,19 @@ class SimpleFileUploader implements Uploader {
   async start() {
     try {
       this._status = STATUS.UPLOADING
-      await this.uploadFile()
+      if (this.tasks.length) {
+        const [task] = this.tasks
+        await task.execute()
+      } else {
+        await this.uploadFile()
+      }
       this._status = STATUS.SUCCESS
-    } catch (e) {
-      console.error('开始上传', e)
-      this._status = STATUS.FAIL
+    } catch (e: any) {
+      if (e.code === 'ERR_CANCELED') {
+        this._status = STATUS.PAUSE
+      } else {
+        this._status = STATUS.FAIL
+      }
     }
   }
 
@@ -56,7 +64,6 @@ class SimpleFileUploader implements Uploader {
   }
 
   get progressInfo() {
-    console.log('进度更新get progressInfo', this._progressInfo)
     return this._progressInfo
   }
 
@@ -65,69 +72,59 @@ class SimpleFileUploader implements Uploader {
   }
 }
 
-// export class BigFileUploader implements Uploader {
-//     private _progressInfo = {...progressDefault};
-//     private _status = STATUS.PENDING;
-//     public tasks: UploadTask[] = [];
-//     constructor(
-//         public file: File
-//     ) {
+export class BigFileUploader implements Uploader {
+  private _progressInfo = reactive({ ...progressDefault })
+  private _status = STATUS.PENDING
+  public tasks: UploadTask[] = []
+  constructor(public file: File) {}
+  // 这里可以实现大文件的分片上传逻辑
+  async start() {}
+  createChunk(file, index, chunkSize) {
+    return new Promise((resolve, reject) => {
+      const start = index * chunkSize
+      const end = Math.min(start + chunkSize, file.size)
+      const blob = file.slice(start, end)
+      const fileRederInstance = new FileReader()
+      fileRederInstance.addEventListener('load', (e) => {
+        const fileBolb = e.target.result
+        const fileMD5 = md5(fileBolb)
+        resolve({
+          start,
+          end,
+          index,
+          hash: fileMD5,
+          file: blob
+        })
+      })
+      fileRederInstance.readAsBinaryString(blob)
+    })
+  }
+  async cutFile(callBack) {
+    const chunkCount = this._task.totalTasks
+    for (let i = 0; i < chunkCount; i++) {
+      try {
+        const chunk = await this.createChunk(this.file, i, this.chunkSize)
+        callBack(createFormData(chunk), i)
+      } catch (error) {
+        console.error('Error creating chunk:', error)
+      }
+    }
+  }
+  private updateProgress = (id: string, progressInfo: ProgressInfo) => {}
+  pause() {
+    // 暂停上传实现
+  }
 
-//     }
-//     // 这里可以实现大文件的分片上传逻辑
-//     async start() {
+  cancel() {}
 
-//     }
-//     createChunk(file, index, chunkSize){
-//         return new Promise((resolve, reject)=>{
-//             const start = index * chunkSize;
-//             const end = Math.min(start + chunkSize, file.size);
-//             const blob = file.slice(start, end);
-//             const fileRederInstance = new FileReader();
-//             fileRederInstance.addEventListener('load', (e) => {
-//                 const fileBolb = e.target.result;
-//                 const fileMD5 = md5(fileBolb);
-//                 resolve({
-//                     start,
-//                     end,
-//                     index,
-//                     hash:fileMD5,
-//                     file:blob,
-//                 })
-//             });
-//             fileRederInstance.readAsBinaryString(blob);
-//         })
-//     }
-//     async cutFile(callBack){
-//         const chunkCount = this._task.totalTasks;
-//         for (let i = 0; i < chunkCount; i++) {
-//             try {
-//                 const chunk = await this.createChunk(this.file, i, this.chunkSize);
-//                 callBack(createFormData(chunk),i);
-//             } catch (error) {
-//                 console.error("Error creating chunk:", error);
-//             }
-//         }
-//     }
-//     private updateProgress = (id:string, progressInfo:ProgressInfo) => {
+  get progressInfo() {
+    return this._progressInfo
+  }
 
-//     }
-//     pause() {
-//         // 暂停上传实现
-//     }
-
-//     cancel(){
-
-//     }
-
-//     get progressInfo() {
-//         return this._progressInfo;
-//     }
-
-//     get status() {
-//         return this._status;
-//     }
-// }
+  get status() {
+    return this._status
+  }
+}
 
 export function createFileUploader(file: File) {
   const config = useConfig()

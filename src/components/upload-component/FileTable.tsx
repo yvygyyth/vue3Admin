@@ -52,10 +52,18 @@ export default defineComponent({
         render: ({ record }: { record: TableData }) => {
           return (
             <Space>
-              <Button type="primary" onClick={() => emit('start', record)}>
+              <Button
+                type="primary"
+                onClick={() => emit('start', record)}
+                disabled={record.status === STATUS.UPLOADING}
+              >
                 开始
               </Button>
-              <Button type="primary" onClick={() => emit('pause', record)}>
+              <Button
+                type="primary"
+                onClick={() => emit('pause', record)}
+                disabled={record.status !== STATUS.UPLOADING}
+              >
                 暂停
               </Button>
               <Button type="primary" onClick={() => emit('delete', record)}>
