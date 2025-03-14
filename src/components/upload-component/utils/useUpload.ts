@@ -1,8 +1,8 @@
 import { computed, ref } from 'vue'
 
-import { STATUS } from '../types/http'
+import { STATUS } from './uploader/types/http'
 import { createFileUploader } from './FileUploader.js'
-import type { Uploader, FileExt } from '../types'
+import type { Uploader, FileExt } from './uploader/types'
 export function useUpload(initFiles: File[] = [], exts: FileExt[]) {
   const uploaders = ref<Uploader[]>([...initFiles.map(createFileUploader)])
 
@@ -12,7 +12,7 @@ export function useUpload(initFiles: File[] = [], exts: FileExt[]) {
   }
 
   const startUpload = (uploader: Uploader) => {
-    uploader.start()
+    uploader.start.call(uploader)
   }
 
   const pauseUpload = (uploader: Uploader) => {

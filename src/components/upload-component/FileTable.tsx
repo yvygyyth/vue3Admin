@@ -1,10 +1,10 @@
 import { defineComponent, computed, type PropType } from 'vue'
 import { extname, fileSize } from './utils/file'
-import type { Uploader, FileExt } from './types'
-import { uploadStatus } from './types/http'
+import type { Uploader, FileExt } from './utils/uploader/types'
+import { uploadStatus } from './utils/uploader/types/http'
 import { Table, Tag, Progress, Button, Space } from '@arco-design/web-vue'
 import type { TableColumnData, TableData } from '@arco-design/web-vue'
-import { STATUS } from './types/http'
+import { STATUS } from './utils/uploader/types/http'
 import styles from './style.module.scss'
 
 export default defineComponent({

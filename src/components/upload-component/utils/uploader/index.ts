@@ -1,4 +1,4 @@
-import type { UploadProps } from '../../../types'
+import type { UploadProps } from './types'
 
 let uploadConfig: UploadProps
 export const inject = (config: UploadProps) => {

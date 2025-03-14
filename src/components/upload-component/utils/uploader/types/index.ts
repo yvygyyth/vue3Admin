@@ -1,7 +1,7 @@
 import { readonly } from 'vue'
 import { STATUS, TASK_STATUS } from './http'
 import type { ProgressEvent } from '@/utils/request/request-core/type'
-import type { Ref } from 'vue'
+import type { Ref, ComputedRef } from 'vue'
 export type UploadStatus = STATUS
 
 export type ProgressInfo = Partial<ProgressEvent> & {
@@ -36,11 +36,11 @@ export interface UploadTask<T = any> {
   /** 唯一任务标识 */
   readonly id: string
   /** 任务进度 0-任务大小 */
-  progress: ProgressInfo
+  progressInfo: ProgressInfo
   /** 任务状态 */
   status: TASK_STATUS
   /** 剩余重试次数 */
-  retries: number
+  // retries: number
   /** 取消控制器 */
   controller: AbortController
   /** 执行任务 */
@@ -57,11 +57,21 @@ export interface UploadTask<T = any> {
 
 export type OnProgressChange = (id: string, progressEvent: ProgressInfo) => void
 
-export interface Uploader {
+export interface FileUploader {
   file: File
-  readonly progressInfo: ProgressInfo
-  readonly status: UploadStatus
-  readonly tasks: UploadTask[]
+
+  start: () => Promise<void>
+  pause: () => void
+  cancel: () => void
+}
+
+export interface Uploader {
+  progressInfo: ProgressInfo
+  status: UploadStatus
+  tasks: UploadTask[]
+
+  file: File
+
   start: () => Promise<void>
   pause: () => void
   cancel: () => void

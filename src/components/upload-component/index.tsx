@@ -4,9 +4,9 @@ import FileTable from './FileTable'
 import styles from './style.module.scss'
 import { Button } from '@arco-design/web-vue'
 import { useUpload } from './utils/useUpload'
-import type { FileExt } from './types/index'
+import type { FileExt } from './utils/uploader/types/index'
 import { extname, fileSize } from './utils/file.js'
-import { inject } from './utils/uploader/uploader-core/index'
+import { inject } from './utils/uploader/index'
 // 扩展 InputHTMLAttributes 类型
 declare module 'vue' {
   interface HTMLAttributes {
@@ -21,7 +21,7 @@ export default defineComponent({
     FileTable
   },
   props: {
-    maxSize: { type: Number, default: 1024 * 1024 * 5 },
+    maxSize: { type: Number, default: 1024 * 1024 * 1 },
     concurrency: { type: Number, default: 3 },
     exts: {
       type: Array as PropType<FileExt[]>,

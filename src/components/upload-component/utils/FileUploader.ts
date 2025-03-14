@@ -1,128 +1,78 @@
-import { uploadFile, mergeFiles } from '@/api/upload'
-import { createFormData } from './file'
-import md5 from 'js-md5'
-import Task from './Task'
-import { extname } from './file'
-import type { Uploader, UploadTask, UploadProps, ProgressInfo } from '../types/index'
-import { STATUS, progressDefault } from '../types/http'
-import { useConfig } from './uploader/uploader-core/index'
-import { ref, reactive, markRaw, type Ref } from 'vue'
+import type { UploadTask, Uploader } from './uploader/types/index'
+import { TASK_STATUS, STATUS, progressDefault } from './uploader/types/http'
+import { useConfig } from './uploader/index'
+import { ref, computed, type Ref } from 'vue'
+import SimpleFileUploader from './uploader/simpleFileUploader'
+import BigFileUploader from './uploader/bigFileUploader'
+const useSimpleUploader = (file: File): Uploader => {
+  const status = STATUS.PENDING
+  const tasks = []
+  const fileUploader = new SimpleFileUploader()
 
-class SimpleFileUploader implements Uploader {
-  private _progressInfo = reactive({ ...progressDefault })
-  private _status = STATUS.PENDING
-  public tasks: UploadTask[] = []
-
-  constructor(public file: File) {}
-
-  async start() {
-    try {
-      this._status = STATUS.UPLOADING
-      if (this.tasks.length) {
-        const [task] = this.tasks
-        await task.execute()
-      } else {
-        await this.uploadFile()
-      }
-      this._status = STATUS.SUCCESS
-    } catch (e: any) {
-      if (e.code === 'ERR_CANCELED') {
-        this._status = STATUS.PAUSE
-      } else {
-        this._status = STATUS.FAIL
-      }
+  const progressInfo = computed(() => {
+    const [task] = tasks.value
+    if (task) {
+      return task.progressInfo
+    } else {
+      return progressDefault
     }
-  }
+  })
 
-  private async uploadFile() {
-    const task = new Task(
-      {
-        index: 0,
-        start: 0,
-        end: this.file.size,
-        uploadedSize: this.file.size,
-        chunk: this.file
-      },
-      this.updateProgress
-    )
-    this.tasks.push(task)
-    return await task.execute()
-  }
-  private updateProgress = (id: string, progressInfo: ProgressInfo) => {
-    Object.assign(this._progressInfo, progressInfo)
-    console.log('进度更新', this._progressInfo)
-  }
-  pause() {
-    const [task] = this.tasks
-    task.pause()
-  }
-
-  cancel() {
-    const [task] = this.tasks
-    task.cancel()
-    this.tasks = []
-  }
-
-  get progressInfo() {
-    return this._progressInfo
-  }
-
-  get status() {
-    return this._status
+  return {
+    status,
+    progressInfo,
+    tasks,
+    fileUploader
   }
 }
 
-export class BigFileUploader implements Uploader {
-  private _progressInfo = reactive({ ...progressDefault })
-  private _status = STATUS.PENDING
-  public tasks: UploadTask[] = []
-  constructor(public file: File) {}
-  // 这里可以实现大文件的分片上传逻辑
-  async start() {}
-  createChunk(file, index, chunkSize) {
-    return new Promise((resolve, reject) => {
-      const start = index * chunkSize
-      const end = Math.min(start + chunkSize, file.size)
-      const blob = file.slice(start, end)
-      const fileRederInstance = new FileReader()
-      fileRederInstance.addEventListener('load', (e) => {
-        const fileBolb = e.target.result
-        const fileMD5 = md5(fileBolb)
-        resolve({
-          start,
-          end,
-          index,
-          hash: fileMD5,
-          file: blob
-        })
-      })
-      fileRederInstance.readAsBinaryString(blob)
-    })
-  }
-  async cutFile(callBack) {
-    const chunkCount = this._task.totalTasks
-    for (let i = 0; i < chunkCount; i++) {
-      try {
-        const chunk = await this.createChunk(this.file, i, this.chunkSize)
-        callBack(createFormData(chunk), i)
-      } catch (error) {
-        console.error('Error creating chunk:', error)
-      }
+const useBigUploader = (file: File): Uploader => {
+  const status = ref(STATUS.PENDING)
+  const tasks = ref<UploadTask[]>([])
+
+  const uploader = new BigFileUploader(file, tasks, status)
+
+  const progressInfo = computed(() => {
+    const totalChunks = uploader.totalChunks
+
+    const initial = {
+      loaded: 0,
+      sumProgress: 0,
+      rate: 0,
+      totalSize: file.size
     }
-  }
-  private updateProgress = (id: string, progressInfo: ProgressInfo) => {}
-  pause() {
-    // 暂停上传实现
-  }
 
-  cancel() {}
+    const accumulated = tasks.value.reduce((acc, cur: UploadTask): typeof initial => {
+      const progress = cur.progressInfo
+      return {
+        loaded: acc.loaded + progress.loaded,
+        sumProgress: acc.sumProgress + progress.progress,
+        rate: acc.rate + progress.rate,
+        totalSize: acc.totalSize
+      }
+    }, initial)
 
-  get progressInfo() {
-    return this._progressInfo
-  }
+    // 计算全局进度（考虑总分片数）
+    const globalProgress = totalChunks > 0 ? accumulated.sumProgress / totalChunks : 0
 
-  get status() {
-    return this._status
+    // 计算剩余时间和整体速率
+    const remainingBytes = file.size - accumulated.loaded
+    const overallRate = accumulated.rate
+
+    return {
+      total: file.size,
+      loaded: accumulated.loaded,
+      progress: globalProgress,
+      rate: overallRate,
+      estimated: overallRate > 0 ? remainingBytes / overallRate : Infinity
+    }
+  })
+
+  return {
+    status,
+    progressInfo,
+    tasks,
+    uploader
   }
 }
 
