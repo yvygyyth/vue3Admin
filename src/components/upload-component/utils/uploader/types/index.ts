@@ -53,6 +53,8 @@ export interface UploadTask<T = any> {
   updateProgress: (progressEvent: ProgressEvent) => void
   /** 文件元数据 */
   metadata: UploadChunk
+  /** 当前任务promise */
+  promise: Promise<T>
 }
 
 export type OnProgressChange = (id: string, progressEvent: ProgressInfo) => void

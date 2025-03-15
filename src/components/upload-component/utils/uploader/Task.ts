@@ -7,8 +7,6 @@ import { useConfig } from './index'
 import request from '@/utils/request'
 import { createFormData } from '../file'
 import { throttle } from 'lodash'
-import { ref, type Ref } from 'vue'
-import { refDebounced } from '@vueuse/core'
 export const useTaskConfig = () => {
   const globalConfig = useConfig()
   const taskConcurrency = new pool(globalConfig?.maxSize ?? 1024 * 1024)
@@ -27,6 +25,7 @@ export default class Task implements UploadTask {
   // 内部进度数据与代理，更新时自动调用防抖回调
   // private _progressInfo: Ref<ProgressInfo> = ref({ ...progressDefault })
   // progressInfo: Readonly<Ref<ProgressInfo>> = refDebounced(this._progressInfo, 100)
+  promise: Promise<any> = Promise.resolve()
   progressInfo = { ...progressDefault }
   status = TASK_STATUS.PENDING
   // 构造函数
@@ -35,7 +34,7 @@ export default class Task implements UploadTask {
   }
 
   // 发送请求的方法
-  private request = () => {
+  private request() {
     return request.post(
       this.useTaskConfig.globalConfig.uploadApi,
       createFormData({
@@ -44,14 +43,15 @@ export default class Task implements UploadTask {
       }),
       {
         signal: this.controller.signal,
-        onUploadProgress: this.updateProgress
+        onUploadProgress: this.updateProgressThrottle.bind(this)
       }
     )
   }
 
   // 执行任务，添加到并发控制池中
   execute() {
-    return this.useTaskConfig.taskConcurrency.add(this.id, this.request)
+    this.promise = this.useTaskConfig.taskConcurrency.add(this.id, this.request.bind(this))
+    return this.promise
   }
 
   // 取消任务，根据不同状态进行相应处理
@@ -69,14 +69,14 @@ export default class Task implements UploadTask {
     this.cancel()
     this.status = TASK_STATUS.PENDING
     this.controller = new AbortController()
-    this.updateProgress.cancel()
+    this.updateProgressThrottle.cancel()
     this.progressInfo = { ...progressDefault }
   }
 
   // 节流更新进度，防止过于频繁更新
-  updateProgress = throttle((progressEvent: ProgressEvent) => {
-    console.log('updateProgress', progressEvent, this.status)
+  updateProgressThrottle = throttle(this.updateProgress, this.responseInterval)
+  updateProgress(progressEvent: ProgressEvent) {
     this.status = TASK_STATUS.UPLOADING
     this.progressInfo = progressEvent
-  }, this.responseInterval)
+  }
 }

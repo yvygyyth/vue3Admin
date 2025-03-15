@@ -1,12 +1,11 @@
 import Task from './Task'
 import type { Uploader, UploadTask, UploadChunk, UploadProps, ProgressInfo } from './types/index'
 import { TASK_STATUS, STATUS, progressDefault } from './types/http'
+import { reactive } from 'vue'
 export default class SimpleFileUploader implements Uploader {
   private _status = STATUS.PENDING
   public tasks: UploadTask[] = []
-
   constructor(public file: File) {}
-
   async start() {
     try {
       this._status = STATUS.UPLOADING
@@ -27,15 +26,17 @@ export default class SimpleFileUploader implements Uploader {
   }
 
   private async uploadFile() {
-    const task = new Task({
-      index: 0,
-      start: 0,
-      end: this.file.size,
-      uploadedSize: this.file.size,
-      chunk: this.file
-    })
+    const task = reactive(
+      new Task({
+        index: 0,
+        start: 0,
+        end: this.file.size,
+        uploadedSize: this.file.size,
+        chunk: this.file
+      })
+    )
     this.tasks.push(task)
-    return await task.execute()
+    await task.execute()
   }
   pause() {
     const [task] = this.tasks
@@ -50,15 +51,12 @@ export default class SimpleFileUploader implements Uploader {
 
   get progressInfo() {
     const [task] = this.tasks
-    console.log('更新')
-    if (task) {
-      return task.progressInfo
-    } else {
-      return {
-        ...progressDefault,
-        total: this.file.size
-      }
-    }
+    return task
+      ? task.progressInfo
+      : {
+          ...progressDefault,
+          total: this.file.size
+        }
   }
 
   get status() {
