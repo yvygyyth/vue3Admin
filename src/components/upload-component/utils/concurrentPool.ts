@@ -37,6 +37,7 @@ export class ConcurrentPool {
   // 删除
   remove(id: string) {
     this.tasks.remove(id)
+    console.log('remove', id, this.tasks.queue)
   }
   // 重试
   retryTask(currentTask: TaskItem, maxRetries: number) {
@@ -56,11 +57,22 @@ export class ConcurrentPool {
         this._run()
       })
   }
+  execute(currentTask: TaskItem) {
+    const { task, resolve, reject } = currentTask
+    return task()
+      .then(resolve)
+      .catch(reject)
+      .finally(() => {
+        this.runningCount--
+        this._run()
+      })
+  }
   _run() {
     while (this.runningCount < this.parallelCount && this.tasks.size > 0) {
+      console.log('runningCount', this.runningCount, this.parallelCount)
       const task = this.tasks.dequeue() as TaskItem
       this.runningCount++
-      this.retryTask(task, this.maxRetries)
+      this.execute(task)
     }
   }
 }

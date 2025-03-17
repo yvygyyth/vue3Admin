@@ -39,7 +39,6 @@ export default defineComponent({
       {
         title: '状态',
         render: ({ record }: { record: Uploader }) => {
-          console.log('record.progressInfo', record.progressInfo)
           if (record.status === 'uploading') {
             return <Progress percent={truncateToTwoDecimal(record.progressInfo.progress)} />
           }

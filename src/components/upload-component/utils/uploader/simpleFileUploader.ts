@@ -17,9 +17,7 @@ export default class SimpleFileUploader implements Uploader {
       }
       this._status = STATUS.SUCCESS
     } catch (e: any) {
-      if (e.code === 'ERR_CANCELED') {
-        this._status = STATUS.PAUSE
-      } else {
+      if (e.code !== 'ERR_CANCELED') {
         this._status = STATUS.FAIL
       }
     }
@@ -41,6 +39,7 @@ export default class SimpleFileUploader implements Uploader {
   pause() {
     const [task] = this.tasks
     task.pause()
+    this._status = STATUS.PAUSE
   }
 
   cancel() {

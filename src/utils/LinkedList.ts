@@ -78,4 +78,16 @@ export class TaskQueue<T> {
   get size(): number {
     return this.map.size
   }
+
+  get queue(): T[] {
+    const tasks: T[] = []
+    let current = this.head
+
+    while (current) {
+      tasks.push(current.data)
+      current = current.next
+    }
+
+    return tasks
+  }
 }

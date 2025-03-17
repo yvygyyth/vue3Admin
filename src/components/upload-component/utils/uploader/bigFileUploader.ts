@@ -1,15 +1,9 @@
-import md5 from 'js-md5'
 import Task from './Task'
-import type {
-  FileUploader,
-  UploadTask,
-  UploadChunk,
-  UploadProps,
-  ProgressInfo
-} from './types/index'
+import type { FileUploader, UploadTask, UploadChunk } from './types/index'
 import { TASK_STATUS, STATUS, progressDefault } from './types/http'
 import { useConfig } from './index'
-
+import { sliceFile } from './worker'
+import { reactive } from 'vue'
 export default class BigFileUploader implements FileUploader {
   private _status = STATUS.PENDING
   public tasks: UploadTask[] = []
@@ -23,95 +17,54 @@ export default class BigFileUploader implements FileUploader {
     try {
       this._status = STATUS.UPLOADING
       await this.uploadFile()
-      await this.mergeChunks()
+      this.mergeChunks()
       this._status = STATUS.SUCCESS
     } catch (e: any) {
-      if (e.code === 'ERR_CANCELED') {
-        this._status = STATUS.PAUSE
-      } else {
+      if (e.code !== 'ERR_CANCELED') {
         this._status = STATUS.FAIL
+        console.error(e)
       }
-      console.error(e)
     }
   }
 
   private async uploadFile() {
     this.uploadChunks()
-    this.cutFile()
-    const promises = this.tasks.map((task) => task.promise)
-    await Promise.all(promises)
+
+    await sliceFile(this.file, this.tasks.length, this.totalChunks, this.setTask.bind(this))
+    const taskPromises = this.tasks.map((task) => {
+      return task.promise
+    })
+    console.log('切片完成', taskPromises)
+    const result = await Promise.all(taskPromises)
+    console.log('大文件上传结果', result)
   }
 
-  private async uploadChunks() {
+  private uploadChunks() {
     for (const task of this.tasks) {
       if (task.status !== TASK_STATUS.SUCCESS) {
+        debugger
         task.execute()
       }
     }
   }
-  async pushTask(chunk: UploadChunk) {
+
+  setTask(chunk: UploadChunk, index: number) {
     const task = new Task(chunk)
     this.tasks.push(task)
   }
-  async cutFile() {
-    const config = useConfig()
-    for (let i = this.tasks.length; i < this.totalChunks; i++) {
-      try {
-        const chunk = await this.createChunk(this.file, i, config.maxSize)
-        this.pushTask(chunk)
-      } catch (error) {
-        console.error('Error creating chunk:', error)
-      }
-    }
-  }
+
   private mergeChunks() {
     console.log('执行合并分片')
   }
-  createChunk(file: File, index: number, chunkSize: number): Promise<UploadChunk> {
-    return new Promise((resolve, reject) => {
-      const start = index * chunkSize
-      const end = Math.min(start + chunkSize, file.size)
-      const blob = file.slice(start, end)
-
-      const config = useConfig()
-      if (config.hashApi) {
-        const fileRederInstance = new FileReader()
-
-        fileRederInstance.addEventListener('load', (e) => {
-          if (e.target?.result === null) {
-            reject(new Error('Failed to read file'))
-            return
-          }
-          const fileBolb = e.target?.result
-          const fileMD5 = md5(fileBolb)
-          resolve({
-            start,
-            end,
-            index,
-            hash: fileMD5,
-            chunk: blob,
-            uploadedSize: end - start
-          })
-        })
-        fileRederInstance.readAsBinaryString(blob)
-      } else {
-        resolve({
-          start,
-          end,
-          index,
-          chunk: blob,
-          uploadedSize: end - start
-        })
-      }
-    })
-  }
 
   pause() {
+    console.log('暂停大文件上传', this.tasks)
     this.tasks.forEach((task) => {
-      if (task.status !== TASK_STATUS.SUCCESS) {
+      if (task.status !== TASK_STATUS.SUCCESS && task.status !== TASK_STATUS.FAIL) {
         task.pause()
       }
     })
+    this._status = STATUS.PAUSE
   }
 
   cancel() {
