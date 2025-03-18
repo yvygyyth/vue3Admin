@@ -3,7 +3,7 @@ import type { FileUploader, UploadTask, UploadChunk } from './types/index'
 import { TASK_STATUS, STATUS, progressDefault } from './types/http'
 import { useConfig } from './index'
 import { sliceFile } from './worker'
-import { reactive } from 'vue'
+import { createChunk } from './createChunk'
 export default class BigFileUploader implements FileUploader {
   private _status = STATUS.PENDING
   public tasks: UploadTask[] = []
@@ -16,8 +16,9 @@ export default class BigFileUploader implements FileUploader {
   async start() {
     try {
       this._status = STATUS.UPLOADING
-      await this.uploadFile()
-      this.mergeChunks()
+      const result = await this.uploadFile()
+      this.mergeChunks(result)
+
       this._status = STATUS.SUCCESS
     } catch (e: any) {
       if (e.code !== 'ERR_CANCELED') {
@@ -26,35 +27,45 @@ export default class BigFileUploader implements FileUploader {
       }
     }
   }
-
+  private async preupload() {
+    const config = useConfig()
+    const chunk = await createChunk(this.file, 0, config.maxSize)
+    this.setTask(chunk, 0)
+  }
   private async uploadFile() {
-    this.uploadChunks()
-
+    if (this.tasks.length === 0) {
+      this.preupload()
+    } else {
+      this.uploadChunks()
+    }
     await sliceFile(this.file, this.tasks.length, this.totalChunks, this.setTask.bind(this))
+    console.log('切片完成', this.tasks)
     const taskPromises = this.tasks.map((task) => {
       return task.promise
     })
-    console.log('切片完成', taskPromises)
-    const result = await Promise.all(taskPromises)
-    console.log('大文件上传结果', result)
+    console.log('获取全部promise', taskPromises)
+    return Promise.all(taskPromises)
   }
 
   private uploadChunks() {
     for (const task of this.tasks) {
       if (task.status !== TASK_STATUS.SUCCESS) {
-        debugger
         task.execute()
       }
     }
   }
 
   setTask(chunk: UploadChunk, index: number) {
+    console.log('设置任务', chunk, index)
     const task = new Task(chunk)
     this.tasks.push(task)
+    if (this.status === STATUS.UPLOADING) {
+      task.execute()
+    }
   }
 
-  private mergeChunks() {
-    console.log('执行合并分片')
+  private mergeChunks(result: any[]) {
+    console.log('执行合并分片', result)
   }
 
   pause() {
@@ -77,27 +88,23 @@ export default class BigFileUploader implements FileUploader {
   }
 
   get progressInfo() {
-    const totalChunks = this.totalChunks
-
     const initial = {
       loaded: 0,
-      sumProgress: 0,
-      rate: 0,
-      totalSize: this.file.size
+      rate: 0
     }
 
     const accumulated = this.tasks.reduce((acc, cur: UploadTask): typeof initial => {
       const progress = cur.progressInfo
       return {
         loaded: acc.loaded + progress.loaded,
-        sumProgress: acc.sumProgress + progress.progress,
-        rate: acc.rate + progress.rate,
-        totalSize: acc.totalSize
+        rate: acc.rate + (isNaN(progress.rate) ? 0 : progress.rate)
       }
     }, initial)
 
+    console.log('计算进度', accumulated, this.file.size)
+
     // 计算全局进度（考虑总分片数）
-    const globalProgress = totalChunks > 0 ? accumulated.sumProgress / totalChunks : 0
+    const globalProgress = accumulated.loaded / this.file.size || 0
 
     // 计算剩余时间和整体速率
     const remainingBytes = this.file.size - accumulated.loaded
@@ -105,9 +112,8 @@ export default class BigFileUploader implements FileUploader {
 
     return {
       total: this.file.size,
-      loaded: accumulated.loaded,
+      ...accumulated,
       progress: globalProgress,
-      rate: overallRate,
       estimated: overallRate > 0 ? remainingBytes / overallRate : Infinity
     }
   }

@@ -25,7 +25,7 @@ export default class Task implements UploadTask {
   // 内部进度数据与代理，更新时自动调用防抖回调
   // private _progressInfo: Ref<ProgressInfo> = ref({ ...progressDefault })
   // progressInfo: Readonly<Ref<ProgressInfo>> = refDebounced(this._progressInfo, 100)
-  progressInfo = { ...progressDefault }
+  progressInfo
   status = TASK_STATUS.PENDING
   promise = new Promise(() => {})
   // 构造函数
@@ -36,6 +36,10 @@ export default class Task implements UploadTask {
     } else {
       this.id = `${Date.now()}_${Math.random().toString().slice(2, 8)}_${this.metadata.index}`
     }
+    this.progressInfo = {
+      ...progressDefault,
+      total: this.metadata.chunk.size
+    }
   }
 
   // 发送请求的方法
@@ -45,7 +49,8 @@ export default class Task implements UploadTask {
       createFormData({
         ...this.metadata,
         file: this.metadata.chunk,
-        name: 'file'
+        name: 'file',
+        chunk: null
       }),
       {
         signal: this.controller.signal,
@@ -79,7 +84,10 @@ export default class Task implements UploadTask {
     this.cancel()
     this.controller = new AbortController()
     this.updateProgressThrottle.cancel()
-    this.progressInfo = { ...progressDefault }
+    this.progressInfo = {
+      ...progressDefault,
+      total: this.metadata.chunk.size
+    }
   }
 
   // 节流更新进度，防止过于频繁更新

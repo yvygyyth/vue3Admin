@@ -13,9 +13,9 @@ export const sliceFile = async (
 ) => {
   const config = useConfig()
   if (config.hashApi) {
-    return await createChunksWithWorkers(file, tasksCount, totalChunks, setTask)
+    return createChunksWithWorkers(file, tasksCount, totalChunks, setTask)
   } else {
-    return await cutFile(file, tasksCount, totalChunks, setTask)
+    return cutFile(file, tasksCount, totalChunks, setTask)
   }
 }
 
@@ -27,37 +27,39 @@ export const createChunksWithWorkers = async (
 ) => {
   return new Promise((resolve, reject) => {
     const threadChunkConut = Math.min(totalChunks - tasksCount, THREAD_COUNT)
-    if (threadChunkConut === 0) resolve([])
+    if (threadChunkConut === 0) {
+      resolve([])
+    } else {
+      const config = useConfig()
+      const result: UploadChunk[] = []
 
-    const config = useConfig()
-    const result: UploadChunk[] = []
+      let finishCount = 0
+      for (let i = 0; i < threadChunkConut; i++) {
+        const worker = new Worker(new URL('./worker.ts', import.meta.url), {
+          type: 'module'
+        })
+        const zero = tasksCount
+        const start = i * threadChunkConut + zero
+        const end = Math.min((i + 1) * threadChunkConut, totalChunks - zero)
+        worker.postMessage({
+          file,
+          start,
+          end,
+          chunk_size: config.maxSize
+        })
 
-    let finishCount = 0
-    for (let i = 0; i < threadChunkConut; i++) {
-      const worker = new Worker(new URL('./worker.ts', import.meta.url), {
-        type: 'module'
-      })
-      const zero = tasksCount
-      const start = i * threadChunkConut + zero
-      const end = Math.min((i + 1) * threadChunkConut, totalChunks - zero)
-      worker.postMessage({
-        file,
-        start,
-        end,
-        chunk_size: config.maxSize
-      })
+        worker.onmessage = (event) => {
+          for (let j = start; j < end; j++) {
+            result[j] = event.data[j]
+            setTask(event.data[j], j)
+          }
+          worker.terminate()
+          finishCount++
 
-      worker.onmessage = (event) => {
-        for (let j = start; j < end; j++) {
-          result[j] = event.data[j]
-          setTask(event.data[j], j)
-        }
-        worker.terminate()
-        finishCount++
-
-        if (finishCount === threadChunkConut) {
-          // 完结
-          resolve(result)
+          if (finishCount === threadChunkConut) {
+            // 完结
+            resolve(result)
+          }
         }
       }
     }

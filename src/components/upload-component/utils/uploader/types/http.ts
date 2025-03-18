@@ -31,7 +31,6 @@ export const uploadStatus = {
 
 export enum TASK_STATUS {
   PENDING = 'pending', //等待中
-  UPLOADING = 'uploading',
   SUCCESS = 'success',
   FAIL = 'fail' //失败
 }

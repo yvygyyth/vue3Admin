@@ -1,6 +1,6 @@
 import md5 from 'js-md5'
 import type { UploadChunk } from './types/index'
-
+import { useConfig } from './index'
 export const createChunkCommon = (
   file: File,
   index: number,
@@ -57,41 +57,15 @@ export const createChunkHash = (
   })
 }
 
-// export const createChunk = (file: File, index: number, chunkSize: number): Promise<UploadChunk> => {
-//     return new Promise((resolve, reject) => {
-//         const start = index * chunkSize
-//         const end = Math.min(start + chunkSize, file.size)
-//         const blob = file.slice(start, end)
-
-//         const config = useConfig()
-//         if (config.hashApi) {
-//             const fileRederInstance = new FileReader()
-
-//             fileRederInstance.addEventListener('load', (e) => {
-//                 if (e.target?.result === null) {
-//                     reject(new Error('Failed to read file'))
-//                     return
-//                 }
-//                 const fileBolb = e.target?.result
-//                 const fileMD5 = md5(fileBolb)
-//                 resolve({
-//                     start,
-//                     end,
-//                     index,
-//                     hash: fileMD5,
-//                     chunk: blob,
-//                     uploadedSize: end - start
-//                 })
-//             })
-//             fileRederInstance.readAsBinaryString(blob)
-//         } else {
-//             resolve({
-//                 start,
-//                 end,
-//                 index,
-//                 chunk: blob,
-//                 uploadedSize: end - start
-//             })
-//         }
-//     })
-// }
+export const createChunk = (file: File, index: number, chunkSize: number): Promise<UploadChunk> => {
+  return new Promise(async (resolve, reject) => {
+    const config = useConfig()
+    if (config.hashApi) {
+      const chunk = await createChunkHash(file, index, chunkSize)
+      resolve(chunk)
+    } else {
+      const chunk = await createChunkCommon(file, index, chunkSize)
+      resolve(chunk)
+    }
+  })
+}
