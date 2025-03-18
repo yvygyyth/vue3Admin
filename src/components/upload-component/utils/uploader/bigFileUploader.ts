@@ -33,12 +33,14 @@ export default class BigFileUploader implements FileUploader {
     this.setTask(chunk, 0)
   }
   private async uploadFile() {
+    let start = this.tasks.length
     if (this.tasks.length === 0) {
       this.preupload()
+      start++
     } else {
       this.uploadChunks()
     }
-    await sliceFile(this.file, this.tasks.length, this.totalChunks, this.setTask.bind(this))
+    await sliceFile(this.file, start, this.totalChunks, this.setTask.bind(this))
     console.log('切片完成', this.tasks)
     const taskPromises = this.tasks.map((task) => {
       return task.promise
@@ -57,6 +59,7 @@ export default class BigFileUploader implements FileUploader {
 
   setTask(chunk: UploadChunk, index: number) {
     console.log('设置任务', chunk, index)
+    console.log('任务环境', this)
     const task = new Task(chunk)
     this.tasks.push(task)
     if (this.status === STATUS.UPLOADING) {
@@ -101,10 +104,10 @@ export default class BigFileUploader implements FileUploader {
       }
     }, initial)
 
-    console.log('计算进度', accumulated, this.file.size)
+    console.log('计算进度', this.tasks, this.file.size)
 
     // 计算全局进度（考虑总分片数）
-    const globalProgress = accumulated.loaded / this.file.size || 0
+    const globalProgress = Math.min(accumulated.loaded, this.file.size) / this.file.size || 0
 
     // 计算剩余时间和整体速率
     const remainingBytes = this.file.size - accumulated.loaded
