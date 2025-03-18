@@ -29,7 +29,7 @@ export default class SimpleFileUploader implements Uploader {
         index: 0,
         start: 0,
         end: this.file.size,
-        uploadedSize: this.file.size,
+        size: this.file.size,
         chunk: this.file
       })
     )

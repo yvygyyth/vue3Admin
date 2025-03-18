@@ -26,7 +26,8 @@ export const createChunksWithWorkers = async (
   setTask: SetTask
 ) => {
   return new Promise((resolve, reject) => {
-    const threadChunkConut = Math.min(totalChunks - tasksCount, THREAD_COUNT)
+    // 每个线程分配的任务数量
+    const threadChunkConut = Math.ceil((totalChunks - tasksCount) / THREAD_COUNT)
     if (threadChunkConut === 0) {
       resolve([])
     } else {
@@ -34,13 +35,16 @@ export const createChunksWithWorkers = async (
       const result: UploadChunk[] = []
 
       let finishCount = 0
-      for (let i = 0; i < threadChunkConut; i++) {
+      for (let i = 0; i < THREAD_COUNT; i++) {
+        const start = tasksCount + i * threadChunkConut
+        const end = Math.min(start + threadChunkConut, totalChunks)
+
+        if (start >= end) break
+
         const worker = new Worker(new URL('./worker.ts', import.meta.url), {
           type: 'module'
         })
-        const zero = tasksCount
-        const start = i * threadChunkConut + zero
-        const end = Math.min((i + 1) * threadChunkConut, totalChunks - zero)
+
         worker.postMessage({
           file,
           start,
@@ -49,17 +53,21 @@ export const createChunksWithWorkers = async (
         })
 
         worker.onmessage = (event) => {
-          for (let j = start; j < end; j++) {
-            result[j] = event.data[j]
-            setTask(event.data[j], j)
-          }
+          const chunks = event.data
+          chunks.forEach((chunk: UploadChunk) => {
+            result[chunk.index] = chunk
+            setTask(chunk, chunk.index)
+          })
           worker.terminate()
           finishCount++
-
-          if (finishCount === threadChunkConut) {
-            // 完结
+          if (finishCount === Math.min(THREAD_COUNT, totalChunks - tasksCount)) {
             resolve(result)
           }
+        }
+
+        worker.onerror = (err) => {
+          worker.terminate()
+          reject(err)
         }
       }
     }

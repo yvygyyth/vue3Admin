@@ -9,7 +9,7 @@ import { createFormData } from '../file'
 import { throttle } from 'lodash'
 export const useTaskConfig = () => {
   const globalConfig = useConfig()
-  const taskConcurrency = new pool(2)
+  const taskConcurrency = new pool(globalConfig.concurrency)
   return {
     globalConfig,
     taskConcurrency
@@ -64,10 +64,12 @@ export default class Task implements UploadTask {
     this.promise = this.useTaskConfig.taskConcurrency.add(this.id, this.request.bind(this))
     return this.promise
       .then((res) => {
+        console.log('taskexecute文件上传成功', res)
         this.status = TASK_STATUS.SUCCESS
         return res
       })
       .catch((err) => {
+        console.log('taskexecute文件上传失败', err)
         this.status = TASK_STATUS.FAIL
         return err
       })

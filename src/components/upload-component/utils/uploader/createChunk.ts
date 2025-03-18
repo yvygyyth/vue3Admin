@@ -16,7 +16,7 @@ export const createChunkCommon = (
       end,
       index,
       chunk: blob,
-      uploadedSize: end - start
+      size: end - start
     })
   })
 }
@@ -46,7 +46,7 @@ export const createChunkHash = (
         end,
         index,
         chunk: blob,
-        uploadedSize: end - start,
+        size: end - start,
         hash: md5(e.target.result)
       })
     })
@@ -57,15 +57,15 @@ export const createChunkHash = (
   })
 }
 
-export const createChunk = (file: File, index: number, chunkSize: number): Promise<UploadChunk> => {
-  return new Promise(async (resolve, reject) => {
-    const config = useConfig()
-    if (config.hashApi) {
-      const chunk = await createChunkHash(file, index, chunkSize)
-      resolve(chunk)
-    } else {
-      const chunk = await createChunkCommon(file, index, chunkSize)
-      resolve(chunk)
-    }
-  })
+export const createChunk = async (
+  file: File,
+  index: number,
+  chunkSize: number
+): Promise<UploadChunk> => {
+  const config = useConfig()
+  if (config.hashApi) {
+    return await createChunkHash(file, index, chunkSize)
+  } else {
+    return await createChunkCommon(file, index, chunkSize)
+  }
 }

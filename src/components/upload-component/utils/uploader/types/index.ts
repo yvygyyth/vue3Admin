@@ -27,7 +27,7 @@ export interface UploadChunk {
   /** 结束位置 */
   readonly end: number
   /** 文件大小 */
-  readonly uploadedSize: number
+  readonly size: number
   /** 文件哈希 */
   readonly hash?: string
 }
