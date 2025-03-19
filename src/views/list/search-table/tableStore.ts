@@ -5,7 +5,7 @@ import { requestList, requestSave, requestDelete, requestGet } from '@/api/other
 import type { QueryParams, QueryResult, ListRes, FormData } from '@/api/otherCost'
 import useLoading from '@/hooks/loading'
 import EventBus from '@/hooks/useHashEventBus'
-import { singleton } from '@/utils/singleton'
+import { singleton } from 'arg-singleton'
 import { EBE } from '@/components/table-layout/EventBusEnum'
 import { TableColumns } from './useTableColumns'
 // 默认的查询对象

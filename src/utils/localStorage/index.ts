@@ -1,4 +1,4 @@
-import { singleton } from '@/utils/singleton'
+import { singleton } from 'arg-singleton'
 
 interface CacheStore {
   has(key: string): boolean

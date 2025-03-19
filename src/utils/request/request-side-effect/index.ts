@@ -1,5 +1,5 @@
 import EventBus from '@/hooks/useEventBus'
-import { singleton } from '@/utils/singleton'
+import { singleton } from 'arg-singleton'
 import { EventTypes } from './EventTypes'
 import { Message, Modal } from '@arco-design/web-vue'
 import type { EventPayloads } from './EventTypes'

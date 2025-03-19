@@ -1,4 +1,4 @@
-import { singleton } from '@/utils/singleton'
+import { singleton } from 'arg-singleton'
 import { TaskQueue } from '@/utils/LinkedList'
 
 type Task = () => Promise<any>
