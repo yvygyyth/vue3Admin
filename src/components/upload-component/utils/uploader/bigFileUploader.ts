@@ -4,6 +4,7 @@ import { TASK_STATUS, STATUS, progressDefault } from './types/http'
 import { useConfig } from './index'
 import { sliceFile } from './worker'
 import { createChunk } from './createChunk'
+import { reactive } from 'vue'
 export default class BigFileUploader implements FileUploader {
   private _status = STATUS.PENDING
   public tasks: UploadTask[] = []
@@ -60,7 +61,7 @@ export default class BigFileUploader implements FileUploader {
   setTask(chunk: UploadChunk, index: number) {
     console.log('设置任务', chunk, index)
     console.log('任务环境', this)
-    const task = new Task(chunk)
+    const task = reactive(new Task(chunk))
     this.tasks.push(task)
     if (this.status === STATUS.UPLOADING) {
       task.execute()

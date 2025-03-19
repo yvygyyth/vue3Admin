@@ -1,35 +1,48 @@
-// 泛型构造函数类型
-type ClassConstructor = new (...args: any) => any
+type Constructor<T = any> = new (...args: any[]) => T
+type AnyFunction<T = any> = (...args: any[]) => T
 
-function arraysAreEqual<U>(arr1: U[], arr2: U[]): boolean {
-  if (arr1.length !== arr2.length) {
-    return false
-  }
-
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr1[i] !== arr2[i]) {
-      return false
+/**
+ * 参数序列化函数（支持深度对象比较）
+ */
+const serializeArgs = (args: unknown[]): string => {
+  const normalized = args.map((arg) => {
+    if (typeof arg === 'object' && arg !== null) {
+      return JSON.stringify(arg, Object.keys(arg).sort())
     }
-  }
-  return true
+    return arg
+  })
+  return JSON.stringify(normalized)
 }
 
-export const singleton = <T extends ClassConstructor>(classConstructor: T) => {
-  let instance: InstanceType<T>
-  let lastParams: ConstructorParameters<T>
+/**
+ * 参数缓存的多例模式
+ */
+export function singleton<T extends object>(target: Constructor<T>): Constructor<T>
+export function singleton<T extends object>(target: AnyFunction<T>): AnyFunction<T>
+export function singleton<T extends object>(
+  target: Constructor<T> | AnyFunction<T>
+): Constructor<T> | AnyFunction<T> {
+  const instances = new Map<string, T>()
 
-  return new Proxy(classConstructor, {
-    construct(target, args: ConstructorParameters<T>) {
-      if (instance) {
-        if (!arraysAreEqual(lastParams, args)) {
-          throw new Error('Singleton instance already created with different parameters!')
-        }
-        return instance
+  return new Proxy(target, {
+    construct(target: Constructor<T>, args: any[]): T {
+      const key = serializeArgs(args)
+
+      if (!instances.has(key)) {
+        instances.set(key, Reflect.construct(target, args))
       }
 
-      instance = Reflect.construct(target, args)
-      lastParams = args
-      return instance
+      return instances.get(key)!
+    },
+
+    apply(target: AnyFunction<T>, thisArg: any, args: any[]): T {
+      const key = serializeArgs(args)
+
+      if (!instances.has(key)) {
+        instances.set(key, target.apply(thisArg, args))
+      }
+
+      return instances.get(key)!
     }
   })
 }
