@@ -1,9 +1,20 @@
-import {
-  useRequestor,
-  createCacheRequestor,
-  createIdempotencyRequestor,
-  downloadFile
-} from './request-core'
+import axios from 'axios'
+import type { AxiosRequestConfig } from 'axios'
+import type { UnifiedRequestor, UnifiedConfig } from '@net-vert/core'
+import { inject } from '@net-vert/core'
+import { setupAxiosInterceptors } from './interceptor'
 
-export default useRequestor()
-export { useRequestor, createCacheRequestor, createIdempotencyRequestor, downloadFile }
+const instance = axios.create({
+  baseURL: 'http://localhost:5009',
+  timeout: 60000,
+  proxy: false
+})
+
+// 设置axios拦截器
+setupAxiosInterceptors(instance)
+
+const requestor: UnifiedRequestor = (config: UnifiedConfig) => {
+  return instance.request(config as AxiosRequestConfig).then((res) => res.data)
+}
+
+inject(requestor)

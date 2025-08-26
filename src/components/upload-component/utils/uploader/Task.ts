@@ -1,10 +1,9 @@
 import { TASK_STATUS } from './types/http'
 import { pool } from '../concurrentPool'
 import type { UploadTask, UploadChunk, ProgressInfo } from './types'
-import type { ProgressEvent } from '@/utils/request/request-core/type'
 import { progressDefault } from './types/http'
 import { useConfig } from './index'
-import request from '@/utils/request'
+import { useRequestor } from '@net-vert/core'  
 import { createFormData } from '../file'
 import { throttle } from 'lodash'
 export const useTaskConfig = () => {
@@ -17,6 +16,7 @@ export const useTaskConfig = () => {
 }
 
 export default class Task implements UploadTask {
+  private requestor = useRequestor()
   // 实例属性
   id: string
   controller: AbortController = new AbortController()
@@ -44,7 +44,7 @@ export default class Task implements UploadTask {
 
   // 发送请求的方法
   private request() {
-    return request.post(
+    return this.requestor.post(
       this.useTaskConfig.globalConfig.uploadApi,
       createFormData({
         ...this.metadata,
@@ -95,6 +95,12 @@ export default class Task implements UploadTask {
   // 节流更新进度，防止过于频繁更新
   updateProgressThrottle = throttle(this.updateProgress, this.responseInterval)
   updateProgress(progressEvent: ProgressEvent) {
-    this.progressInfo = progressEvent
+    this.progressInfo = {
+      ...progressDefault,
+      total: this.metadata.chunk.size,
+      rate: progressEvent.loaded / progressEvent.total,
+      progress: progressEvent.loaded,
+      estimated: progressEvent.total - progressEvent.loaded
+    }
   }
 }

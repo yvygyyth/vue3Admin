@@ -1,4 +1,3 @@
-import { queryMyProjectList, type ProjectItem } from '@/api/user'
 import useLoading from '@/hooks/loading'
 import {
   Avatar,
@@ -16,22 +15,10 @@ export default defineComponent({
   name: 'MyProject',
   setup() {
     const { t } = useI18n()
-    const dataSource = ref<ProjectItem[]>([])
+    const dataSource = ref<any[]>([])
     const fillList: unknown[] = new Array(6).fill(undefined)
-    const { loading, setLoading } = useLoading(true)
+    const { loading } = useLoading(true)
 
-    const fetchData = () => {
-      queryMyProjectList()
-        .then((res) => {
-          dataSource.value = res.data
-        })
-        .catch(() => {})
-        .finally(() => {
-          setLoading(false)
-        })
-    }
-
-    fetchData()
     return () => (
       <Card class="general-card" bordered={false} title={t('userInfo.title.myProject')}>
         {{

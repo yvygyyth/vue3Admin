@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import '@/utils/request/request-bus'
+import '@/utils/request'
 import ArcoVue from '@arco-design/web-vue'
 // attention import css sort
 // arco component css has normalize css so doesn't need in this project

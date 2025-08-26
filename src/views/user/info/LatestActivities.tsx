@@ -1,28 +1,15 @@
-import { queryLatestActivity, type LatestActivity } from '@/api/user'
+
 import useLoading from '@/hooks/loading'
-import ActivityItem from '@/views/user/info/ActivityItem'
 import { Card, Grid, Link, List, Skeleton } from '@arco-design/web-vue'
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
-  name: 'LatestActivities',
+  name: 'LatestActivities', 
   setup() {
     const { t } = useI18n()
-    const { loading, setLoading } = useLoading(true)
+    const { loading } = useLoading(true)
     const fillList = new Array(7).fill(undefined)
-    const activityList = ref<LatestActivity[]>([])
-    const fetchData = async () => {
-      try {
-        const res = await queryLatestActivity()
-        activityList.value = res.data
-      } catch (error) {
-        /* empty */
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchData()
 
     return () => (
       <Card class="general-card" title={t('userInfo.title.latestActivity')}>
@@ -31,7 +18,7 @@ export default defineComponent({
           default: () => (
             <List bordered={false}>
               {loading.value
-                ? fillList.map(() => (
+              && fillList.map(() => (
                     <Skeleton loading={loading.value} animation class="mb-4">
                       <Grid.Row gutter={6}>
                         <Grid.Col span={2}>
@@ -43,14 +30,7 @@ export default defineComponent({
                       </Grid.Row>
                     </Skeleton>
                   ))
-                : activityList.value.map((item, index) => (
-                    <ActivityItem
-                      key={index}
-                      avatar={item.avatar}
-                      title={item.title}
-                      description={item.description}
-                    />
-                  ))}
+               }
             </List>
           )
         }}

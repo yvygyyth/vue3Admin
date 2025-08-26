@@ -1,4 +1,3 @@
-import { queryCertification, type UnitCertification } from '@/api/user'
 import useLoading from '@/hooks/loading'
 import {
   Badge,
@@ -19,18 +18,8 @@ export default defineComponent({
     const { t } = useI18n()
 
     const { loading, setLoading } = useLoading(true)
-    const responseData = ref<UnitCertification>()
-    const fetchData = async () => {
-      try {
-        const { data } = await queryCertification()
-        responseData.value = data
-      } catch (err) {
-        /* empty */
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchData()
+    const responseData = ref<any>()
+
     const columns = computed(() => [
       {
         title: t('userSetting.certification.columns.certificationType'),
