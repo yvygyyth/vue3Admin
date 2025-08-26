@@ -4,9 +4,8 @@ import { DependencyHub, Keys } from '@/hooks/useRequestInjectorManager'
 
 export default defineStore('user', ()=>{
   const tokenRef = ref<string>('')
-
   const setToken = (token: string) => tokenRef.value = token
-  console.log('注册token',tokenRef.value)
+
   DependencyHub.register(Keys.getToken, () => {
     return tokenRef.value
   })
