@@ -1,5 +1,5 @@
 import { useUserStore } from '@/store'
-import { cloneDeep, get } from 'lodash'
+import { get } from 'lodash'
 import type {
   RouteLocationNormalizedLoaded,
   RouteRecordNormalized,
@@ -22,8 +22,7 @@ export default function usePermission() {
     return (
       !requiresAuth ||
       needRoles.length === 0 ||
-      needRoles.includes('*') ||
-      needRoles.includes(userStore.role)
+      needRoles.includes('*')
     )
   }
   const checkButtonPermission = (needPermission: string[] | string) => {
@@ -33,8 +32,7 @@ export default function usePermission() {
     if (needPermission.includes('*')) {
       return true
     }
-    const userStore = useUserStore()
-    return needPermission.includes(userStore.role)
+    return true
   }
 
   return {

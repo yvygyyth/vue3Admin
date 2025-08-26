@@ -1,7 +1,7 @@
-import { useAppStore, useUserStore } from '@/store'
-import { ViewNames, layoutStyleConfig } from '@/types/constants'
+import { useAppStore } from '@/store'
+import { layoutStyleConfig } from '@/types/constants'
 import { Layout } from '@arco-design/web-vue'
-import { computed, defineComponent, watch } from 'vue'
+import { computed, defineComponent } from 'vue'
 import BreadcrumbComponent from './BreadcrumbComponent'
 import FooterComponent from './FooterComponent'
 import MenuComponent from './MenuComponent'
@@ -10,8 +10,6 @@ import PageComponent from './PageComponent'
 import TabBar from './TabBar'
 import styles from './style.module.scss'
 import AppSetting from './AppSetting'
-import usePermission from '@/hooks/permission'
-import { useRoute, useRouter } from 'vue-router'
 export default defineComponent({
   name: 'LayoutComponent',
   setup() {
@@ -27,17 +25,7 @@ export default defineComponent({
     const siderWidth = computed(() => {
       return appStore.menuCollapse ? 48 : appStore.menuWidth
     })
-    const route = useRoute()
-    const router = useRouter()
-    const userStore = useUserStore()
-    const permission = usePermission()
-    watch(
-      () => userStore.role,
-      (roleValue) => {
-        if (roleValue && !permission.checkRoutePermission(route))
-          router.push({ name: ViewNames.notFound })
-      }
-    )
+
     return () => {
       return (
         <>

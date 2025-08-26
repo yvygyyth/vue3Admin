@@ -14,7 +14,7 @@ const instance = axios.create({
 setupAxiosInterceptors(instance)
 
 const requestor: UnifiedRequestor = (config: UnifiedConfig) => {
-  return instance.request(config as AxiosRequestConfig).then((res) => res.data.data)
+  return instance.request(config as AxiosRequestConfig).then((res) => res.data)
 }
 
 inject(requestor)

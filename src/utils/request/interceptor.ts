@@ -1,6 +1,6 @@
-import { HTTP_STATUS } from "./http-status";
-import type { ApiResponse } from "./type";
+import { COUNT_SYMBOL } from '@/types/pagination';
 import { DependencyHub, Keys } from "@/hooks/useRequestInjectorManager";
+import type { ApiResponse, DataWithCount } from './type';
 
 // 请求拦截器
 export const requestInterceptor = async (config: any) => {
@@ -29,9 +29,12 @@ export const requestErrorInterceptor = (error: any) => {
 };
 
 // 响应拦截器
-export const responseInterceptor = (response: any) => {
-
-	return response;
+export const responseInterceptor = <T = any>(response: ApiResponse) => {
+	const data = response.data;
+	if (data && typeof data === 'object') {
+		(data as any)[COUNT_SYMBOL] = response.count;
+	}
+	return data as DataWithCount<T>;
 };
 
 // 响应错误拦截器

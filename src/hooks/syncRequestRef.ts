@@ -39,6 +39,7 @@ export const syncRequestRef = <T>(
                 if (result === UNINIT) {
                     try {
                         result = fun();
+                        console.log(result)
                         return toReactive(result);
                     } catch (e: unknown) {
                         if (e instanceof Promise) {
