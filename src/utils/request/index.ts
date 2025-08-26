@@ -5,7 +5,7 @@ import { inject } from '@net-vert/core'
 import { setupAxiosInterceptors } from './interceptor'
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5009',
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 60000,
   proxy: false
 })

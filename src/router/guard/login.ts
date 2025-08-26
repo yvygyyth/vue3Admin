@@ -1,10 +1,8 @@
 import type { Router } from 'vue-router'
 import NProgress from 'nprogress'
-import { useUserStore } from '@/store'
-import persistenceStore from '@/utils/localStorage'
-import { LS } from '@/utils/localStorage/http'
 import { ViewNames } from '@/types/constants'
 import useAuth from '@/hooks/auth'
+import { DependencyHub, Keys } from "@/hooks/useRequestInjectorManager";
 
 /**
  *
@@ -15,17 +13,16 @@ import useAuth from '@/hooks/auth'
  * - - no userInfo update info go
  */
 export default function setupUserLoginInfoGuard(router: Router) {
+  console.log('路由登录校验')
   const { logoutApp } = useAuth()
-  const localStore = new persistenceStore()
   router.beforeEach(async (to, _from, next) => {
     NProgress.start()
-    const userStore = useUserStore()
-    if (localStore.has(LS.token)) {
-      if (userStore.role) {
+    const token = await DependencyHub.getAndCall(Keys.getToken);
+    if (token) {
+      if (token) {
         next()
       } else {
         try {
-          await userStore.refreshUserInfo()
           next()
         } catch (error) {
           await logoutApp()

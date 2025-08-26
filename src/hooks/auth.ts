@@ -1,37 +1,26 @@
-import { login, logout, type LoginData } from '@/api/user'
-import { useUserStore } from '@/store'
-import persistenceStore from '@/utils/localStorage'
-import { LS } from '@/utils/localStorage/http'
+import { login, type LoginData } from '@/api/user'
 import { removeRouteListener } from '@/utils/routerListener'
+import { useUserStore } from '@/store'
 /**
  *
  * @desc system authentication
  */
 export default function useAuth() {
-  const localStore = new persistenceStore()
-  const loginApp = async (data: LoginData) => {
+  const userStore = useUserStore()
+  const loginApp = async (loginData: LoginData) => {
     try {
-      const res = await login(data)
-      localStore.set(LS.token, res.data.token)
+      const res = await login(loginData)
+      const { token } = res
+      userStore.setToken(token)
     } catch (err) {
-      localStore.delete(LS.token)
       throw err
     }
   }
 
   const logoutApp = async () => {
-    const userStore = useUserStore()
-    const afterLogout = () => {
-      userStore.resetUserInfo()
-      localStore.delete(LS.token)
-      removeRouteListener()
-    }
-    try {
-      await logout()
-    } finally {
-      afterLogout()
-    }
+    removeRouteListener()
   }
+
   return {
     loginApp,
     logoutApp

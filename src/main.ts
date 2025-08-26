@@ -6,11 +6,14 @@ import ArcoVue from '@arco-design/web-vue'
 import '@arco-design/web-vue/dist/arco.css'
 import './assets/style/index.scss'
 import App from './App'
-import router from './router'
-// import '@/mock'
 import i18n from './locale'
+import pinia from '@/store'
+import router from '@/router'
+import { configRouteGuard } from '@/router/guard'
+// import '@/mock'
+
 import ArcoVueIcon from '@arco-design/web-vue/es/icon'
-import store from '@/store/index'
+
 
 const app = createApp(App)
 
@@ -18,7 +21,10 @@ app.use(ArcoVueIcon)
 app.use(ArcoVue)
 
 app.use(i18n)
-app.use(store)
+app.use(pinia)
 app.use(router)
+
+// 在 pinia 和 router 都准备好之后，再配置路由守卫
+configRouteGuard(router)
 
 app.mount('#app')

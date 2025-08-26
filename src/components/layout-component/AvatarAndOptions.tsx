@@ -23,20 +23,11 @@ export default defineComponent({
       }
     }
 
-    const switchRole = () => {
-      userStore
-        .switchRoles()
-        .then((res) => {
-          if (res) Message.success(res)
-        })
-        .catch(() => {
-          Message.error('切换失败')
-        })
-    }
+
     const optionList = computed(() => [
       {
         label: t('messageBox.switchRoles'),
-        onClick: switchRole,
+        onClick: () => {},
         icon: <IconTag />
       },
       {

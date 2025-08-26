@@ -9,8 +9,7 @@ export const requestInterceptor = async (config: any) => {
 	// if (token) {
 	//   config.headers.Authorization = `Bearer ${token}`;
 	// }
-
-	const token = await DependencyHub.get(Keys.getToken);
+	const token = await DependencyHub.getAndCall(Keys.getToken);
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`;
 	}

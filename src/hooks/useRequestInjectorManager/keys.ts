@@ -6,7 +6,7 @@ export const Keys = {
 export type DependencyKey = keyof typeof Keys;
   
 export type Injectors = {
-    getToken: () => Promise<string> | string;
+    getToken: () => string;
 };
 
 export type InjectorFn<K extends DependencyKey> = Injectors[K];

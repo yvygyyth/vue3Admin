@@ -34,7 +34,15 @@ class AsyncDependencyHub {
             this.pendingResolvers.get(key)!.push(resolve);
         });
     }
-
+    /**
+     * 获取一个依赖方法,并直接调用
+     * @param key 
+     * @returns 
+     */
+    async getAndCall<K extends DependencyKey>(key: K): Promise<ReturnType<InjectorFn<K>>> {
+        const fn = await this.get(key);
+        return fn() as ReturnType<InjectorFn<K>>;
+    }
     /**
      * 是否已经注册
      */

@@ -34,20 +34,20 @@ export default defineComponent({
     const storageLoginInfo = ref(
       localStore.set(LS.loginFormKey, {
         rememberPassword: true,
-        mobile: '13000000002',
+        account: 'admin',
         password: '123456'
       })
     )
 
     const loginFormData = ref<LoginData>({
-      mobile: storageLoginInfo.value.mobile,
+      account: storageLoginInfo.value.account,
       password: storageLoginInfo.value.password
     })
 
     const errorMessage = ref<unknown>()
 
     const formRules: Record<string, FieldRule | FieldRule[]> = {
-      mobile: [{ required: true, message: t('login.form.userName.errMsg') }],
+      account: [{ required: true, message: t('login.form.userName.errMsg') }],
       password: [{ required: true, message: t('login.form.password.errMsg') }]
     }
     const handleSubmit = async ({
@@ -67,8 +67,8 @@ export default defineComponent({
           })
           Message.success(t('login.form.login.success'))
           const { rememberPassword } = storageLoginInfo.value
-          const { mobile, password } = values
-          storageLoginInfo.value.mobile = rememberPassword ? mobile : ''
+          const { account, password } = values
+          storageLoginInfo.value.account = rememberPassword ? account : ''
           storageLoginInfo.value.password = rememberPassword ? password : ''
         } catch (err) {
           errorMessage.value = (err as Error).message
@@ -98,9 +98,9 @@ export default defineComponent({
           layout="vertical"
           onSubmit={handleSubmit}
         >
-          <Form.Item field="mobile" validateTrigger={['change', 'blur']} hideLabel>
+          <Form.Item field="account" validateTrigger={['change', 'blur']} hideLabel>
             <Input
-              v-model={loginFormData.value.mobile}
+              v-model={loginFormData.value.account}
               placeholder={t('login.form.userName.placeholder')}
             >
               {{ prefix: () => <IconUser /> }}

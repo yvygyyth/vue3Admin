@@ -5,16 +5,16 @@ import type {
 } from './type'
 
 const request = useRequestor()
-export function login(data: LoginData) {
-  return request.post<LoginRes>('/user/login', data)
+export function login(data: LoginData): Promise<LoginRes> {
+  return request.post('/users/login', data)
 }
 
 export function logout() {
-  return request.post<LoginRes>('/user/logout')
+  return request.post('/users/logout')
 }
 
 export function userUploadApi(data: FormData) {
-  return request.post('/user/upload', data)
+  return request.post('/users/upload', data)
 }
 
 
