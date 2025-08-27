@@ -6,13 +6,16 @@
     "src/**/*.vue",
     "src/**/*.json",
     "src/**/*.tsx",
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/types/**/*.d.ts"
   ],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
     "composite": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
     "paths": {
       "@/*": ["./src/*"]
     }

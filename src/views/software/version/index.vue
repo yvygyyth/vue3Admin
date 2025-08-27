@@ -5,9 +5,10 @@
             :loading="dataList.loading"
             @search="handleSearch"
         />
+        <ActionAreaRender />
         <a-table
             :loading="dataList.loading"
-            :data="renderData"
+            :data="dataList.value"
             :bordered="false"
             :pagination="pagination"
             :columns="colList"
@@ -20,14 +21,12 @@ import TableSearchForm from './useTableSearchForm/index.vue'
 import { usePagination } from '@/hooks/usePagination'
 import { useTableColumns } from './useTableColumns/index'
 import { asyncRequestRef } from '@/hooks/syncRequestRef'
+import { getVersionList, type SaveVersion, type Version } from '@/api/software'
+import { useTableActionArea } from './useTableActionArea/index'
 
-const dataList = asyncRequestRef(()=>{
-    return new Promise((resolve)=>{
-        setTimeout(()=>{
-            resolve([])
-        },2000)
-    })
-},[])
+const { ActionAreaRender } = useTableActionArea()
+
+const dataList = asyncRequestRef<Version[]>(getVersionList,[])
 
 
 const formData = ref({
@@ -44,24 +43,11 @@ const { pagination } = usePagination(
 
 const { colList } = useTableColumns()
 
-
-
-
-const renderData = ref([])
-
 const handleSearch = () => {
-
-    new Promise((resolve) => {
-        setTimeout(() => {
-
-            resolve(true)
-        }, 2000)
-    })
+    dataList.refresh()
 }
 
 </script>
 <style lang="scss" scoped>
-// .container{
-//     background: #ffffff;
-// }
+
 </style>

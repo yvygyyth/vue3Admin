@@ -19,10 +19,6 @@ export default defineComponent({
         placeholder: t('userSetting.security.question.placeholder')
       },
       {
-        title: t('userSetting.security.phone'),
-        value: userStore.phone ? `${t('userSetting.security.phone.tips')} ${userStore.phone}` : ''
-      },
-      {
         title: t('userSetting.security.email'),
         value: '',
         placeholder: t('userSetting.security.email.placeholder')

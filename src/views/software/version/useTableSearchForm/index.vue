@@ -15,18 +15,19 @@ const props = defineProps({
 		default: false
 	}
 })
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue','search'])
 
 const searchQuery = useVModel(props, 'modelValue', emit)
 
 const softTypeList = syncRequestRef(getSoftTypeList, [])
 
 const handleSubmit = () => {
-
+	emit('search')
 }
 
 const handleReset = () => {
 	searchQuery.value = {}
+	emit('search')
 }
 
 </script>
@@ -63,5 +64,9 @@ const handleReset = () => {
 .table-searchForm {
 	padding: 20px;
 	@include flex;
+	.table-searchForm__btns{
+		@include flex;
+		gap: 10px;
+	}
 }
 </style>

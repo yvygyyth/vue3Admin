@@ -21,7 +21,7 @@ const cnMessages = getMessageFromModules(import.meta.glob('./zh-CN/*.json', { ea
 const enMessages = getMessageFromModules(import.meta.glob('./en-US/*.json', { eager: true }))
 
 const i18n = createI18n({
-  locale: defaultLocale,
+  locale: defaultLocale as string,
   fallbackLocale: LocaleOptions.cn,
   legacy: false,
   allowComposition: true,

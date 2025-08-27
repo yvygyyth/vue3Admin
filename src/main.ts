@@ -10,7 +10,6 @@ import i18n from './locale'
 import pinia from '@/store'
 import router from '@/router'
 import { configRouteGuard } from '@/router/guard'
-// import '@/mock'
 
 import ArcoVueIcon from '@arco-design/web-vue/es/icon'
 

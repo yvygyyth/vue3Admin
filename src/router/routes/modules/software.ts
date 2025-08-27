@@ -5,7 +5,7 @@ export default {
   name: ViewNames.list,
   component: () => import('@/components/layout-component/index'),
   meta: {
-    locale: 'menu.dashboard',
+    locale: 'menu.software',
     requiresAuth: true
   },
   children: [
@@ -14,20 +14,9 @@ export default {
       name: ViewNames.workplace,
       component: () => import('@/views/software/version/index.vue'),
       meta: {
-        locale: 'menu.dashboard.workplace',
+        locale: 'menu.software.version',
         requiresAuth: true,
         roles: ['*']
-      }
-    },
-
-    {
-      path: 'monitor',
-      name: ViewNames.monitor,
-      component: () => import('@/views/software/version/index.vue'),
-      meta: {
-        locale: 'menu.dashboard.monitor',
-        requiresAuth: true,
-        roles: ['admin']
       }
     }
   ]
