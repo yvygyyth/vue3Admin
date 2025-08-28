@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useVModel } from '@vueuse/core'
-import { getSoftTypeList, type softwareType } from '@/api/software'
+import { getSoftTypeList } from '@/api/software'
 import { syncRequestRef } from '@/hooks/syncRequestRef'
 import { timeShortcut } from '@/utils/timer'
 

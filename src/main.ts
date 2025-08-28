@@ -10,9 +10,8 @@ import i18n from './locale'
 import pinia from '@/store'
 import router from '@/router'
 import { configRouteGuard } from '@/router/guard'
-
 import ArcoVueIcon from '@arco-design/web-vue/es/icon'
-
+import { Modal } from '@arco-design/web-vue';
 
 const app = createApp(App)
 
@@ -27,3 +26,4 @@ app.use(router)
 configRouteGuard(router)
 
 app.mount('#app')
+Modal._context = app._context;

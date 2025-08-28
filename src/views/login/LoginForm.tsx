@@ -22,6 +22,8 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import Logo from '@/assets/logo.svg'
 import { firstPermissionRoute } from '@/hooks/appRoute'
+import './index.scss'
+
 export default defineComponent({
   name: 'loginForm',
   setup() {

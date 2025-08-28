@@ -2,8 +2,10 @@
 import { Modal } from "@arco-design/web-vue"
 import SaveModel from './SaveModal.vue'
 import { ref } from 'vue'
+import type { Version } from '@/api/software'
 
-export const useSaveForm = () => {
+
+export const useSaveForm = (data?: Version) => {
     const modalConfig = {
         title: '新增',
         width: 600,
@@ -11,18 +13,22 @@ export const useSaveForm = () => {
     }
 
     const formData = ref({
-        name: '',
+        app_id: data?.app_id,
+        version: data?.version,
+        file_id: data?.file_id,
+        release_notes: data?.release_notes
     })
 
-    const submit = (data: any) => {
-        console.log(data)
+    const submit = () => {
+        console.log('提交',formData.value)
     }
 
-    const open = (data: any) => {
+    const open = () => {
         Modal.open({
             ...modalConfig,
             content: () => <SaveModel 
             v-model={formData.value}
+            onSubmit={submit}
             />
         })
     }

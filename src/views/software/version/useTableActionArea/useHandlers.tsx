@@ -3,7 +3,8 @@ import { useSaveForm } from '../useTableModal'
 export const useHandlers = () => {
 
     const addOk = async() => {
-        console.log('addOk')
+        const { open } = useSaveForm()
+        open()
     }
 
     return {
