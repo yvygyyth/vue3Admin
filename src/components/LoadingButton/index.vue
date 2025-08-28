@@ -1,33 +1,40 @@
 <template>
-    <a-button 
-    v-bind="props" 
-    :loading="loading" 
-    @click="onClick" 
-    >
-        <template v-for="(value, name) in $slots" #[name]="slotData">
-            <slot :name="name" v-bind="slotData || {}"></slot>
-        </template>
-    </a-button>
+    <component 
+    :is="h(Button, {
+        ...$attrs,
+        loading: loading,
+        onClick: onClick,
+        ref: changeRef,
+    }, $slots)"
+    ></component>
 </template>
 
 <script setup lang="ts">
-import { ref, useAttrs } from 'vue'
-import type { ButtonProps } from '@arco-design/web-vue';
+import { Button } from '@arco-design/web-vue'
+import { getCurrentInstance, h, ref, type ComponentInstance } from 'vue'
 
-const attrs = useAttrs()
+const props = defineProps<{
+    onClick?: (event: MouseEvent) => Promise<void> | void
+}>()
+
+const vw = getCurrentInstance()
+
 const loading = ref(false)
-const props = defineProps<Omit<ButtonProps, 'loading'> & { onClick?: () => Promise<void> | void }>()
 async function onClick(event: MouseEvent) {
     loading.value = true
     try{
-        // @ts-ignore
-        await attrs?.onClick?.()
+        await props.onClick?.(event)
     }finally{
         loading.value = false
     }
 }
 
-defineOptions({
-    inheritAttrs:false
-})
+function changeRef(exposed:any) {
+    vw!.exposed = {
+        onClick,
+        ...exposed
+    }
+}
+
+defineExpose({} as ComponentInstance<typeof Button>)
 </script>
