@@ -42,16 +42,15 @@ export default defineComponent({
           height: layoutStyleConfig.navbarHeight + 'px'
         }}
       >
-        <div class={['hidden', 'md:block']}>
+        <div class={['md:block']}>
           <Space align="center">
-            <img src={Logo} alt="logo" class={['w-8', 'h-8']} />
+            <img src={Logo} alt="logo" style={{ width: '2rem', height: '2rem' }} />
             <Typography.Title class={['!text-lg', '!m-0']} heading={5}>
               {ApplicationInfo.appTitle}
             </Typography.Title>
           </Space>
         </div>
         <Space>
-          <Input class={['rounded-2xl']} placeholder={t('navbar.search.placeholder')}></Input>
           <Select
             onChange={handleLocaleChange}
             options={[

@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="table-container">
         <TableSearchForm
             v-model="formData"
             :loading="dataList.loading"
@@ -52,5 +52,7 @@ const handleSearch = () => {
 
 </script>
 <style lang="scss" scoped>
-
+.table-container{
+    margin:0 1rem;
+}
 </style>

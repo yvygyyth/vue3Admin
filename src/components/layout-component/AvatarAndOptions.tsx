@@ -31,13 +31,6 @@ export default defineComponent({
         icon: <IconTag />
       },
       {
-        label: t('messageBox.userCenter'),
-        onClick: () => {
-          router.push({ name: ViewNames.info })
-        },
-        icon: <IconUser />
-      },
-      {
         label: t('messageBox.userSettings'),
         onClick: () => {
           router.push({ name: ViewNames.setting })

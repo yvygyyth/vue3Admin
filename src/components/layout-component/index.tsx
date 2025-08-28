@@ -43,7 +43,7 @@ export default defineComponent({
                   collapsible
                   hideTrigger
                   collapsed={appStore.menuCollapse}
-                  onCollapse={(val) => (appStore.menuCollapse = val)}
+                  onCollapse={(val: boolean) => (appStore.menuCollapse = val)}
                 >
                   <MenuComponent></MenuComponent>
                 </Layout.Sider>

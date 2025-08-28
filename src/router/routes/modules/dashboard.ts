@@ -18,17 +18,6 @@ export default {
         requiresAuth: true,
         roles: ['*']
       }
-    },
-
-    {
-      path: 'monitor',
-      name: ViewNames.monitor,
-      component: () => import('@/views/dashboard/monitor/index'),
-      meta: {
-        locale: 'menu.dashboard.monitor',
-        requiresAuth: true,
-        roles: ['admin']
-      }
     }
   ]
 }

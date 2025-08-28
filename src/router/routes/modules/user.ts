@@ -11,16 +11,6 @@ export default {
   },
   children: [
     {
-      path: 'info',
-      name: ViewNames.info,
-      component: () => import('@/views/user/info/index'),
-      meta: {
-        locale: 'menu.user.info',
-        requiresAuth: true,
-        roles: ['*']
-      }
-    },
-    {
       path: 'setting',
       name: ViewNames.setting,
       component: () => import('@/views/user/setting/index'),

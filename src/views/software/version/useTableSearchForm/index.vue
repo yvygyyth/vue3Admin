@@ -60,7 +60,6 @@ const handleReset = () => {
 
 <style lang="scss" scoped>
 .table-searchForm {
-	padding: 20px;
 	@include flex;
 	.table-searchForm__btns{
 		@include flex;
