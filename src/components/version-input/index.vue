@@ -108,7 +108,7 @@ defineExpose({
 }
 
 .version-number-input {
-    width: 5ch;
+    width: 6ch;
 }
 
 .version-number-input :deep(.arco-input) {

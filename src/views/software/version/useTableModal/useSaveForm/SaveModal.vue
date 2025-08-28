@@ -19,14 +19,23 @@
             <VersionInput v-model="formData.version" />
         </a-form-item>
 
-        <a-form-item field="file_id" label="文件"/>
+        <a-form-item field="file_id" label="文件">
+            <a-upload 
+            :custom-request="useCustomRequest"
+            :limit="1"
+             />
+        </a-form-item>
 
         <a-form-item field="release_notes" label="更新内容">
-            <a-input v-model="formData.release_notes" placeholder="请输入更新内容" />
+            <a-textarea 
+            v-model="formData.release_notes"
+            placeholder="请输入更新内容" 
+            allow-clear/>
+            
         </a-form-item>
 
         <a-form-item>
-            <LoadingButton html-type="submit" @click="handleSubmit">保存</LoadingButton>
+            <LoadingButton html-type="submit" type="primary" @click="handleSubmit">保存</LoadingButton>
         </a-form-item>
     </a-form>
 </template>
@@ -40,6 +49,7 @@ import { getSoftTypeList } from '@/api/software'
 import type { SaveVersion } from '@/api/software'
 import { syncRequestRef } from '@/hooks/syncRequestRef'
 import VersionInput from '@/components/version-input/index.vue'
+import { useCustomRequest } from './useCustomRequest'
 
 const props = defineProps({
     modelValue:{
@@ -62,6 +72,7 @@ console.log(softTypeList.value)
 
 const handleSubmit = async() => {
     await formRef.value.validate()
+    await new Promise(resolve => setTimeout(resolve, 10000))
     // emit('submit', modelValue.value)
 }
 
