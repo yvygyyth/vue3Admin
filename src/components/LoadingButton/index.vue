@@ -30,10 +30,8 @@ async function onClick(event: MouseEvent) {
 }
 
 function changeRef(exposed:any) {
-    vw!.exposed = {
-        onClick,
-        ...exposed
-    }
+    // 如果需要Button组件的所有方法，使用Object.assign避免展开操作符
+    vw!.exposed = exposed
 }
 
 defineExpose({} as ComponentInstance<typeof Button>)

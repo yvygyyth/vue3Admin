@@ -1,5 +1,5 @@
-import { useSaveForm } from './useSaveForm/index'
+import { openSaveForm } from './openSaveForm/index'
 
 export {
-    useSaveForm
+    openSaveForm
 }

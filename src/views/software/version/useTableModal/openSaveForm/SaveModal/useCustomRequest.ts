@@ -10,7 +10,6 @@ export const useCustomRequest = async(option: RequestOption): UploadRequest => {
             file: fileItem.file,
             name: name || fileItem.file.name
         }, (progressEvent: ProgressEvent) => {
-            console.log(progressEvent)
             let percent
             if (progressEvent.total > 0) {
                 percent = progressEvent.loaded / progressEvent.total

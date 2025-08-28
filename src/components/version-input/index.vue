@@ -1,28 +1,33 @@
 <template>
     <div class="version-input">
-        <a-input-number ref="majorRef" v-model="versionData.major" :min="0" :max="999" :precision="0" :step="1" :controls="false" hide-button
-            placeholder="0" class="version-number-input" @keydown.enter="focusNext('minor')" />
+        <a-input-number ref="majorRef" v-model="versionData.major" :min="0" :max="999" :precision="0" :step="1"
+            :controls="false" hide-button class="version-number-input" @keydown.enter="focusNext('minor')" />
         <span class="version-dot">.</span>
-        <a-input-number ref="minorRef" v-model="versionData.minor" :min="0" :max="999" :precision="0" :step="1" :controls="false" hide-button
-            placeholder="0" class="version-number-input" @keydown.enter="focusNext('patch')" />
+        <a-input-number ref="minorRef" v-model="versionData.minor" :min="0" :max="999" :precision="0" :step="1"
+            :controls="false" hide-button class="version-number-input" @keydown.enter="focusNext('patch')" />
         <span class="version-dot">.</span>
-        <a-input-number ref="patchRef" v-model="versionData.patch" :min="0" :max="999" :precision="0" :step="1" :controls="false" hide-button
-            placeholder="0" class="version-number-input" @keydown.enter="handleEnter" />
+        <a-input-number ref="patchRef" v-model="versionData.patch" :min="0" :max="999" :precision="0" :step="1"
+            :controls="false" hide-button class="version-number-input" @keydown.enter="handleEnter" />
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, nextTick, computed } from 'vue'
 
+const defaultNumber = 0
+const defaultVersion = '0.0.0'
+
 const props = defineProps({
     modelValue: {
         type: String,
-        default: ''
+        default: defaultVersion
     }
 })
 
 
 const emit = defineEmits(['update:modelValue'])
+
+
 
 // 输入框引用
 const majorRef = ref()
@@ -35,42 +40,35 @@ const isNumericString = (str: string): boolean => {
 }
 
 // 使用计算属性处理双向绑定
-const versionData = computed({
-    get() {
-        // 从外部传入的字符串解析为三个数字
-        if (!props.modelValue) {
-            return { major: undefined, minor: undefined, patch: undefined }
+const versionData = computed(() => {
+    return new Proxy({
+        major: defaultNumber,
+        minor: defaultNumber,
+        patch: defaultNumber
+    }, {
+        get(_, key: string) {
+            const parts = props.modelValue.split('.')
+            const [major, minor, patch] = parts.map(p => /^\d+$/.test(p) ? parseInt(p, 10) : defaultNumber)
+
+            if (key === 'major') return major
+            if (key === 'minor') return minor
+            if (key === 'patch') return patch
+        },
+        set(_, key: string, value: number) {
+            const parts = props.modelValue.split('.')
+            
+            let [major, minor, patch] = parts.map(p => /^\d+$/.test(p) ? parseInt(p, 10) : defaultNumber)
+
+            if (key === 'major') major = value
+            if (key === 'minor') minor = value
+            if (key === 'patch') patch = value
+
+            emit('update:modelValue', [major, minor, patch].join('.'))
+            return true
         }
-
-        const parts = props.modelValue.split('.')
-        if (parts.length !== 3) {
-            return { major: undefined, minor: undefined, patch: undefined }
-        }
-
-        const [majorPart, minorPart, patchPart] = parts
-
-        // 判断是否为数字字符串
-        const major = (majorPart && isNumericString(majorPart)) ? parseInt(majorPart, 10) : undefined
-        const minor = (minorPart && isNumericString(minorPart)) ? parseInt(minorPart, 10) : undefined
-        const patch = (patchPart && isNumericString(patchPart)) ? parseInt(patchPart, 10) : undefined
-
-        return { major, minor, patch }
-    },
-    set(value: { major?: number; minor?: number; patch?: number }) {
-        // 将三个数字组合成字符串向外传递
-        const values = [value.major, value.minor, value.patch]
-        
-        // 如果有任何一个值为 undefined，则传递空字符串
-        if (values.some(v => v === undefined)) {
-            emit('update:modelValue', '')
-            return
-        }
-
-        // 使用 join 方法组合版本号
-        const versionString = values.join('.')
-        emit('update:modelValue', versionString)
-    }
+    })
 })
+
 
 // 聚焦下一个输入框
 const focusNext = (target: 'minor' | 'patch') => {
@@ -95,7 +93,7 @@ defineExpose({
         majorRef.value?.focus()
     },
     clear: () => {
-        emit('update:modelValue', '')
+        emit('update:modelValue', defaultVersion)
     }
 })
 </script>

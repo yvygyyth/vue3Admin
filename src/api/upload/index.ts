@@ -13,13 +13,6 @@ export const checkChunkExists = (hash: string): Promise<boolean> => {
     return request.get(`/file/chunk/${hash}`)
 }
 
-// 下载文件
-export const downloadFile = (id: number): Promise<Blob> => {
-    return request.get(`/file/download/${id}`, {
-        responseType: 'blob'
-    })
-}
-
 // 上传文件或文件块（支持泛型，根据是否传name返回不同类型）
 export const upload = <T extends UploadFileParams>(
     uploadFile: T,

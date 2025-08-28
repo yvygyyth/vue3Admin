@@ -1,6 +1,7 @@
 import { COUNT_SYMBOL } from '@/types/pagination';
 import { DependencyHub, Keys } from "@/hooks/useRequestInjectorManager";
 import type { ApiResponse, DataWithCount } from './type';
+import { Message } from '@arco-design/web-vue'
 
 // 请求拦截器
 export const requestInterceptor = async (config: any) => {
@@ -39,9 +40,7 @@ export const responseInterceptor = <T = any>(response: ApiResponse) => {
 
 // 响应错误拦截器
 export const responseErrorInterceptor = (error: any) => {
-
-	console.error('响应拦截器错误:', error);
-	
+	Message.error(error.response.data.msg)
 	// 可以在这里处理错误，比如显示错误提示
 	// showError(errorResponse.msg);
 	

@@ -1,12 +1,12 @@
 <template>
-    <a-form :model="formData" ref="formRef">
+    <a-form :model="formData" ref="formRef" :rules="rule">
         <a-form-item 
         field="app_id" 
         label="软件类型"
         >
             <a-select 
                 placeholder="请选择软件类型" 
-                :loading="softTypeList.loading"
+
                 :options="softTypeList.value"
                 :field-names="{
                     label: 'name',
@@ -16,13 +16,17 @@
         </a-form-item>
 
         <a-form-item field="version" label="版本号">
-            <VersionInput v-model="formData.version" />
+            <VersionInput 
+            v-model="formData.version" />
         </a-form-item>
 
         <a-form-item field="file_id" label="文件">
             <a-upload 
+            v-model:file-list="fileList.value"
+            draggable
             :custom-request="useCustomRequest"
             :limit="1"
+            @success="handleSuccess"
              />
         </a-form-item>
 
@@ -47,9 +51,12 @@ import LoadingButton from '@/components/LoadingButton/index.vue'
 import { useVModel } from '@vueuse/core'
 import { getSoftTypeList } from '@/api/software'
 import type { SaveVersion } from '@/api/software'
-import { syncRequestRef } from '@/hooks/syncRequestRef'
+import { syncRequestRef, asyncRequestRef } from '@/hooks/syncRequestRef'
 import VersionInput from '@/components/version-input/index.vue'
-import { useCustomRequest } from './useCustomRequest'
+import { useCustomRequest } from './useCustomRequest.ts'
+import { rule } from './rule'
+import type { FileResult } from '@/api/upload/type'
+import { getFileInfo } from '@/api/file'
 
 const props = defineProps({
     modelValue:{
@@ -59,7 +66,7 @@ const props = defineProps({
 })
 
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'submit'])
 
 const formData = useVModel(props, 'modelValue', emit)
 
@@ -68,12 +75,22 @@ const formRef = useTemplateRef<FormInstance>('formRef')
 
 const softTypeList = syncRequestRef(getSoftTypeList, [])
 
-console.log(softTypeList.value)
+const fileList = asyncRequestRef(() => {
+    return getFileInfo(formData.value.file_id).then(res=>{
+        return [{
+            uid: res.id,
+            name: res.name
+        }]
+    })
+}, [])
+
+const handleSuccess = ({ response }: { response: FileResult }) => {
+    formData.value.file_id = response.id
+}
 
 const handleSubmit = async() => {
     await formRef.value.validate()
-    await new Promise(resolve => setTimeout(resolve, 10000))
-    // emit('submit', modelValue.value)
+    await emit('submit', formData.value)
 }
 
 

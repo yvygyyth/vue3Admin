@@ -21,13 +21,12 @@ import TableSearchForm from './useTableSearchForm/index.vue'
 import { usePagination } from '@/hooks/usePagination'
 import { useTableColumns } from './useTableColumns/index'
 import { asyncRequestRef } from '@/hooks/syncRequestRef'
-import { getVersionList, type SaveVersion, type Version } from '@/api/software'
+import { getVersionList, type Version } from '@/api/software'
 import { useTableActionArea } from './useTableActionArea/index'
 
-const { ActionAreaRender } = useTableActionArea()
+const { render: ActionAreaRender } = useTableActionArea()
 
 const dataList = asyncRequestRef<Version[]>(getVersionList,[])
-
 
 const formData = ref({
     app_id:void 0,

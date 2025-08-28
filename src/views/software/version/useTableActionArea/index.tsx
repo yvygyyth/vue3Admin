@@ -24,13 +24,13 @@ export const useTableActionArea = () => {
         
     ])
 
-    const ActionAreaRender = () => {
+    const render = () => {
         return tableActionButtons.value.map(item => {
             return item.render()
         })
     }
 
     return {
-        ActionAreaRender
+        render
     }
 }
