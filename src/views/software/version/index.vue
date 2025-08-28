@@ -24,15 +24,19 @@ import { asyncRequestRef } from '@/hooks/syncRequestRef'
 import { getVersionList, type Version } from '@/api/software'
 import { useTableActionArea } from './useTableActionArea/index'
 
-const { render: ActionAreaRender } = useTableActionArea()
-
-const dataList = asyncRequestRef<Version[]>(getVersionList,[])
-
 const formData = ref({
-    app_id:void 0,
+    app_id: void 0,
     page:1,
     limit:10
 })
+
+const { render: ActionAreaRender } = useTableActionArea()
+
+const dataList = asyncRequestRef<Version[]>(()=>{
+    return getVersionList(formData.value)
+},[])
+
+
 
 // 分页
 const { pagination } = usePagination(
