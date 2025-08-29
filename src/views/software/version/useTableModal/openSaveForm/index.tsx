@@ -1,5 +1,5 @@
 
-import { Modal } from "@arco-design/web-vue"
+import { Modal, Message } from "@arco-design/web-vue"
 import SaveModel from './SaveModal/index.vue'
 import { ref } from 'vue'
 import type { Version } from '@/api/software'
@@ -9,7 +9,9 @@ import { saveVersion } from '@/api/software'
 
 export const openSaveForm = (data?: Version) => {
     return new Promise((resolve) => {
+        
         const formData = ref<Partial<SaveVersion>>({
+            id: data?.id,
             app_id: data?.app_id,
             version: data?.version,
             file_id: data?.file_id,
@@ -18,8 +20,8 @@ export const openSaveForm = (data?: Version) => {
     
         const submit = async() => {
             try {
-                console.log(formData.value)
                 await saveVersion(formData.value as SaveVersion)
+                Message.success(data?.id ? '编辑成功' : '新增成功')
                 close()
                 resolve(true)
             } catch (error) {
@@ -28,7 +30,7 @@ export const openSaveForm = (data?: Version) => {
         }
     
         const { close } = Modal.open({
-            title: '新增',
+            title: data?.id ? '编辑' : '新增',
             width: 600,
             footer: false,
             content: () => <SaveModel 

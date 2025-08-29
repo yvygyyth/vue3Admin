@@ -8,6 +8,7 @@ export type softwareType = {
 }
 
 export type SaveVersion = {
+    id?: number
     app_id: number
     version: string
     file_id: number
