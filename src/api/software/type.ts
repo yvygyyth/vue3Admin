@@ -28,3 +28,11 @@ export type Version = {
     release_notes?: string
     created_at: string
 }
+
+
+export type SaveAppType = {
+    id?: number
+    app_key: string
+    name: string
+    description: string
+}

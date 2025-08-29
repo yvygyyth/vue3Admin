@@ -2,7 +2,7 @@ import { ViewNames } from '@/types/constants'
 
 export default {
   path: '/software',
-  name: ViewNames.list,
+  name: 'software',
   component: () => import('@/components/layout-component/index'),
   meta: {
     locale: 'menu.software',
@@ -10,8 +10,18 @@ export default {
   },
   children: [
     {
+      path: 'app',
+      name: 'software-app',
+      component: () => import('@/views/software/app/index.vue'),
+      meta: {
+        locale: 'menu.software.app',
+        requiresAuth: true,
+        roles: ['*']
+      }
+    },
+    {
       path: 'version',
-      name: ViewNames.workplace,
+      name: 'software-version',
       component: () => import('@/views/software/version/index.vue'),
       meta: {
         locale: 'menu.software.version',

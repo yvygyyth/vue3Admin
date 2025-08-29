@@ -6,7 +6,7 @@
         >
             <a-select 
                 placeholder="请选择软件类型" 
-
+                :loading="softTypeList.loading"
                 :options="softTypeList.value"
                 :field-names="{
                     label: 'name',
@@ -76,6 +76,7 @@ const formRef = useTemplateRef<FormInstance>('formRef')
 const softTypeList = syncRequestRef(getSoftTypeList, [])
 
 const fileList = asyncRequestRef(() => {
+    if(!formData.value.file_id) return Promise.resolve([])
     return getFileInfo(formData.value.file_id).then(res=>{
         return [{
             uid: res.id,
