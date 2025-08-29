@@ -17,6 +17,7 @@
 
         <a-form-item field="version" label="版本号">
             <VersionInput 
+            :disabled="!!formData.id"
             v-model="formData.version" />
         </a-form-item>
 

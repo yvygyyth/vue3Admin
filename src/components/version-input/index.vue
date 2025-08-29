@@ -1,13 +1,13 @@
 <template>
     <div class="version-input">
         <a-input-number ref="majorRef" v-model="versionData.major" :min="0" :max="999" :precision="0" :step="1"
-            :controls="false" hide-button class="version-number-input" @keydown.enter="focusNext('minor')" />
+            :controls="false" hide-button class="version-number-input" @keydown.enter="focusNext('minor')" :disabled="disabled" />
         <span class="version-dot">.</span>
         <a-input-number ref="minorRef" v-model="versionData.minor" :min="0" :max="999" :precision="0" :step="1"
-            :controls="false" hide-button class="version-number-input" @keydown.enter="focusNext('patch')" />
+            :controls="false" hide-button class="version-number-input" @keydown.enter="focusNext('patch')" :disabled="disabled" />
         <span class="version-dot">.</span>
         <a-input-number ref="patchRef" v-model="versionData.patch" :min="0" :max="999" :precision="0" :step="1"
-            :controls="false" hide-button class="version-number-input" @keydown.enter="handleEnter" />
+            :controls="false" hide-button class="version-number-input" @keydown.enter="handleEnter" :disabled="disabled" />
     </div>
 </template>
 
@@ -21,6 +21,10 @@ const props = defineProps({
     modelValue: {
         type: String,
         default: defaultVersion
+    },
+    disabled: {
+        type: Boolean,
+        default: false
     }
 })
 
