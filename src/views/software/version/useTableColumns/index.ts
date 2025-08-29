@@ -29,6 +29,9 @@ export const useTableColumns = () => {
         {
             title: '更新内容',
             dataIndex: 'release_notes',
+            ellipsis: true,
+            tooltip: true,
+            maxWidth: 200,
         },
         {
             title: '更新时间',

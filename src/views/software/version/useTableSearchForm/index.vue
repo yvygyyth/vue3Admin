@@ -2,6 +2,8 @@
 import { useVModel } from '@vueuse/core'
 import { getSoftTypeList } from '@/api/software'
 import { syncRequestRef } from '@/hooks/syncRequestRef'
+import { eventBus } from '@/hooks/useEventBus'
+import { REFRESH_LIST_EVENT, defaultSearchForm } from '../constants'
 
 const props = defineProps({
 	modelValue: {
@@ -13,19 +15,19 @@ const props = defineProps({
 		default: false
 	}
 })
-const emit = defineEmits(['update:modelValue','search'])
+const emit = defineEmits(['update:modelValue'])
 
 const searchQuery = useVModel(props, 'modelValue', emit)
 
 const softTypeList = syncRequestRef(getSoftTypeList, [])
 
 const handleSubmit = () => {
-	emit('search')
+	eventBus.emit(REFRESH_LIST_EVENT)
 }
 
 const handleReset = () => {
-	searchQuery.value = {}
-	emit('search')
+	searchQuery.value = defaultSearchForm
+	eventBus.emit(REFRESH_LIST_EVENT)
 }
 
 </script>

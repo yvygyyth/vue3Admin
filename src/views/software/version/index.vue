@@ -3,7 +3,6 @@
         <TableSearchForm
             v-model="formData"
             :loading="dataList.loading"
-            @search="handleSearch"
         />
         <ActionAreaRender />
         <a-table
@@ -23,8 +22,11 @@ import { useTableColumns } from './useTableColumns/index'
 import { asyncRequestRef } from '@/hooks/syncRequestRef'
 import { getVersionList, type Version } from '@/api/software'
 import { useTableActionArea } from './useTableActionArea/index'
+import { eventBus } from '@/hooks/useEventBus'
+import type { SearchVersion } from '@/api/software'
+import { REFRESH_LIST_EVENT } from './constants'
 
-const formData = ref({
+const formData = ref<SearchVersion>({
     app_id: void 0,
     page:1,
     limit:10
@@ -36,8 +38,6 @@ const dataList = asyncRequestRef<Version[]>(()=>{
     return getVersionList(formData.value)
 },[])
 
-
-
 // 分页
 const { pagination } = usePagination(
     dataList,
@@ -46,9 +46,10 @@ const { pagination } = usePagination(
 
 const { colList } = useTableColumns()
 
-const handleSearch = () => {
+
+eventBus.on(REFRESH_LIST_EVENT, () => {
     dataList.refresh()
-}
+})
 
 </script>
 <style lang="scss" scoped>
