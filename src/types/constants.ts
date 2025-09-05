@@ -62,9 +62,17 @@ export enum ViewNames {
   user = 'user',
 
   info = 'info',
-  setting = 'setting'
+  setting = 'setting',
 
   // =============== DIVIDER ==================
+
+  users = 'users',
+
+  permission = 'permission',
+
+  // =============== DIVIDER ==================
+
+  software = 'software'
 }
 
 export const layoutStyleConfig = {

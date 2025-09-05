@@ -8,15 +8,23 @@ import { Message } from '@arco-design/web-vue'
 export const useHandlers = () => {
 
     const editOk = async(data: softwareType) => {
-        await openSaveForm(data)
-        eventBus.emit(REFRESH_LIST_EVENT)
-        Message.success('编辑成功')
+        try {
+            await openSaveForm(data)
+            eventBus.emit(REFRESH_LIST_EVENT)
+            Message.success('编辑成功')
+        } catch (error) {
+            // 用户取消操作，静默处理
+        }
     }
 
     const deleteOk = async(data: softwareType) => {
-        await deleteSoftType(data.id)
-        eventBus.emit(REFRESH_LIST_EVENT)
-        Message.success('删除成功')
+        try {
+            await deleteSoftType(data.id)
+            eventBus.emit(REFRESH_LIST_EVENT)
+            Message.success('删除成功')
+        } catch (error) {
+            console.error('删除操作失败:', error)
+        }
     }
 
     return {

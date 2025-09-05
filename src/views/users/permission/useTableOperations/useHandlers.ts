@@ -7,15 +7,23 @@ import { deletePermission, deletePermissionTreeCache, type PermissionTree } from
 export const useHandlers = () => {
 
     const editOk = async(record: PermissionTree) => {
-        await openSaveForm(record)
-        Message.success('编辑权限成功')
-        eventBus.emit(REFRESH_LIST_EVENT)
+        try {
+            await openSaveForm(record)
+            Message.success('编辑权限成功')
+            eventBus.emit(REFRESH_LIST_EVENT)
+        } catch (error) {
+            // 用户取消操作，静默处理
+        }
     }
 
     const addChildOk = async(record: PermissionTree) => {
-        await openSaveForm({ parent_id: record.id })
-        Message.success('新增子权限成功')
-        eventBus.emit(REFRESH_LIST_EVENT)
+        try {
+            await openSaveForm({ parent_id: record.id })
+            Message.success('新增子权限成功')
+            eventBus.emit(REFRESH_LIST_EVENT)
+        } catch (error) {
+            // 用户取消操作，静默处理
+        }
     }
 
     const deleteOk = async(record: PermissionTree) => {

@@ -23,7 +23,10 @@ const routeIconMap: Record<RouteName, typeof IconDashboard | undefined> = {
     [ViewNames.form]: IconSettings,
     [ViewNames.list]: IconList,
     [ViewNames.result]: IconCloseCircle,
-    [ViewNames.user]: IconUser
+    [ViewNames.user]: IconUser,
+    [ViewNames.users]: IconUser,
+    [ViewNames.permission]: IconUser,
+    [ViewNames.software]: IconSettings
 }
 
 type Context = {

@@ -1,6 +1,8 @@
 import { ref } from 'vue'
+import { PermissionTypeMap } from '@/api/permission'
 import type { PermissionTree } from '@/api/permission'
 import { useTableOperations } from '../useTableOperations'
+import { formatDateTime } from '@/utils/format'
 
 export const useTableColumns = () => {
     const { render: OperationsRender } = useTableOperations()
@@ -26,12 +28,7 @@ export const useTableColumns = () => {
             dataIndex: 'type',
             width: 100,
             render: ({ record }: { record: PermissionTree }) => {
-                const typeMap: Record<number, string> = {
-                    1: '菜单',
-                    2: '按钮',
-                    3: '接口'
-                }
-                return typeMap[record.type] || '未知'
+                return PermissionTypeMap.get(record.type)
             }
         },
         {
@@ -51,7 +48,7 @@ export const useTableColumns = () => {
             dataIndex: 'created_at',
             width: 180,
             render: ({ record }: { record: PermissionTree }) => {
-                return new Date(record.created_at * 1000).toLocaleString()
+                return formatDateTime(record.created_at)
             }
         },
         {

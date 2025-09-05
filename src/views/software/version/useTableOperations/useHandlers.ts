@@ -7,13 +7,21 @@ import { REFRESH_LIST_EVENT } from '../constants'
 export const useHandlers = () => {
 
     const editOk = async(data: Version) => {
-        await openSaveForm(data)
-        eventBus.emit(REFRESH_LIST_EVENT)
+        try {
+            await openSaveForm(data)
+            eventBus.emit(REFRESH_LIST_EVENT)
+        } catch (error) {
+            // 用户取消操作，静默处理
+        }
     }
 
     const deleteOk = async(data: Version) => {
-        await deleteVersion(data.id)
-        eventBus.emit(REFRESH_LIST_EVENT)
+        try {
+            await deleteVersion(data.id)
+            eventBus.emit(REFRESH_LIST_EVENT)
+        } catch (error) {
+            console.error('删除操作失败:', error)
+        }
     }
 
     return {
