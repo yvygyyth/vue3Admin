@@ -28,6 +28,16 @@ export default {
                 requiresAuth: true,
                 roles: ['*']
             }
+        },
+        {
+            path: 'account',
+            name: ViewNames.account,
+            component: () => import('@/views/users/account/index.vue'),
+            meta: {
+                locale: 'menu.users.account',
+                requiresAuth: true,
+                roles: ['*']
+            }
         }
     ]
 }

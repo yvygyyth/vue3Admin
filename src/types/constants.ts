@@ -70,6 +70,7 @@ export enum ViewNames {
 
   permission = 'permission',
   role = 'role',
+  account = 'account',
 
   // =============== DIVIDER ==================
 

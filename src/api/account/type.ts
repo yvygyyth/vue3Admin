@@ -1,5 +1,4 @@
-import type { PageLimit } from '@/types/pagination'
-import type { TimeRange } from '@/types/timeRange'
+import type { PageLimit, TimeRange } from '@/types/global'
 
 export type SimpleUser = {
     id: number

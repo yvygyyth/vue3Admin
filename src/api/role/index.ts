@@ -7,11 +7,12 @@ export type { Role, RoleSearch, RoleWithPermissions, RoleSave } from './type'
 
 const request = useRequestor()
 
+const { requestor:syncRequestor, store:syncStore } = requestExtender.syncRequestor()
 const { requestor:idempotencyRequestor } = requestExtender.idempotencyRequestor()
 
 // 获取所有角色
-export const getRolesAll = (): Promise<Role[]> => {
-    return request.get('/roles/all')
+export const getRolesAll = (): Role[] => {
+    return syncRequestor.get('/roles/all')
 }
 
 // 分页获取角色
@@ -19,15 +20,23 @@ export const getRoles = (data: RoleSearch): Promise<RoleWithPermissions[]> => {
     return idempotencyRequestor.post('/roles/query', data)
 }
 
+// 删除角色缓存
+export const deleteRolesCache = () => {
+    return syncStore.remove('/roles/all')
+}
 
 // 删除角色
-export const deleteRole = (id: number): Promise<void> => {
-    return request.delete(`/roles/${id}`)
+export const deleteRole = async(id: number): Promise<void> => {
+    const res = await request.delete(`/roles/${id}`)
+    deleteRolesCache()
+    return res
 }
 
 // 角色保存
-export const saveRole = (data: RoleSave): Promise<RoleWithPermissions> => {
-    return request.post('/roles/save', data)
+export const saveRole = async(data: RoleSave): Promise<RoleWithPermissions> => {
+    const res = await request.post('/roles/save', data)
+    deleteRolesCache()
+    return res
 }
 
 // 获取角色权限列表

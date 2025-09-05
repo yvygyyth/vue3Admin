@@ -1,7 +1,8 @@
-import { useRequestor } from '@net-vert/core'
+import { useRequestor, requestExtender } from '@net-vert/core'
 import type { SimpleUser, User, UserSearch, CreateUser, UpdateUser } from './type'
 
 const request = useRequestor()
+const { requestor:idempotencyRequestor } = requestExtender.idempotencyRequestor()
 
 
 // 获取所有用户（简单列表）
@@ -10,15 +11,9 @@ export const getAllUsers = (): Promise<SimpleUser[]> => {
 }
 
 
-// 获取单个用户信息
-export const getUser = (id: number): Promise<User> => {
-    return request.get(`/users/${id}`)
-}
-
-
 // 获取用户列表(分页)
 export const getUsers = (data: UserSearch): Promise<User[]> => {
-    return request.post('/users', data)
+    return idempotencyRequestor.post('/users/query', data)
 }
 
 

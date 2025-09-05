@@ -23,14 +23,18 @@ export const getPermissions = (ids: number[]): Promise<Permission[]> => {
 
 
 // 删除权限
-export const deletePermission = (id: number): Promise<void> => {
-    return request.delete(`/permissions/${id}`)
+export const deletePermission = async(id: number): Promise<void> => {
+    const res = await request.delete(`/permissions/${id}`)
+    deletePermissionTreeCache()
+    return res
 }
 
 
 // 权限保存
-export const savePermission = (data: PermissionSave): Promise<Permission> => {
-    return request.post(`/permissions/save`, data)
+export const savePermission = async(data: PermissionSave): Promise<Permission> => {
+    const res = await request.post(`/permissions/save`, data)
+    deletePermissionTreeCache()
+    return res
 }
 
 
