@@ -29,7 +29,7 @@ export const useTableOperations = () => {
                         <a-button 
                         type="text" 
                         status="danger"
-                        onClick={() => deleteOk(record)}>删除</a-button>
+                        >删除</a-button>
                     </a-popconfirm>
                 )
             }

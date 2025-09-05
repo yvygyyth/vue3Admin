@@ -10,3 +10,8 @@ export type LoginRes = {
 export type UserInfo = {
   token: string
 }
+
+export type ChangePasswordData = {
+  oldPassword: string;
+  newPassword: string;
+}

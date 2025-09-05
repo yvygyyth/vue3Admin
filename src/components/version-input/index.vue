@@ -31,17 +31,10 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-
-
 // 输入框引用
 const majorRef = ref()
 const minorRef = ref()
 const patchRef = ref()
-
-// 判断字符串是否为数字字符串
-const isNumericString = (str: string): boolean => {
-    return /^\d+$/.test(str)
-}
 
 // 使用计算属性处理双向绑定
 const versionData = computed(() => {
@@ -119,7 +112,7 @@ defineExpose({
 
 .version-dot {
     color: var(--color-text-2);
-    font-weight: 500;
+    font-weight: bold;
     user-select: none;
 }
 </style>
