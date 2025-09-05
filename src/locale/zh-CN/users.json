@@ -1,4 +1,5 @@
 {
     "menu.users": "用户管理",
-    "menu.users.permission": "用户权限"
+    "menu.users.permission": "用户权限",
+    "menu.users.role": "角色管理"
 }

@@ -18,6 +18,16 @@ export default {
                 requiresAuth: true,
                 roles: ['*']
             }
+        },
+        {
+            path: 'role',
+            name: ViewNames.role,
+            component: () => import('@/views/users/role/index.vue'),
+            meta: {
+                locale: 'menu.users.role',
+                requiresAuth: true,
+                roles: ['*']
+            }
         }
     ]
 }

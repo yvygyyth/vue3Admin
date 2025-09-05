@@ -6,7 +6,9 @@
         >
             <a-input 
                 placeholder="请输入权限代码，如：user:create" 
-                v-model="formData.code"/>
+                v-model="formData.code"
+                :disabled = "formData.type === PermissionType.API"
+                />
         </a-form-item>
 
         <a-form-item field="name" label="权限名称">
@@ -20,6 +22,7 @@
                 v-model="formData.type" 
                 placeholder="请选择权限类型"
                 :options="typeOptions"
+                :disabled = "formData.type === PermissionType.API"
             />
         </a-form-item>
 
@@ -36,6 +39,7 @@
                 <a-input
                     v-model="formData.route"
                     placeholder="请输入路由，如：/api/users"
+                    disabled
                 />
             </a-form-item>
         </template>
@@ -59,7 +63,7 @@
 
         <a-form-item>
             <LoadingButton html-type="submit" type="primary" @click="handleSubmit">
-                {{ formData.id ? '更新' : '创建' }}
+                保存
             </LoadingButton>
         </a-form-item>
     </a-form>

@@ -26,6 +26,7 @@ const routeIconMap: Record<RouteName, typeof IconDashboard | undefined> = {
     [ViewNames.user]: IconUser,
     [ViewNames.users]: IconUser,
     [ViewNames.permission]: IconUser,
+    [ViewNames.role]: IconUser,
     [ViewNames.software]: IconSettings
 }
 
