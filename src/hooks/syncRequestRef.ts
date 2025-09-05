@@ -35,8 +35,6 @@ export const syncRequestRef = <T>(
         triggerFunc = () => trigger();
         return {
             get() {
-                console.log('get',result, loading.value)
-
                 track();
                 if (result === UNINIT) {
                     try {

@@ -61,7 +61,7 @@ export default defineComponent({
         if (appRoute) {
           const namePath = appRoute.namePath
           openKeys.value = Array.from(new Set([...namePath, ...openKeys.value]))
-          const stackTopName = namePath[namePath.length - 1]
+          const stackTopName = namePath[namePath.length - 1] as string
           selectedKey.value = [stackTopName]
         }
       }

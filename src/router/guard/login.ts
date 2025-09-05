@@ -18,7 +18,6 @@ export default function setupUserLoginInfoGuard(router: Router) {
   router.beforeEach(async (to, _from, next) => {
     NProgress.start()
     const token = await DependencyHub.getAndCall(Keys.getToken);
-    console.log('token',token)
     if (token) {
       if (token) {
         next()

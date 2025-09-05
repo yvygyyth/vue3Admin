@@ -55,7 +55,7 @@ export default defineComponent({
     const handleTabClose = () => {
       tabStore.deleteTab(props.itemData.name as ViewNames)
       if (props.itemData.name === route.name) {
-        const prevTab = tabList.value[props.index - 1]
+        const prevTab = tabList.value[props.index - 1] as TabItem
         router.push({ path: prevTab.fullPath })
       }
     }

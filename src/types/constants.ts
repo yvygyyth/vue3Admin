@@ -3,7 +3,8 @@ export enum LocaleOptions {
   en = 'en-US'
 }
 export enum LocalStorageKey {
-  loginFormKey = 'VUE_TSX_ADMIN_LOGIN_FORM_INFO'
+  loginFormKey = 'VUE_TSX_ADMIN_LOGIN_FORM_INFO',
+  localeKey = 'LOCAL_LOCALE_KEY'
 }
 export enum AppTheme {
   light = 'light',

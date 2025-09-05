@@ -37,7 +37,7 @@ export default defineComponent({
       localStore.set(LS.loginFormKey, {
         rememberPassword: true,
         account: 'admin',
-        password: '123456'
+        password: 'admin123'
       })
     )
 
