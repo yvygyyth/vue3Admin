@@ -1,4 +1,4 @@
-import { COUNT_SYMBOL } from '@/types/pagination';
+import { COUNT_SYMBOL } from '@/types/global';
 import { DependencyHub, Keys } from "@/hooks/useRequestInjectorManager";
 import type { ApiResponse, DataWithCount } from './type';
 import { Message } from '@arco-design/web-vue'
@@ -31,11 +31,12 @@ export const requestErrorInterceptor = (error: any) => {
 
 // 响应拦截器
 export const responseInterceptor = <T = any>(response: ApiResponse) => {
-	const data = response.data;
-	if (data && typeof data === 'object') {
-		(data as any)[COUNT_SYMBOL] = response.count;
+	const res = response.data;
+	if (res && typeof res.data === 'object') {
+		(res.data as any)[COUNT_SYMBOL] = res.count;
+		console.log('response.count',res)
 	}
-	return data as DataWithCount<T>;
+	return res as DataWithCount<T>;
 };
 
 // 响应错误拦截器

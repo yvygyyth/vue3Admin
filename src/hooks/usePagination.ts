@@ -1,6 +1,6 @@
 import { ref, computed, watch } from 'vue';
-import type { PageLimit } from '@/types/pagination';
-import { COUNT_SYMBOL } from '@/types/pagination';
+import type { PageLimit } from '@/types/global';
+import { COUNT_SYMBOL } from '@/types/global';
 import type { SyncRequestRef } from '@/hooks/syncRequestRef';
 import type { Ref } from 'vue';
 
@@ -63,6 +63,7 @@ export const usePagination = <T, F extends { page?: number; limit?: number }>(
     watch(
         () => dataList.value,
         () => {
+            console.log('dataList.value',dataList.value, (dataList.value as any)[COUNT_SYMBOL])
             total.value = (dataList.value as any)[COUNT_SYMBOL] || 0
         }
     )

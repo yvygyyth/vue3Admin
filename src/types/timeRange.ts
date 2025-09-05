@@ -1,1 +1,0 @@
-export type TimeRange = [number | undefined, number | undefined]

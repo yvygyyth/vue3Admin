@@ -17,15 +17,11 @@ export type Pagination = {
   total?: number
 }
 
-export type Timestamp = string | number | Date[] | undefined
-
-export interface TimestampedEntity {
-  created_at: Timestamp
-  updated_at: Timestamp
-  deleted_at: Timestamp
+export type PageLimit = {
+  page?: number;
+  limit?: number;
 }
 
-export interface TimeRange {
-  start_time: Timestamp
-  end_time: Timestamp
-}
+export const COUNT_SYMBOL = Symbol('count');
+
+export type TimeRange = [number | undefined, number | undefined]

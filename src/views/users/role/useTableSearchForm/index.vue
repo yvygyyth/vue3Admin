@@ -45,7 +45,10 @@ const handleReset = () => {
 						<a-range-picker 
 							v-model="searchQuery.time_range"
 							style="width: 100%"
-							clearable />
+							clearable 
+							showTime 
+							value-format="X"
+							/>
 					</a-form-item>
 				</a-col>
 			</a-row>

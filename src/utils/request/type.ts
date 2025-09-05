@@ -1,4 +1,4 @@
-import { COUNT_SYMBOL } from "@/types/pagination";
+import { COUNT_SYMBOL } from "@/types/global";
 
 // 通用响应类型
 export interface ApiResponse<T = any> {
