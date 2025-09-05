@@ -1,22 +1,19 @@
-
-import { useRequestor } from '@net-vert/core'
+import { useRequestor, requestExtender } from '@net-vert/core'
 import type { PermissionSearch, Permission, PermissionTree, PermissionNode, PermissionSave } from './type'
 
 const request = useRequestor()
-// 获取完整树形结构
+const { requestor:syncRequestor, store:syncStore } = requestExtender.syncRequestor()
+const { requestor:idempotencyRequestor } = requestExtender.idempotencyRequestor()
+
 export function getPermissionTree(): Promise<PermissionTree[]> {
-    return request.get('/permissions/tree')
+    return syncRequestor.get('/permissions/tree')
 }
+
+export const deletePermissionTreeCache = () => syncStore.remove('/permissions/tree')
 
 // 获取权限节点
 export function getPermissionNode(data: PermissionSearch): Promise<PermissionNode[]> {
     return request.post(`/permissions/nodes`, data)
-}
-
-
-// 获取单个权限
-export function getPermission(id: number): Promise<Permission> {
-    return request.get(`/permissions/${id}`)
 }
 
 // 批量获取权限
