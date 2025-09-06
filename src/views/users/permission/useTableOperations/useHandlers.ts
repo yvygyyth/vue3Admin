@@ -34,7 +34,7 @@ export const useHandlers = () => {
             Message.success('删除权限成功')
             eventBus.emit(REFRESH_LIST_EVENT)
         } catch (error) {
-            Message.error('删除权限失败')
+   
         }
     }
 

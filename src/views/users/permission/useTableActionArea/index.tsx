@@ -1,10 +1,10 @@
 import { ref } from 'vue'
 import { useHandlers } from './useHandlers.tsx'
-import { IconPlus } from '@arco-design/web-vue/es/icon'
+import { IconPlus, IconRefresh } from '@arco-design/web-vue/es/icon'
 
 export const useTableActionArea = () => {
 
-    const { addOk } = useHandlers()
+    const { addOk, refresh } = useHandlers()
 
     const tableActionButtons = ref([
         {
@@ -23,10 +23,33 @@ export const useTableActionArea = () => {
         
     ])
 
+    const tableActionArea = ref([
+        {
+            render: () => (
+                <a-button
+                  v-slots={{
+                    icon: () => <IconRefresh />
+                  }}
+                  onClick={refresh}
+                >
+                  刷新
+                </a-button>
+            )
+        }
+
+    ])
+
     const render = () => {
-        return tableActionButtons.value.map(item => {
-            return item.render()
-        })
+        return (
+            <a-row justify="space-between">
+                {tableActionButtons.value.map(item => {
+                    return item.render()
+                })}
+                {tableActionArea.value.map(item => {
+                    return item.render()
+                })}
+            </a-row>
+        )
     }
 
     return {

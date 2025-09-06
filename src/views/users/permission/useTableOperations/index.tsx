@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import type { PermissionTree } from '@/api/permission'
+import { PermissionType } from '@/api/permission/enum'
 import { useHandlers } from './useHandlers.ts'
 
 export const useTableOperations = () => {
@@ -39,6 +40,9 @@ export const useTableOperations = () => {
 
     const render = ({ record }: { record: PermissionTree }) => {
         return operations.value.map(item => {
+            if (item.permission === '删除' && record.type === PermissionType.API) {
+                return null
+            }
             return item.render({ record })
         })
     }
