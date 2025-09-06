@@ -44,7 +44,6 @@ const { pagination } = usePagination(
 const { colList } = useTableColumns()
 
 eventBus.on(REFRESH_LIST_EVENT, () => {
-    console.log('刷新用户列表',dataList.value)
     dataList.refresh()
 })
 
