@@ -11,13 +11,12 @@ export const openSetRolesForm = (data: User) => {
             userId: data.id,
             account: data.account,
             nickname: data.nickname,
-            roles: [...(data.roles || [])]
+            roleIds: data.roleIds
         })
 
         const submit = async() => {
             try {
-                await setRoles(formData.value.userId, formData.value.roles)
-                Message.success('设置角色成功')
+                await setRoles(formData.value.userId, formData.value.roleIds)
                 close()
                 resolve(true)
             } catch (error) {

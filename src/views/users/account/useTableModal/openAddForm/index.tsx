@@ -2,26 +2,20 @@ import { Modal, Message } from "@arco-design/web-vue"
 import AddModal from './AddModal/index.vue'
 import { ref } from 'vue'
 import { createUser } from '@/api/account'
-
+import type { CreateUser } from '@/api/account'
 export const openAddForm = () => {
     return new Promise(async (resolve, reject) => {
         
-        const formData = ref({
+        const formData = ref<CreateUser>({
             account: '',
             password: '',
             nickname: '',
-            roles: []
+            roleIds: []
         })
 
         const submit = async() => {
             try {
-                await createUser({
-                    account: formData.value.account,
-                    password: formData.value.password,
-                    nickname: formData.value.nickname || undefined,
-                    roles: formData.value.roles
-                })
-                
+                await createUser(formData.value)   
                 Message.success('新增成功')
                 close()
                 resolve(true)

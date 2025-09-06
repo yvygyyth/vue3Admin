@@ -39,11 +39,15 @@ export const useTableColumns = () => {
             title: '角色',
             dataIndex: 'roles',
             render: ({ record }: { record: User }) => {
-                return record.roles.map(role => 
-                    <a-tag color="blue">
-                        {roleOptions.value.get(role)}
-                    </a-tag>
-                )
+                return <div style={{ display: 'flex', gap: '4px' }}>
+                    {
+                        record.roleIds.map(roleId => 
+                            <a-tag color="blue">
+                                {roleOptions.value.get(roleId)}
+                            </a-tag>
+                        )
+                    }
+                </div>
             }
         },
         {

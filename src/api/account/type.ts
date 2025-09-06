@@ -10,13 +10,13 @@ export type SimpleUser = {
 }
 
 export type User = SimpleUser & {
-    roles: number[]
+    roleIds: number[]
 }
 
 export type UserSearch = {
     account?: string
     nickname?: string
-    roles?: number[]
+    roleIds?: number[]
     timeRange?: TimeRange
 } & PageLimit
 
@@ -26,7 +26,7 @@ export type CreateUser = {
     account: string
     password: string
     nickname?: string
-    roles?: number[]
+    roleIds?: number[]
 }
   
 // 更新用户：id 必填，其他可选，nickname 可以为 null
@@ -35,5 +35,5 @@ export type UpdateUser = {
     account?: string
     password?: string
     nickname?: string | null
-    roles?: number[]
+    roleIds?: number[]
 }

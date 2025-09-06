@@ -26,9 +26,9 @@
                 allow-clear/>
         </a-form-item>
 
-        <a-form-item field="roles" label="角色配置">
+        <a-form-item field="roleIds" label="角色配置">
             <a-select
-                v-model="formData.roles"
+                v-model="formData.roleIds"
                 :options="roleOptions.value"
                 :field-names="{ label: 'name', value: 'id' }"
                 multiple
@@ -51,17 +51,12 @@ import { useVModel } from '@vueuse/core'
 import { getRolesAll } from '@/api/role'
 import { syncRequestRef } from '@/hooks/syncRequestRef'
 import { addUserRules } from './rule'
+import type { CreateUser } from '@/api/account'
 
-interface AddFormData {
-    account: string
-    password: string
-    nickname: string
-    roles: number[]
-}
 
 const props = defineProps({
     modelValue:{
-        type: Object as PropType<AddFormData>,
+        type: Object as PropType<CreateUser>,
         required: true
     }
 })
