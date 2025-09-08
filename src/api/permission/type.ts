@@ -1,5 +1,3 @@
-import type { PageLimit } from '@/types/pagination'
-
 export type Permission = {
     id: number;
     code: string;

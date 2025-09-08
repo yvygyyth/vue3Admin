@@ -1,4 +1,4 @@
-import type { PageLimit } from '@/types/pagination'
+import type { PageLimit } from '@/types/global'
 
 export type softwareType = {
     id: number
