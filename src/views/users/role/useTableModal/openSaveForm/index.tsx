@@ -16,17 +16,10 @@ export const openSaveForm = (data?: Partial<RoleWithPermissions>) => {
 
         const submit = async() => {
             try {
-                const saveData = {
-                    ...formData.value,
-                    permissionIds: formData.value.permissionIds || []
-                }
-                
-                await saveRole(saveData as any)
-                Message.success(formData.value.id ? '编辑成功' : '新增成功')
+                await saveRole(formData.value)
                 close()
                 resolve(true)
             } catch (error) {
-                Message.error(formData.value.id ? '编辑失败' : '新增失败')
                 console.log(error)
             }
         }

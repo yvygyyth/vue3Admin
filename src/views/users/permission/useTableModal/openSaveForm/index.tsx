@@ -14,24 +14,15 @@ export const openSaveForm = (data?: Partial<PermissionTree>) => {
             type: data?.type || PermissionType.MENU,
             method: data?.method || '',
             route: data?.route || '',
-            parent_id: data?.parent_id || null
+            parent_id: data?.parent_id || void 0
         })
 
         const submit = async() => {
             try {
-                const saveData = {
-                    ...formData.value,
-                    method: formData.value.method || null,
-                    route: formData.value.route || null,
-                    parent_id: formData.value.parent_id || null
-                }
-                
-                await savePermission(saveData as any)
-                Message.success(formData.value.id ? '编辑成功' : '新增成功')
+                await savePermission(formData.value)
                 close()
                 resolve(true)
             } catch (error) {
-                Message.error(formData.value.id ? '编辑失败' : '新增失败')
                 console.log(error)
             }
         }

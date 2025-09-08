@@ -7,7 +7,8 @@ import { setupAxiosInterceptors } from './interceptor'
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 60000,
-  proxy: false
+  proxy: false,
+  withCredentials: true
 })
 
 // 设置axios拦截器
