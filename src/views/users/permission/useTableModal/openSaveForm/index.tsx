@@ -11,7 +11,7 @@ export const openSaveForm = (data?: Partial<PermissionTree>) => {
             id: data?.id,
             code: data?.code || '',
             name: data?.name || '',
-            is_public: data?.is_public || PermissionIsPublic.NO,
+            is_public: data?.is_public || PermissionIsPublic.PRIVATE,
             type: data?.type || PermissionType.MENU,
             method: data?.method || '',
             route: data?.route || '',

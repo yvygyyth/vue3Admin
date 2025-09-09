@@ -64,8 +64,8 @@
         <a-form-item field="is_public" label="是否公开">
             <a-switch
                 v-model="formData.is_public"
-                :true-value="PermissionIsPublic.YES"
-                :false-value="PermissionIsPublic.NO"
+                :checked-value="PermissionIsPublic.PUBLIC"
+                :unchecked-value="PermissionIsPublic.PRIVATE"
             />
         </a-form-item>
 

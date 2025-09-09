@@ -12,11 +12,11 @@ export const PermissionTypeMap = new Map<PermissionType, string>([
 
 
 export enum PermissionIsPublic {
-    YES = 1,
-    NO = 0
+    PUBLIC = 1,
+    PRIVATE = 0
 }
 
 export const PermissionIsPublicMap = new Map<PermissionIsPublic, string>([
-    [PermissionIsPublic.YES, '公开'],
-    [PermissionIsPublic.NO, '鉴权']
+    [PermissionIsPublic.PUBLIC, '公开'],
+    [PermissionIsPublic.PRIVATE, '鉴权']
 ])
