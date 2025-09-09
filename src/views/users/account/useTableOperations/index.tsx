@@ -14,11 +14,11 @@ export const useTableOperations = () => {
             }
         },
         {
-            permission: '设置角色',
+            permission: '授权',
             render: ({ record }: { record: User }) => {
                 return <a-button 
                 type="text" 
-                onClick={() => setRolesOk(record)}>设置角色</a-button>
+                onClick={() => setRolesOk(record)}>授权</a-button>
             }
         },
         {

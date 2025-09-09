@@ -123,9 +123,6 @@ const typeOptions = traverseMap(PermissionTypeMap, (key, value) => {
 
 const accessLevelOptions = computed(() => {
     return traverseMap(AccessLevelMap, (key, value) => {
-        console.log('key', key, 'value', value)
-        console.log('key', key, 'props.allowedAccessLevels', props.allowedAccessLevels)
-        console.log('key & props.allowedAccessLevels', key & props.allowedAccessLevels)
         return {
             label: value,
             value: key,

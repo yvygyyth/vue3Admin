@@ -62,7 +62,8 @@ export const useTableColumns = () => {
         {
             title: '操作',
             dataIndex: 'operations',
-            width: 150,
+            fixed: 'right',
+            width: 200,
             render: ({ record }: { record: PermissionTree }) => {
                 return OperationsRender({ record })
             }
