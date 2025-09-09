@@ -2,7 +2,7 @@ import { Modal, Message } from "@arco-design/web-vue"
 import SaveModal from './SaveModal/index.vue'
 import { ref } from 'vue'
 import type { PermissionTree } from '@/api/permission'
-import { savePermission, PermissionType } from '@/api/permission'
+import { savePermission, PermissionType, PermissionIsPublic } from '@/api/permission'
 
 export const openSaveForm = (data?: Partial<PermissionTree>) => {
     return new Promise(async (resolve, reject) => {
@@ -11,6 +11,7 @@ export const openSaveForm = (data?: Partial<PermissionTree>) => {
             id: data?.id,
             code: data?.code || '',
             name: data?.name || '',
+            is_public: data?.is_public || PermissionIsPublic.NO,
             type: data?.type || PermissionType.MENU,
             method: data?.method || '',
             route: data?.route || '',

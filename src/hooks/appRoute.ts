@@ -6,6 +6,7 @@ import {
     IconExclamationCircle,
     IconFile,
     IconList,
+    IconUpload,
     IconSettings,
     IconUser
 } from '@arco-design/web-vue/es/icon'
@@ -20,14 +21,14 @@ const routeIconMap: Record<RouteName, typeof IconDashboard | undefined> = {
     [ViewNames.dashboard]: IconDashboard,
     [ViewNames.profile]: IconFile,
     [ViewNames.exception]: IconExclamationCircle,
-    [ViewNames.form]: IconSettings,
     [ViewNames.list]: IconList,
     [ViewNames.result]: IconCloseCircle,
     [ViewNames.user]: IconUser,
     [ViewNames.users]: IconUser,
     [ViewNames.permission]: IconUser,
     [ViewNames.role]: IconUser,
-    [ViewNames.software]: IconSettings
+    [ViewNames.software]: IconUpload,
+    [ViewNames.setting]: IconSettings
 }
 
 type Context = {

@@ -3,6 +3,7 @@ export type Permission = {
     code: string;
     name: string;
     type: number;
+    is_public: number;
     method?: string | null;
     route?: string | null;
     parent_id?: number | null;
@@ -28,6 +29,7 @@ export type CreatePermissionInput = {
     code: string;
     name: string;
     type: number;
+    is_public: number;
     method?: string | null;
     route?: string | null;
     parent_id?: number | null;
@@ -39,6 +41,7 @@ export type UpdatePermissionInput = {
     code?: string;
     name?: string;
     type?: number;
+    is_public?: number;
     method?: string | null;
     route?: string | null;
     parent_id?: number | null;

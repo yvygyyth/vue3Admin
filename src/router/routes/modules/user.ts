@@ -11,11 +11,11 @@ export default {
   },
   children: [
     {
-      path: 'setting',
-      name: ViewNames.setting,
-      component: () => import('@/views/user/setting/index'),
+      path: 'info',
+      name: ViewNames.info,
+      component: () => import('@/views/user/info/index'),
       meta: {
-        locale: 'menu.user.setting',
+        locale: 'menu.user.info',
         requiresAuth: true,
         roles: ['*']
       }

@@ -61,6 +61,14 @@
             />
         </a-form-item>
 
+        <a-form-item field="is_public" label="是否公开">
+            <a-switch
+                v-model="formData.is_public"
+                :true-value="PermissionIsPublic.YES"
+                :false-value="PermissionIsPublic.NO"
+            />
+        </a-form-item>
+
         <a-form-item>
             <LoadingButton html-type="submit" type="primary" @click="handleSubmit">
                 保存
@@ -75,7 +83,7 @@ import type { FormInstance } from '@arco-design/web-vue'
 import LoadingButton from '@/components/LoadingButton/index.vue'
 import { useVModel } from '@vueuse/core'
 import { syncRequestRef } from '@/hooks/syncRequestRef'
-import { PermissionType, getPermissionTree, PermissionTypeMap } from '@/api/permission'
+import { PermissionType, getPermissionTree, PermissionTypeMap, PermissionIsPublic } from '@/api/permission'
 import { traverseMap } from '@/utils/enum'
 import { rule } from './rule.ts'
 

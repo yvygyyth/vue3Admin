@@ -32,7 +32,7 @@ export const requestErrorInterceptor = (error: any) => {
 // 响应拦截器
 export const responseInterceptor = <T = any>(response: ApiResponse) => {
 	const res = response.data;
-	if (res && typeof res.data === 'object') {
+	if (res && typeof res.count === 'number') {
 		(res.data as any)[COUNT_SYMBOL] = res.count;
 		console.log('response.count',res)
 	}
