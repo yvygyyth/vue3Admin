@@ -2,21 +2,23 @@ import { Modal } from "@arco-design/web-vue"
 import SaveModal from './SaveModal/index.vue'
 import { ref } from 'vue'
 import type { PermissionTree } from '@/api/permission'
-import { savePermission, PermissionType, AccessLevel, Method, AllowedAccessLevels } from '@/api/permission'
+import { savePermission, PermissionType, AccessLevel, AllowedAccessLevels } from '@/api/permission'
 
-export const openSaveForm = (data?: PermissionTree) => {
+export const openSaveForm = (data?: PermissionTree | Omit<PermissionTree, 'id'>) => {
     return new Promise(async (resolve, reject) => {
 
+        const permissionId = (data as PermissionTree)?.id || void 0
+
         const allowedAccessLevels = ref(data?.allowed_access_levels || AllowedAccessLevels.ALL)
-        
+        console.log('allowedAccessLevels', data)
         const formData = ref({
-            id: data?.id,
+            id: permissionId,
             code: data?.code || '',
             name: data?.name || '',
             access_level: data?.access_level || AccessLevel.PRIVATE,
             type: data?.type || PermissionType.MENU,
-            method: data?.method || Method.GET,
-            route: data?.route || '',
+            method: data?.method || void 0,
+            route: data?.route || void 0,
             parent_id: data?.parent_id || void 0
         })
 
@@ -31,7 +33,7 @@ export const openSaveForm = (data?: PermissionTree) => {
         }
     
         const { close } = Modal.open({
-            title: data?.id ? '编辑权限' : '新增权限',
+            title: permissionId ? '编辑权限' : '新增权限',
             width: 600,
             footer: false,
             content: () => <SaveModal 

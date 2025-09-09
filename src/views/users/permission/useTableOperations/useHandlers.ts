@@ -18,7 +18,11 @@ export const useHandlers = () => {
 
     const addChildOk = async(record: PermissionTree) => {
         try {
-            await openSaveForm({ parent_id: record.id })
+            const { id, ...rest } = record
+            await openSaveForm({
+                ...rest,
+                parent_id: id
+            })
             Message.success('新增子权限成功')
             eventBus.emit(REFRESH_LIST_EVENT)
         } catch (error) {

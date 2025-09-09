@@ -22,7 +22,7 @@
                 v-model="formData.type" 
                 placeholder="请选择权限类型"
                 :options="typeOptions"
-                :disabled = "formData.type === PermissionType.API"
+                :disabled = "formData.id"
             />
         </a-form-item>
 
