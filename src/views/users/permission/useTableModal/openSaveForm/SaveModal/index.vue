@@ -61,11 +61,11 @@
             />
         </a-form-item>
 
-        <a-form-item field="is_public" label="是否公开">
-            <a-switch
-                v-model="formData.is_public"
-                :checked-value="PermissionIsPublic.PUBLIC"
-                :unchecked-value="PermissionIsPublic.PRIVATE"
+        <a-form-item field="access_level" label="是否公开">
+            <a-select
+                v-model="formData.access_level"
+                placeholder="请选择是否公开"
+                :options="accessLevelOptions"
             />
         </a-form-item>
 
@@ -78,18 +78,22 @@
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef, type PropType } from 'vue'
+import { useTemplateRef, type PropType, computed } from 'vue'
 import type { FormInstance } from '@arco-design/web-vue'
 import LoadingButton from '@/components/LoadingButton/index.vue'
 import { useVModel } from '@vueuse/core'
 import { syncRequestRef } from '@/hooks/syncRequestRef'
-import { PermissionType, getPermissionTree, PermissionTypeMap, PermissionIsPublic } from '@/api/permission'
+import { PermissionType, getPermissionTree, PermissionTypeMap, AccessLevelMap, AllowedAccessLevels } from '@/api/permission'
 import { traverseMap } from '@/utils/enum'
 import { rule } from './rule.ts'
 
 const props = defineProps({
     modelValue: {
         type: Object as PropType<any>,
+        required: true
+    },
+    allowedAccessLevels: {
+        type: Number as PropType<AllowedAccessLevels>,
         required: true
     }
 })
@@ -116,6 +120,20 @@ const typeOptions = traverseMap(PermissionTypeMap, (key, value) => {
         }
     }
 })
+
+const accessLevelOptions = computed(() => {
+    return traverseMap(AccessLevelMap, (key, value) => {
+        console.log('key', key, 'value', value)
+        console.log('key', key, 'props.allowedAccessLevels', props.allowedAccessLevels)
+        console.log('key & props.allowedAccessLevels', key & props.allowedAccessLevels)
+        return {
+            label: value,
+            value: key,
+            disabled: (key & props.allowedAccessLevels) !== key
+        }
+    })
+})
+
 
 const handleSubmit = async() => {
     await formRef.value?.validate()

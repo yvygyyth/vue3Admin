@@ -12,7 +12,6 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
 import { useTableColumns } from './useTableColumns/index'
 import { syncRequestRef } from '@/hooks/syncRequestRef'
 import { getPermissionTree, type PermissionTree } from '@/api/permission'

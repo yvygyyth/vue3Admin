@@ -1,10 +1,13 @@
+import type { AccessLevel, PermissionType, Method, AllowedAccessLevels } from './enum'
+
 export type Permission = {
     id: number;
     code: string;
     name: string;
-    type: number;
-    is_public: number;
-    method?: string | null;
+    type: PermissionType;
+    access_level: AccessLevel;
+    allowed_access_levels: AllowedAccessLevels;
+    method?: Method | null;
     route?: string | null;
     parent_id?: number | null;
     created_at: number;
@@ -28,9 +31,9 @@ export type PermissionSearch = {
 export type CreatePermissionInput = {
     code: string;
     name: string;
-    type: number;
-    is_public: number;
-    method?: string | null;
+    type: PermissionType;
+    access_level: AccessLevel;
+    method?: Method | null;
     route?: string | null;
     parent_id?: number | null;
 };
@@ -38,11 +41,11 @@ export type CreatePermissionInput = {
 // 权限更新输入类型
 export type UpdatePermissionInput = {
     id: number;
-    code?: string;
-    name?: string;
-    type?: number;
-    is_public?: number;
-    method?: string | null;
+    code: string;
+    name: string;
+    type: PermissionType;
+    access_level: AccessLevel;
+    method?: Method | null;
     route?: string | null;
     parent_id?: number | null;
 };

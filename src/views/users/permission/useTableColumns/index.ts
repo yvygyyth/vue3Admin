@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { PermissionTypeMap, PermissionIsPublicMap } from '@/api/permission'
+import { PermissionTypeMap, AccessLevelMap } from '@/api/permission'
 import type { PermissionTree } from '@/api/permission'
 import { useTableOperations } from '../useTableOperations'
 import { formatDateTime } from '@/utils/format'
@@ -45,10 +45,10 @@ export const useTableColumns = () => {
         },
         {
             title: '是否公开',
-            dataIndex: 'is_public',
+            dataIndex: 'access_level',
             width: 100,
             render: ({ record }: { record: PermissionTree }) => {
-                return PermissionIsPublicMap.get(record.is_public)
+                return AccessLevelMap.get(record.access_level)
             }
         },
         {
