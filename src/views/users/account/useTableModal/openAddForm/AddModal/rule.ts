@@ -16,6 +16,8 @@ export const addUserRules: Record<string, FieldRule[]> = {
         { maxLength: 100, message: '密码不能超过100个字符' }
     ],
     nickname: [
+        { required: true, message: '请输入昵称' },
+        { minLength: 1, message: '昵称至少1个字符' },
         { maxLength: 50, message: '昵称不能超过50个字符' }
     ]
 }

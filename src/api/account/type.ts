@@ -25,7 +25,7 @@ export type UserSearch = {
 export type CreateUser = {
     account: string
     password: string
-    nickname?: string
+    nickname: string
     roleIds?: number[]
 }
   
