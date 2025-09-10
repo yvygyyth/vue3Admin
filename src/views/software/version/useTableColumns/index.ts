@@ -40,6 +40,8 @@ export const useTableColumns = () => {
         },
         {
             title: '操作',
+            fixed: 'right',
+            width: 160,
             dataIndex: 'operations',
             render: ({ record }: { record: Version }) => {
                 return OperationsRender({ record })

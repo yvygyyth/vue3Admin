@@ -15,14 +15,6 @@ export const useTableOperations = () => {
             }
         },
         {
-            permission: '新增子权限',
-            render: ({ record }: { record: PermissionTree }) => {
-                return <a-button 
-                type="text" 
-                onClick={() => addChildOk(record)}>新增子权限</a-button>
-            }
-        },
-        {
             permission: '删除',
             render: ({ record }: { record: PermissionTree }) => {
                 return (
@@ -34,6 +26,14 @@ export const useTableOperations = () => {
                         status="danger">删除</a-button>
                     </a-popconfirm>
                 )
+            }
+        },
+        {
+            permission: '新增子权限',
+            render: ({ record }: { record: PermissionTree }) => {
+                return <a-button 
+                type="text" 
+                onClick={() => addChildOk(record)}>新增子权限</a-button>
             }
         }
     ])

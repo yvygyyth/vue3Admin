@@ -6,9 +6,9 @@
         />
         <ActionAreaRender />
         <a-table
+            v-bind="tableConfig"
             :loading="dataList.loading"
             :data="dataList.value"
-            :bordered="false"
             :pagination="pagination"
             :columns="colList"
         ></a-table>
@@ -23,6 +23,7 @@ import { useTableColumns } from './useTableColumns/index'
 import { asyncRequestRef } from '@/hooks/syncRequestRef'
 import { getRoles, type RoleWithPermissions } from '@/api/role'
 import { useTableActionArea } from './useTableActionArea/index'
+import { useTableConfig } from './useTableConfig/index'
 import { eventBus } from '@/hooks/useEventBus'
 import type { RoleSearch } from '@/api/role'
 import { REFRESH_LIST_EVENT, defaultSearchForm } from './constants'
@@ -42,6 +43,8 @@ const { pagination } = usePagination(
 )
 
 const { colList } = useTableColumns()
+
+const tableConfig = useTableConfig()
 
 eventBus.on(REFRESH_LIST_EVENT, () => {
     console.log('刷新列表',dataList.value)

@@ -2,12 +2,11 @@
     <div class="table-container">
         <ActionAreaRender />
         <a-table
+            v-bind="tableConfig"
             :loading="dataList.loading"
             :data="dataList.value"
             :columns="colList"
-            row-key="id"
             :pagination="false"
-            hide-expand-button-on-empty
         ></a-table>
     </div>
 </template>
@@ -17,6 +16,7 @@ import { syncRequestRef } from '@/hooks/syncRequestRef'
 import { getPermissionTree, type PermissionTree } from '@/api/permission'
 import { useTableActionArea } from './useTableActionArea/index'
 import { eventBus } from '@/hooks/useEventBus'
+import { useTableConfig } from './useTableConfig'
 import { REFRESH_LIST_EVENT } from './constants.ts'
 
 const { render: ActionAreaRender } = useTableActionArea()
@@ -24,6 +24,9 @@ const { render: ActionAreaRender } = useTableActionArea()
 const dataList = syncRequestRef<PermissionTree[]>(getPermissionTree, [])
 
 const { colList } = useTableColumns()
+
+
+const tableConfig = useTableConfig()
 
 eventBus.on(REFRESH_LIST_EVENT, () => {
     dataList.refresh()

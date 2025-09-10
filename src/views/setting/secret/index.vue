@@ -5,9 +5,9 @@
             :loading="dataList.loading"
         />
         <a-table
+            v-bind="tableConfig"
             :loading="dataList.loading"
             :data="dataList.value"
-            :bordered="false"
             :pagination="pagination"
             :columns="colList"
         ></a-table>
@@ -19,6 +19,7 @@ import { ref } from 'vue'
 import TableSearchForm from './useTableSearchForm/index.vue'
 import { usePagination } from '@/hooks/usePagination'
 import { useTableColumns } from './useTableColumns/index'
+import { useTableConfig } from './useTableConfig/index'
 import { asyncRequestRef } from '@/hooks/syncRequestRef'
 import { searchSecret, type Secret } from '@/api/secret'
 import { eventBus } from '@/hooks/useEventBus'
@@ -38,6 +39,8 @@ const { pagination } = usePagination(
 )
 
 const { colList } = useTableColumns()
+
+const tableConfig = useTableConfig()
 
 eventBus.on(REFRESH_LIST_EVENT, () => {
     console.log('刷新列表',dataList.value)

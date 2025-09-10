@@ -6,9 +6,9 @@
         />
         <ActionAreaRender />
         <a-table
+            v-bind="tableConfig"
             :loading="dataList.loading"
             :data="dataList.value"
-            :bordered="false"
             :pagination="pagination"
             :columns="colList"
         ></a-table>
@@ -22,6 +22,7 @@ import { useTableColumns } from './useTableColumns/index'
 import { asyncRequestRef } from '@/hooks/syncRequestRef'
 import { getVersionList, type Version } from '@/api/software'
 import { useTableActionArea } from './useTableActionArea/index'
+import { useTableConfig } from './useTableConfig/index'
 import { eventBus } from '@/hooks/useEventBus'
 import type { SearchVersion } from '@/api/software'
 import { REFRESH_LIST_EVENT } from './constants'
@@ -46,6 +47,7 @@ const { pagination } = usePagination(
 
 const { colList } = useTableColumns()
 
+const tableConfig = useTableConfig()
 
 eventBus.on(REFRESH_LIST_EVENT, () => {
     dataList.refresh()
