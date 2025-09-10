@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import type { Secret } from '@/api/secret'
+import { IsEncryption } from '@/api/secret/enum'
 import { useTableOperations } from '../useTableOperations'
 import { formatDateTime } from '@/utils/format'
 
@@ -22,6 +23,13 @@ export const useTableColumns = () => {
             dataIndex: 'description',
             ellipsis: true,
             tooltip: true
+        },
+        {
+            title: '已加密',
+            dataIndex: 'is_encryption',
+            render: ({ record }: { record: Secret }) => {
+                return record.is_encryption === IsEncryption.YES ? '是' : '否'
+            }
         },
         // {
         //     title: '创建时间',
