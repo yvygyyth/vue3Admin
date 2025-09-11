@@ -42,7 +42,7 @@ export default defineComponent({
           }}
         >
           <div class={['overflow-hidden', 'flex-1']}>
-            <div class={['whitespace-nowrap', 'overflow-x-auto', 'px-0', 'py-1']}>
+            <div class={['whitespace-nowrap', 'overflow-x-auto', 'px-0', 'py-1', 'gap-x-2']}>
               {tabList.value.map((item, index) => (
                 <TabItem itemData={item} index={index} key={index} />
               ))}

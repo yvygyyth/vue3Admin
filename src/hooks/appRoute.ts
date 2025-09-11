@@ -1,14 +1,11 @@
 import { appRoutes } from '@/router/routes'
 import { ViewNames } from '@/types/constants'
 import {
-    IconCloseCircle,
     IconDashboard,
-    IconExclamationCircle,
-    IconFile,
-    IconList,
     IconUpload,
     IconSettings,
-    IconUser
+    IconUser,
+    IconSend
 } from '@arco-design/web-vue/es/icon'
 import { isString } from 'lodash'
 import { computed } from 'vue'
@@ -19,16 +16,13 @@ type RouteName = Exclude<RouteRecordName, undefined>
 
 const routeIconMap: Record<RouteName, typeof IconDashboard | undefined> = {
     [ViewNames.dashboard]: IconDashboard,
-    [ViewNames.profile]: IconFile,
-    [ViewNames.exception]: IconExclamationCircle,
-    [ViewNames.list]: IconList,
-    [ViewNames.result]: IconCloseCircle,
     [ViewNames.user]: IconUser,
     [ViewNames.users]: IconUser,
     [ViewNames.permission]: IconUser,
     [ViewNames.role]: IconUser,
     [ViewNames.software]: IconUpload,
-    [ViewNames.setting]: IconSettings
+    [ViewNames.setting]: IconSettings,
+    [ViewNames.announcement]: IconSend
 }
 
 type Context = {

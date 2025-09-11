@@ -76,7 +76,10 @@ export enum ViewNames {
   software = 'software',
 
   // =============== DIVIDER ==================
-  setting = 'setting'
+  setting = 'setting',
+
+  // =============== DIVIDER ==================
+  announcement = 'announcement'
 }
 
 export const layoutStyleConfig = {
